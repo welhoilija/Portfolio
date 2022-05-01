@@ -3,6 +3,6 @@ from django.shortcuts import render
 # Create your views here.
 
 
-def frontpage(request):
+def index(request, *args, **kwargs):
 
-    return render(request, "frontpage.html")
+    return render(request, "frontend/index.html")

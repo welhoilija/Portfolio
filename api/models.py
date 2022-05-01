@@ -22,3 +22,20 @@ class Author(models.Model):
 
     def __str__(self):
         return "%s %s" % (self.name, self.description)
+
+class ContactData(models.Model):
+    """
+    Description: Contact data for sent forms
+    """
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    name = models.CharField(max_length=64)
+
+    text = models.TextField()
+    
+
+    class Meta:
+        pass
+
+    def __str__(self):
+        return "%s %s %s" % (name, text, created_at)
