@@ -28,3 +28,18 @@ class ContactView(APIView):
 
         return Response(ContactSerializer(obj).data, status=status.HTTP_201_CREATED)
         pass
+
+class GetContactData(generics.ListAPIView):
+    serializer_class = ContactSerializer
+    lookup_url_kwarg = "id"
+
+    def get(self, request, format=None):
+        user = request.user
+        contact_id = request.GET.get(self.lookup_url_kwarg)
+        if contact_id != None:
+            contactdata = ContactData.objects.filter(id=contact_id)
+            if len(contactdata) != 0:
+                data = ContactSerializer(contactdata[0]).data
+                return Response(data, status=status.HTTP_200_OK)
+            return Response({"Contactdata not found": "invalid id"}, status=HTTP_404_BAD_REQUEST)
+

@@ -38,4 +38,4 @@ class ContactData(models.Model):
         pass
 
     def __str__(self):
-        return "%s %s %s" % (name, text, created_at)
+        return "%s %s %s" % (self.name, self.text, self.created_at)
