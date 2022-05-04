@@ -1,9 +1,10 @@
 
 import React, { Component } from "react";
 import { render } from "react-dom";
-import App from "./HomePage";
-import ResponsiveDrawer from "./Sidebar";
-export default class HomePage extends Component {
+import HomePage from "./HomePage";
+import SideBar from "./Sidebar";
+
+export default class App extends Component {
   constructor(props) {
     super(props);
   }
@@ -11,7 +12,9 @@ export default class HomePage extends Component {
   render() {
     return (
       <div>
-      	<App />
+        <SideBar />
+      	<HomePage />
+        
       </div>
     );
   }

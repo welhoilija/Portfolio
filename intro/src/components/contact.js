@@ -1,13 +1,14 @@
 import React, { Component } from "react";
 import Button from "@material-ui/core/Button"
 import Grid from "@material-ui/core/Grid"
-import Typography from "@material-ui/core/Typography"
 import TextField from "@material-ui/core/TextField"
 import FormHelperText from "@material-ui/core/FormHelperText"
 import FormControl from "@material-ui/core/FormControl"
 import { Link } from "react-router-dom"
-import FormControlLabel from "@material-ui/core/FormControlLabel"
-import ResponsiveDrawer from "./Sidebar";
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import InputAdornment from '@mui/material/InputAdornment';
+import "/static/intro/scc.scss";
+
 
 
 
@@ -48,43 +49,130 @@ export default class ContactPage extends Component {
 	}
 	render() {
     return (
-    <div>
-    	<ResponsiveDrawer />
-    	<div style={{position: 'absolute', left: '50%', top: '50%',transform: 'translate(-50%, -50%)'}}>
-		    <Grid container spacing={6} >
-		    	<Grid item xs={12} align="center">
-		    		<Typography component="h4" variant="h4">
-		    			Contact me!
-		    		</Typography>
-		    	</Grid>
-		    	<Grid item xs={12} align="center">
-		    		<FormControl component="fieldset">
-		    			<FormHelperText>
-		    				<div align="center">
-		    					Contact Me!
-		    				</div>
-		    			</FormHelperText>
+		
+	<div className="center">
+		<div className="stars">
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+            <div className="star"></div>
+        </div>
+		
+		<Grid container spacing={1} >
+			
+				<Grid xs={12} align="center">
+					
+					<h4>
+						Contact me!
+					</h4>
+					
+				</Grid>
+				<Grid xs={12} align="center">
+					<FormControl component="fieldset">
 
-		    			<TextField fullWidth required={true} id="standard-basic" label="Name" variant="standard" onChange={this.handlenamechange} />
+						<TextField
+							fullWidth
+							required={true}
+							id="input-with-icon-textfield"
+							label="Name"
+							onChange={this.handlenamechange}
+							InputLabelProps={{
+								style: { color: "#F5F5E9"},
+								}}
+							InputProps={{
+							style: { color: "#F5F5E9" },
+							startAdornment: (
+								<InputAdornment position="start" sx={{
+									padding: "27.5px 14px",
+									color: ("#F5F5E9"),
+									borderTopLeftRadius: (theme) =>
+									  theme.shape.borderRadius + "px",
+									borderBottomLeftRadius: (theme) =>
+									  theme.shape.borderRadius + "px"
+								  }}>
+								<AccountCircle />
+								</InputAdornment>
+							),
+							}}
+							variant="standard"
+						/>
+						
+						<TextField
+							id="standard-multiline-static"
+							label="Message"
+							multiline
+							rows={4}
+							InputLabelProps={{
+								style: { color: "#F5F5E9" },
+								}}
+							InputProps={{
+								style: { color: "#F5F5E9" },
+								}}
+							defaultValue=""
+							variant="standard"
+							onChange={this.handletextchange}
+						/>
+						<FormHelperText>
+							<div align="center">
+								Up to 2000 characters!
+							</div>
+						</FormHelperText>
+					</FormControl>
+				</Grid>
+				<Grid item xs={12} align="center">
+					<Button color="Primary" variant="contained" to="/" component={Link} onClick={this.handleSubmitButtonPress}>
+						Submit
+					</Button>
+				</Grid>
+		</Grid>
+	</div>
 
-		    			
-		    			<TextField fullWidth multiline required={true} id="standard-basic" label="Message" variant="standard" onChange={this.handletextchange}/>
-		    			<FormHelperText>
-		    				<div align="center">
-		    					Up to 2000 characters!
-		    				</div>
-		    			</FormHelperText>
-		    		</FormControl>
-		    	</Grid>
-		    	<Grid item xs={12} align="center">
-		    		<Button color="Primary" variant="contained" to="/" component={Link} onClick={this.handleSubmitButtonPress}>
-		    			Submit
-		    		</Button>
-		    	</Grid>
-		    </Grid>
-	   </div>
-
-    </div>
     )
 
   }

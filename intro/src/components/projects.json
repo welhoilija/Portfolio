@@ -1,0 +1,27 @@
+[
+    {
+      "hexa": "#1D1148",
+      "title": "Crypto portfolio",
+      "description": "Web app for tracking crypto investments. Stack includes Django, Celery, Bootstrap and JS",
+      "image": "https://user-images.githubusercontent.com/20344720/165314675-4245fe38-5065-4abf-9609-7961bfb452f6.png"
+    },
+    {
+      "hexa": "#FFCD00",
+      "title": "Boulderinfo",
+      "description": "SEO Wordpress project with friends, current organic traffic is more than 400 users/month",
+      "image": "/static/images/boulderinfo.png"
+    },
+    {
+      "hexa": "#FF5041",
+      "title": "Django web3 Authentication",
+      "description": "Fork of django-web3-auth updated to the latest versions of python, django and ethers.js",
+      "image": "/static/images/web3auth.png"
+    },
+    {
+      "hexa": "#000000",
+      "title": "Many other private projects!",
+      "description": "I have also worked on many private projects mostly coded in python",
+      "image": ""
+    }
+  ]
+  
