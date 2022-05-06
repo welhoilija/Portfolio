@@ -45,7 +45,8 @@ export default class ContactPage extends Component {
 		};
 		fetch("/api/Contact", requestOptions)
 		.then((response) => response.json())
-		.then((data) => console.log(data));
+		.then((data) => console.log(data))
+		.then(document.getElementById("message").style.display = "block")
 	}
 	render() {
     return (
@@ -166,9 +167,14 @@ export default class ContactPage extends Component {
 					</FormControl>
 				</Grid>
 				<Grid item xs={12} align="center">
-					<Button color="Primary" variant="contained" to="/" component={Link} onClick={this.handleSubmitButtonPress}>
+					<Button color="Primary" variant="contained" onClick={this.handleSubmitButtonPress}>
 						Submit
 					</Button>
+				</Grid>
+				<Grid item xs={12} align="center">
+					<div id="message" style={{ display: "none" }}>
+						<p>Your form was uploaded successfully</p>
+					</div>
 				</Grid>
 		</Grid>
 	</div>

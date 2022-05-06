@@ -58,13 +58,15 @@ export default function FrontPage() {
             <div className="star"></div>
             <div className="star"></div>
         </div>
-        <h1>
-            Hi, i'm Tuomas!
-        </h1>
-        <hr></hr>
-        <h2>
-            Full Stack Developer | SEM expert | Crypto enthusiast
-        </h2>
+        <div text-align="center">
+          <h1>
+              Hi, i'm Tuomas!
+          </h1>
+          <hr></hr>
+          <h2>
+              Full Stack Developer | SEM expert | Crypto enthusiast
+          </h2>
+        </div>
 
     </div>
   );
