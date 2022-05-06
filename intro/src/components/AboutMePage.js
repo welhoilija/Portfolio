@@ -74,7 +74,7 @@ export default class AboutMePage extends Component {
 	I worked in web-development/marketing for 2 years after my conscription in 2019 and after that i have worked mainly with python and web development.
 	</p>	
 	<p>
-	On free time i code my own<a href="https://github.com/welhoilija">projects,</a>play videogames and run.
+	On free time i code my own<a href="https://github.com/welhoilija">projects,</a>play videogames , climb and run.
 
 	
 	</p>
