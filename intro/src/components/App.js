@@ -2,7 +2,9 @@
 import React, { Component } from "react";
 import { render } from "react-dom";
 import HomePage from "./HomePage";
-import SideBar from "./Sidebar";
+import SideNavbar from "./sidebar2";
+import { BrowserRouter } from "react-router-dom";
+
 
 export default class App extends Component {
   constructor(props) {
@@ -11,11 +13,11 @@ export default class App extends Component {
 
   render() {
     return (
-      <div>
-        <SideBar />
+      <BrowserRouter>
+        <SideNavbar />
       	<HomePage />
         
-      </div>
+      </BrowserRouter>
     );
   }
 }

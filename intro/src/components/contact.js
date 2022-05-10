@@ -1,19 +1,16 @@
-import React, { Component } from "react";
-import Button from "@material-ui/core/Button"
+import React, { useState } from 'react';
 import Grid from "@material-ui/core/Grid"
 import TextField from "@material-ui/core/TextField"
 import FormHelperText from "@material-ui/core/FormHelperText"
 import FormControl from "@material-ui/core/FormControl"
-import { Link } from "react-router-dom"
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import InputAdornment from '@mui/material/InputAdornment';
 import "/static/intro/scc.scss";
+import "/static/intro/button.scss";
 
 
-
-
-export default class ContactPage extends Component {
-	constructor(props) {
+class ContactPage extends React.Component {
+    constructor(props) {
 		super(props);
 		this.state = {
 			text: null,
@@ -24,7 +21,7 @@ export default class ContactPage extends Component {
 		this.handletextchange = this.handletextchange.bind(this);
 		this.handlenamechange = this.handlenamechange.bind(this);
 	}
-	handletextchange(e) {
+    handletextchange(e) {
 		this.setState({
 			text: e.target.value,
 		});
@@ -48,10 +45,10 @@ export default class ContactPage extends Component {
 		.then((data) => console.log(data))
 		.then(document.getElementById("message").style.display = "block")
 	}
-	render() {
-    return (
-		
-	<div className="center">
+  
+    render() {
+      return (
+        <div className="center">
 		<div className="stars">
             <div className="star"></div>
             <div className="star"></div>
@@ -167,9 +164,12 @@ export default class ContactPage extends Component {
 					</FormControl>
 				</Grid>
 				<Grid item xs={12} align="center">
-					<Button color="Primary" variant="contained" onClick={this.handleSubmitButtonPress}>
-						Submit
-					</Button>
+                    <button
+                        className='submitbutton'
+                        onClick={this.handleSubmitButtonPress}
+                        >
+                        Submit
+                    </button>
 				</Grid>
 				<Grid item xs={12} align="center">
 					<div id="message" style={{ display: "none" }}>
@@ -178,9 +178,8 @@ export default class ContactPage extends Component {
 				</Grid>
 		</Grid>
 	</div>
-
-    )
-
+      );
+    }
   }
-}
 
+export default ContactPage;

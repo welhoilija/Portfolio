@@ -19,7 +19,6 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "sass": "^1.51.0",
-    "sass-loader": "^12.6.0",
     "webpack": "^5.72.0",
     "webpack-cli": "^4.9.2"
   },
@@ -34,6 +33,7 @@
     "react-loaders": "^3.0.1",
     "react-router-dom": "^6.3.0",
     "react-sidebar": "^3.0.2",
+    "sass-loader": "^12.6.0",
     "style-loader": "^3.3.1",
     "styled-components": "^5.3.5",
     "styled-normalize": "^8.0.7"

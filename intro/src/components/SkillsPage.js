@@ -170,7 +170,7 @@ export default class SkillsPage extends Component {
               </Typography>
               <Typography variant="body2" color="#F5F5E9">
                 React.js, Strong GNU/Linux knowledge, Facebook ads, Nginx, mysql and the list goes on...
-                I'm always eager to learn new technologies and that has brought me here. For the things that are not here, there should be a mention for in my
+                I'm always eager to learn new technologies and that has brought me here. For the things that are not here, there should be a mention in my
                 <a href="https://www.linkedin.com/in/tuomas-kangas-901207170/">Linkedin</a>.
                 
               </Typography>

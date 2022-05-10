@@ -60,7 +60,7 @@ export default function FrontPage() {
         </div>
         <div text-align="center">
           <h1>
-              Hi, i'm Tuomas!
+              Hi, I'm Tuomas!
           </h1>
           <hr></hr>
           <h2>
