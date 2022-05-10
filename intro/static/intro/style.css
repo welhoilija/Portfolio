@@ -19,7 +19,7 @@ html, body {
 }
 
 .center {
-  position: absolute;
+  position: fixed;
   top: 40%;
   left: 50%;
   margin-left: 50px;
