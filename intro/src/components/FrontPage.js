@@ -5,7 +5,7 @@ import "/static/intro/scc.scss";
 
 export default function FrontPage() {
   return (
-    <div className="center">
+    <div className="container">
         <div className="stars">
             <div className="star"></div>
             <div className="star"></div>
@@ -58,7 +58,7 @@ export default function FrontPage() {
             <div className="star"></div>
             <div className="star"></div>
         </div>
-        <div text-align="center">
+        <div className="center">
           <h1>
               Hi, I'm Tuomas!
           </h1>

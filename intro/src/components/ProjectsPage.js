@@ -19,7 +19,7 @@ const styles = (theme) => ({
 
 export default function ProjectsPage() {
   return (
-    <div className="father">
+    <div className="container">
       <div className="stars">
         <div className="star"></div>
         <div className="star"></div>
@@ -72,7 +72,7 @@ export default function ProjectsPage() {
         <div className="star"></div>
         <div className="star"></div>
       </div>
-      <div className="fullwidth">
+      <div className="ccenter">
         
         <div className="rcenter">
           <Box sx={{

@@ -15,8 +15,7 @@ export default class App extends Component {
     return (
       <BrowserRouter>
         <SideNavbar />
-      	<HomePage />
-        
+      	<HomePage />        
       </BrowserRouter>
     );
   }

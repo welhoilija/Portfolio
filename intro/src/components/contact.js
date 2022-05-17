@@ -48,7 +48,7 @@ class ContactPage extends React.Component {
   
     render() {
       return (
-        <div className="center">
+        <div className='container'>
 		<div className="stars">
             <div className="star"></div>
             <div className="star"></div>
@@ -101,7 +101,7 @@ class ContactPage extends React.Component {
             <div className="star"></div>
             <div className="star"></div>
         </div>
-		
+		<div className='center'>
 		<Grid container spacing={1} >
 			
 				<Grid xs={12} align="center">
@@ -177,6 +177,7 @@ class ContactPage extends React.Component {
 					</div>
 				</Grid>
 		</Grid>
+		</div>
 	</div>
       );
     }
