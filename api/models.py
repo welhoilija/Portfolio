@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.core.mail import send_mail
 # Create your models here.
 
 
@@ -17,6 +17,7 @@ class Author(models.Model):
 
     name = models.CharField(max_length=64)
     description = models.TextField(default=None, null=True)
+    email = models.EmailField(max_length=254)
 
 
 
@@ -32,6 +33,19 @@ class ContactData(models.Model):
     name = models.CharField(max_length=64)
 
     text = models.TextField()
+
+
+    def send_data_via_email(self):
+        send_mail(
+            "New contact request from Tuomaskangas.com",
+            "Contents: %s %s %s" % (self.created_at, self.name, self.text) ,
+            'mail@Tuomaskangas.com',
+            ['tkankas@gmail.com'],
+            fail_silently=False,
+        )
+
+
+
     
 
     class Meta:

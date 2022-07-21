@@ -24,6 +24,7 @@ class ContactView(APIView):
             text = serializer.data.get("text")
             name = serializer.data.get("name")
             obj, created = ContactData.objects.update_or_create(text=text, name=name)
+            obj.send_data_via_email()
 
 
         return Response(ContactSerializer(obj).data, status=status.HTTP_201_CREATED)
