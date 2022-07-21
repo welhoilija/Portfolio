@@ -17,7 +17,7 @@ class Author(models.Model):
 
     name = models.CharField(max_length=64)
     description = models.TextField(default=None, null=True)
-    email = models.EmailField(max_length=254)
+    email = models.EmailField(max_length=254, default=None)
 
 
 
