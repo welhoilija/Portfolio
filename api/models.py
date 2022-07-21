@@ -39,7 +39,7 @@ class ContactData(models.Model):
         send_mail(
             "New contact request from Tuomaskangas.com",
             "Contents: %s %s %s" % (self.created_at, self.name, self.text) ,
-            'mail@Tuomaskangas.com',
+            'email@tuomaskangas.com',
             ['tkankas@gmail.com'],
             fail_silently=False,
         )
