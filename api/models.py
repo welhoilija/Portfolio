@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.mail import send_mail
+from django.conf import settings
 # Create your models here.
 
 
@@ -20,9 +21,9 @@ class Author(models.Model):
     email = models.EmailField(max_length=254, default=None)
 
 
-
     def __str__(self):
         return "%s %s" % (self.name, self.description)
+
 
 class ContactData(models.Model):
     """
@@ -40,16 +41,14 @@ class ContactData(models.Model):
             "New contact request from Tuomaskangas.com",
             "Contents: %s %s %s" % (self.created_at, self.name, self.text) ,
             'email@tuomaskangas.com',
-            ['tkankas@gmail.com'],
+            [settings.EMAIL_ADDR],
             fail_silently=False,
         )
 
 
-
-    
-
     class Meta:
         pass
+
 
     def __str__(self):
         return "%s %s %s" % (self.name, self.text, self.created_at)
