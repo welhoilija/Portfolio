@@ -29,11 +29,11 @@ const useStyles = makeStyles((theme) => ({
 							</h1>
 							<hr></hr>
 							<h2>
-								Programmer with marketing knowledge!
+								Full stack programmer with deep business knowledge
 							</h2>
 
 							<p>
-							I am a highly motivated and skilled web developer with 2 years of professional experience in the industry. 
+							I am a highly motivated and skilled web developer with 4 years of professional experience in the industry. 
 							My expertise includes Python, Django, web development, and search engine marketing. 
 							I have a strong passion for all things digital, including cryptocurrencies, and constantly seek to stay up to date with the latest technologies. 
 							In my free time, I enjoy coding personal<a href="https://github.com/welhoilija">projects,</a>playing video games, climbing, and running. 
