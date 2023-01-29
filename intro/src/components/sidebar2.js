@@ -23,7 +23,7 @@ import Header from "./logo"
 import { Link } from "react-router-dom";
 import navbarList from './navbarlist';
 
-const drawerWidthOpen = 240;
+const drawerWidthOpen = 180;
 const paddingIconButton = 10;
 const marginIconButton = 14;
 const iconFontSize = 20;
@@ -33,7 +33,6 @@ const drawerWidthClose =
 export default function SideNavbar() {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
-  const refFocus = useRef();
 
   function toggleopen() {
     setOpen(!open);
@@ -44,9 +43,10 @@ export default function SideNavbar() {
     <>
       <Box
         sx={{
+          position: 'relative',
           display: 'flex',
           justifyContent: 'space-between',
-          height: '42px',
+          height: '52px',
           width: 'auto',
           backgroundColor: 'transparent',
           margin: '14px 14px',
@@ -186,7 +186,7 @@ export default function SideNavbar() {
 
 
         </Box>
-        <Box sx={{ display: 'flex', flexDirection: 'row', flexGrow: 20 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'row', flexGrow: 2 }}>
             <div className="githubicon">
                 <a href="https://github.com/welhoilija">
                   <GitHubIcon fontSize="large"/>
