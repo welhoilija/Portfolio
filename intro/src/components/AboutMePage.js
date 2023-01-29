@@ -33,15 +33,12 @@ const useStyles = makeStyles((theme) => ({
 							</h2>
 
 							<p>
-							I'm a nerd with interests in web development, search engine marketing, cryptocurrencies and everything digital.
-							I started learning python when I was about 15 years old as I started building random scrapers, games etc. Later I started developing django web-apps, and started working in the field after 2019.
-							I worked in web-development/marketing for 2 years after my conscription in 2019 and after that I have worked mainly with python and web development.
+							I am a highly motivated and skilled web developer with 2 years of professional experience in the industry. 
+							My expertise includes Python, Django, web development, and search engine marketing. 
+							I have a strong passion for all things digital, including cryptocurrencies, and constantly seek to stay up to date with the latest technologies. 
+							In my free time, I enjoy coding personal<a href="https://github.com/welhoilija">projects,</a>playing video games, climbing, and running. 
+							I am excited to bring my skills and enthusiasm to a new opportunity and make a meaningful impact.
 							</p>	
-							<p>
-							On free time I code my own<a href="https://github.com/welhoilija">projects,</a>play videogames , climb and run.
-
-							
-							</p>
 						</div>
 					</div>
 				</Grid>
