@@ -1,7 +1,20 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 6751:
+/***/ 5318:
+/***/ ((module) => {
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    "default": obj
+  };
+}
+
+module.exports = _interopRequireDefault, module.exports.__esModule = true, module.exports["default"] = module.exports;
+
+/***/ }),
+
+/***/ 6898:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -66,7 +79,6 @@ function createStyleElement(options) {
 }
 
 var StyleSheet = /*#__PURE__*/function () {
-  // Using Node instead of HTMLElement since container may be a ShadowRoot
   function StyleSheet(options) {
     var _this = this;
 
@@ -178,7 +190,7 @@ var Utility_assign = Object.assign
  * @return {number}
  */
 function hash (value, length) {
-	return Utility_charat(value, 0) ^ 45 ? (((((((length << 2) ^ Utility_charat(value, 0)) << 2) ^ Utility_charat(value, 1)) << 2) ^ Utility_charat(value, 2)) << 2) ^ Utility_charat(value, 3) : 0
+	return (((((((length << 2) ^ Utility_charat(value, 0)) << 2) ^ Utility_charat(value, 1)) << 2) ^ Utility_charat(value, 2)) << 2) ^ Utility_charat(value, 3)
 }
 
 /**
@@ -194,7 +206,7 @@ function trim (value) {
  * @param {RegExp} pattern
  * @return {string?}
  */
-function Utility_match (value, pattern) {
+function match (value, pattern) {
 	return (value = pattern.exec(value)) ? value[0] : value
 }
 
@@ -204,7 +216,7 @@ function Utility_match (value, pattern) {
  * @param {string} replacement
  * @return {string}
  */
-function Utility_replace (value, pattern, replacement) {
+function replace (value, pattern, replacement) {
 	return value.replace(pattern, replacement)
 }
 
@@ -298,7 +310,7 @@ function node (value, root, parent, type, props, children, length) {
  * @param {object} props
  * @return {object}
  */
-function Tokenizer_copy (root, props) {
+function copy (root, props) {
 	return Utility_assign(node('', null, null, '', null, null, 0), root, {length: -root.length}, props)
 }
 
@@ -519,13 +531,13 @@ function identifier (index) {
 }
 
 ;// CONCATENATED MODULE: ./node_modules/stylis/src/Enum.js
-var Enum_MS = '-ms-'
-var Enum_MOZ = '-moz-'
-var Enum_WEBKIT = '-webkit-'
+var MS = '-ms-'
+var MOZ = '-moz-'
+var WEBKIT = '-webkit-'
 
 var COMMENT = 'comm'
 var Enum_RULESET = 'rule'
-var Enum_DECLARATION = 'decl'
+var DECLARATION = 'decl'
 
 var PAGE = '@page'
 var MEDIA = '@media'
@@ -535,7 +547,7 @@ var VIEWPORT = '@viewport'
 var SUPPORTS = '@supports'
 var DOCUMENT = '@document'
 var NAMESPACE = '@namespace'
-var Enum_KEYFRAMES = '@keyframes'
+var KEYFRAMES = '@keyframes'
 var FONT_FACE = '@font-face'
 var COUNTER_STYLE = '@counter-style'
 var FONT_FEATURE_VALUES = '@font-feature-values'
@@ -549,7 +561,7 @@ var FONT_FEATURE_VALUES = '@font-feature-values'
  * @param {function} callback
  * @return {string}
  */
-function Serializer_serialize (children, callback) {
+function serialize (children, callback) {
 	var output = ''
 	var length = Utility_sizeof(children)
 
@@ -568,13 +580,134 @@ function Serializer_serialize (children, callback) {
  */
 function stringify (element, index, children, callback) {
 	switch (element.type) {
-		case IMPORT: case Enum_DECLARATION: return element.return = element.return || element.value
+		case IMPORT: case DECLARATION: return element.return = element.return || element.value
 		case COMMENT: return ''
-		case Enum_KEYFRAMES: return element.return = element.value + '{' + Serializer_serialize(element.children, callback) + '}'
+		case KEYFRAMES: return element.return = element.value + '{' + serialize(element.children, callback) + '}'
 		case Enum_RULESET: element.value = element.props.join(',')
 	}
 
-	return Utility_strlen(children = Serializer_serialize(element.children, callback)) ? element.return = element.value + '{' + children + '}' : ''
+	return Utility_strlen(children = serialize(element.children, callback)) ? element.return = element.value + '{' + children + '}' : ''
+}
+
+;// CONCATENATED MODULE: ./node_modules/stylis/src/Prefixer.js
+
+
+
+/**
+ * @param {string} value
+ * @param {number} length
+ * @return {string}
+ */
+function prefix (value, length) {
+	switch (hash(value, length)) {
+		// color-adjust
+		case 5103:
+			return WEBKIT + 'print-' + value + value
+		// animation, animation-(delay|direction|duration|fill-mode|iteration-count|name|play-state|timing-function)
+		case 5737: case 4201: case 3177: case 3433: case 1641: case 4457: case 2921:
+		// text-decoration, filter, clip-path, backface-visibility, column, box-decoration-break
+		case 5572: case 6356: case 5844: case 3191: case 6645: case 3005:
+		// mask, mask-image, mask-(mode|clip|size), mask-(repeat|origin), mask-position, mask-composite,
+		case 6391: case 5879: case 5623: case 6135: case 4599: case 4855:
+		// background-clip, columns, column-(count|fill|gap|rule|rule-color|rule-style|rule-width|span|width)
+		case 4215: case 6389: case 5109: case 5365: case 5621: case 3829:
+			return WEBKIT + value + value
+		// appearance, user-select, transform, hyphens, text-size-adjust
+		case 5349: case 4246: case 4810: case 6968: case 2756:
+			return WEBKIT + value + MOZ + value + MS + value + value
+		// flex, flex-direction
+		case 6828: case 4268:
+			return WEBKIT + value + MS + value + value
+		// order
+		case 6165:
+			return WEBKIT + value + MS + 'flex-' + value + value
+		// align-items
+		case 5187:
+			return WEBKIT + value + replace(value, /(\w+).+(:[^]+)/, WEBKIT + 'box-$1$2' + MS + 'flex-$1$2') + value
+		// align-self
+		case 5443:
+			return WEBKIT + value + MS + 'flex-item-' + replace(value, /flex-|-self/, '') + value
+		// align-content
+		case 4675:
+			return WEBKIT + value + MS + 'flex-line-pack' + replace(value, /align-content|flex-|-self/, '') + value
+		// flex-shrink
+		case 5548:
+			return WEBKIT + value + MS + replace(value, 'shrink', 'negative') + value
+		// flex-basis
+		case 5292:
+			return WEBKIT + value + MS + replace(value, 'basis', 'preferred-size') + value
+		// flex-grow
+		case 6060:
+			return WEBKIT + 'box-' + replace(value, '-grow', '') + WEBKIT + value + MS + replace(value, 'grow', 'positive') + value
+		// transition
+		case 4554:
+			return WEBKIT + replace(value, /([^-])(transform)/g, '$1' + WEBKIT + '$2') + value
+		// cursor
+		case 6187:
+			return replace(replace(replace(value, /(zoom-|grab)/, WEBKIT + '$1'), /(image-set)/, WEBKIT + '$1'), value, '') + value
+		// background, background-image
+		case 5495: case 3959:
+			return replace(value, /(image-set\([^]*)/, WEBKIT + '$1' + '$`$1')
+		// justify-content
+		case 4968:
+			return replace(replace(value, /(.+:)(flex-)?(.*)/, WEBKIT + 'box-pack:$3' + MS + 'flex-pack:$3'), /s.+-b[^;]+/, 'justify') + WEBKIT + value + value
+		// (margin|padding)-inline-(start|end)
+		case 4095: case 3583: case 4068: case 2532:
+			return replace(value, /(.+)-inline(.+)/, WEBKIT + '$1$2') + value
+		// (min|max)?(width|height|inline-size|block-size)
+		case 8116: case 7059: case 5753: case 5535:
+		case 5445: case 5701: case 4933: case 4677:
+		case 5533: case 5789: case 5021: case 4765:
+			// stretch, max-content, min-content, fill-available
+			if (Utility_strlen(value) - 1 - length > 6)
+				switch (Utility_charat(value, length + 1)) {
+					// (m)ax-content, (m)in-content
+					case 109:
+						// -
+						if (Utility_charat(value, length + 4) !== 45)
+							break
+					// (f)ill-available, (f)it-content
+					case 102:
+						return replace(value, /(.+:)(.+)-([^]+)/, '$1' + WEBKIT + '$2-$3' + '$1' + MOZ + (Utility_charat(value, length + 3) == 108 ? '$3' : '$2-$3')) + value
+					// (s)tretch
+					case 115:
+						return ~indexof(value, 'stretch') ? prefix(replace(value, 'stretch', 'fill-available'), length) + value : value
+				}
+			break
+		// position: sticky
+		case 4949:
+			// (s)ticky?
+			if (Utility_charat(value, length + 1) !== 115)
+				break
+		// display: (flex|inline-flex)
+		case 6444:
+			switch (Utility_charat(value, Utility_strlen(value) - 3 - (~indexof(value, '!important') && 10))) {
+				// stic(k)y
+				case 107:
+					return replace(value, ':', ':' + WEBKIT) + value
+				// (inline-)?fl(e)x
+				case 101:
+					return replace(value, /(.+:)([^;!]+)(;|!.+)?/, '$1' + WEBKIT + (Utility_charat(value, 14) === 45 ? 'inline-' : '') + 'box$3' + '$1' + WEBKIT + '$2$3' + '$1' + MS + '$2box$3') + value
+			}
+			break
+		// writing-mode
+		case 5936:
+			switch (Utility_charat(value, length + 11)) {
+				// vertical-l(r)
+				case 114:
+					return WEBKIT + value + MS + replace(value, /[svh]\w+-[tblr]{2}/, 'tb') + value
+				// vertical-r(l)
+				case 108:
+					return WEBKIT + value + MS + replace(value, /[svh]\w+-[tblr]{2}/, 'tb-rl') + value
+				// horizontal(-)tb
+				case 45:
+					return WEBKIT + value + MS + replace(value, /[svh]\w+-[tblr]{2}/, 'lr') + value
+			}
+
+			return WEBKIT + value + MS + value + value
+	}
+
+	return value
 }
 
 ;// CONCATENATED MODULE: ./node_modules/stylis/src/Middleware.js
@@ -623,13 +756,13 @@ function prefixer (element, index, children, callback) {
 	if (element.length > -1)
 		if (!element.return)
 			switch (element.type) {
-				case DECLARATION: element.return = prefix(element.value, element.length, children)
-					return
+				case DECLARATION: element.return = prefix(element.value, element.length)
+					break
 				case KEYFRAMES:
 					return serialize([copy(element, {value: replace(element.value, '@', '@' + WEBKIT)})], callback)
-				case RULESET:
+				case Enum_RULESET:
 					if (element.length)
-						return combine(element.props, function (value) {
+						return Utility_combine(element.props, function (value) {
 							switch (match(value, /(::plac\w+|:read-\w+)/)) {
 								// :read-(only|write)
 								case ':read-only': case ':read-write':
@@ -733,8 +866,8 @@ function parse (value, root, parent, rule, rules, rulesets, pseudo, points, decl
 		switch (previous = character, character = next()) {
 			// (
 			case 40:
-				if (previous != 108 && Utility_charat(characters, length - 1) == 58) {
-					if (indexof(characters += Utility_replace(delimit(character), '&', '&\f'), '&\f') != -1)
+				if (previous != 108 && characters.charCodeAt(length - 1) == 58) {
+					if (indexof(characters += replace(delimit(character), '&', '&\f'), '&\f') != -1)
 						ampersand = -1
 					break
 				}
@@ -771,7 +904,7 @@ function parse (value, root, parent, rule, rules, rulesets, pseudo, points, decl
 					// ;
 					case 59 + offset:
 						if (property > 0 && (Utility_strlen(characters) - length))
-							Utility_append(property > 32 ? declaration(characters + ';', rule, parent, length - 1) : declaration(Utility_replace(characters, ' ', '') + ';', rule, parent, length - 2), declarations)
+							Utility_append(property > 32 ? declaration(characters + ';', rule, parent, length - 1) : declaration(replace(characters, ' ', '') + ';', rule, parent, length - 2), declarations)
 						break
 					// @ ;
 					case 59: characters += ';'
@@ -783,7 +916,7 @@ function parse (value, root, parent, rule, rules, rulesets, pseudo, points, decl
 							if (offset === 0)
 								parse(characters, root, reference, reference, props, rulesets, length, points, children)
 							else
-								switch (atrule === 99 && Utility_charat(characters, 3) === 110 ? 100 : atrule) {
+								switch (atrule) {
 									// d m s
 									case 100: case 109: case 115:
 										parse(value, reference, reference, rule && Utility_append(ruleset(value, reference, reference, 0, 0, rules, points, type, rules, props = [], length), children), rules, children, length, points, rule ? props : children)
@@ -853,7 +986,7 @@ function ruleset (value, root, parent, index, offset, rules, points, type, props
 
 	for (var i = 0, j = 0, k = 0; i < index; ++i)
 		for (var x = 0, y = Utility_substr(value, post + 1, post = abs(j = points[i])), z = value; x < size; ++x)
-			if (z = trim(j > 0 ? rule[x] + ' ' + y : Utility_replace(y, /&\f/g, rule[x])))
+			if (z = trim(j > 0 ? rule[x] + ' ' + y : replace(y, /&\f/g, rule[x])))
 				props[k++] = z
 
 	return node(value, root, parent, offset === 0 ? Enum_RULESET : type, props, children, length)
@@ -877,13 +1010,18 @@ function comment (value, root, parent) {
  * @return {object}
  */
 function declaration (value, root, parent, length) {
-	return node(value, root, parent, Enum_DECLARATION, Utility_substr(value, 0, length), Utility_substr(value, length + 1, -1), length)
+	return node(value, root, parent, DECLARATION, Utility_substr(value, 0, length), Utility_substr(value, length + 1, -1), length)
 }
 
 ;// CONCATENATED MODULE: ./node_modules/@emotion/cache/dist/emotion-cache.browser.esm.js
 
 
 
+
+
+var last = function last(arr) {
+  return arr.length ? arr[arr.length - 1] : null;
+}; // based on https://github.com/thysultan/stylis.js/blob/e6843c373ebcbbfade25ebcc23f540ed8508da0a/src/Tokenizer.js#L239-L244
 
 
 var identifierWithPointTracking = function identifierWithPointTracking(begin, points, index) {
@@ -1013,64 +1151,19 @@ var removeLabel = function removeLabel(element) {
 var ignoreFlag = 'emotion-disable-server-rendering-unsafe-selector-warning-please-do-not-use-this-the-warning-exists-for-a-reason';
 
 var isIgnoringComment = function isIgnoringComment(element) {
-  return element.type === 'comm' && element.children.indexOf(ignoreFlag) > -1;
+  return !!element && element.type === 'comm' && element.children.indexOf(ignoreFlag) > -1;
 };
 
 var createUnsafeSelectorsAlarm = function createUnsafeSelectorsAlarm(cache) {
   return function (element, index, children) {
-    if (element.type !== 'rule' || cache.compat) return;
+    if (element.type !== 'rule') return;
     var unsafePseudoClasses = element.value.match(/(:first|:nth|:nth-last)-child/g);
 
-    if (unsafePseudoClasses) {
-      var isNested = element.parent === children[0]; // in nested rules comments become children of the "auto-inserted" rule
-      //
-      // considering this input:
-      // .a {
-      //   .b /* comm */ {}
-      //   color: hotpink;
-      // }
-      // we get output corresponding to this:
-      // .a {
-      //   & {
-      //     /* comm */
-      //     color: hotpink;
-      //   }
-      //   .b {}
-      // }
+    if (unsafePseudoClasses && cache.compat !== true) {
+      var prevElement = index > 0 ? children[index - 1] : null;
 
-      var commentContainer = isNested ? children[0].children : // global rule at the root level
-      children;
-
-      for (var i = commentContainer.length - 1; i >= 0; i--) {
-        var node = commentContainer[i];
-
-        if (node.line < element.line) {
-          break;
-        } // it is quite weird but comments are *usually* put at `column: element.column - 1`
-        // so we seek *from the end* for the node that is earlier than the rule's `element` and check that
-        // this will also match inputs like this:
-        // .a {
-        //   /* comm */
-        //   .b {}
-        // }
-        //
-        // but that is fine
-        //
-        // it would be the easiest to change the placement of the comment to be the first child of the rule:
-        // .a {
-        //   .b { /* comm */ }
-        // }
-        // with such inputs we wouldn't have to search for the comment at all
-        // TODO: consider changing this comment placement in the next major version
-
-
-        if (node.column < element.column) {
-          if (isIgnoringComment(node)) {
-            return;
-          }
-
-          break;
-        }
+      if (prevElement && isIgnoringComment(last(prevElement.children))) {
+        return;
       }
 
       unsafePseudoClasses.forEach(function (unsafePseudoClass) {
@@ -1119,219 +1212,7 @@ var incorrectImportAlarm = function incorrectImportAlarm(element, index, childre
   }
 };
 
-/* eslint-disable no-fallthrough */
-
-function emotion_cache_browser_esm_prefix(value, length) {
-  switch (hash(value, length)) {
-    // color-adjust
-    case 5103:
-      return Enum_WEBKIT + 'print-' + value + value;
-    // animation, animation-(delay|direction|duration|fill-mode|iteration-count|name|play-state|timing-function)
-
-    case 5737:
-    case 4201:
-    case 3177:
-    case 3433:
-    case 1641:
-    case 4457:
-    case 2921: // text-decoration, filter, clip-path, backface-visibility, column, box-decoration-break
-
-    case 5572:
-    case 6356:
-    case 5844:
-    case 3191:
-    case 6645:
-    case 3005: // mask, mask-image, mask-(mode|clip|size), mask-(repeat|origin), mask-position, mask-composite,
-
-    case 6391:
-    case 5879:
-    case 5623:
-    case 6135:
-    case 4599:
-    case 4855: // background-clip, columns, column-(count|fill|gap|rule|rule-color|rule-style|rule-width|span|width)
-
-    case 4215:
-    case 6389:
-    case 5109:
-    case 5365:
-    case 5621:
-    case 3829:
-      return Enum_WEBKIT + value + value;
-    // appearance, user-select, transform, hyphens, text-size-adjust
-
-    case 5349:
-    case 4246:
-    case 4810:
-    case 6968:
-    case 2756:
-      return Enum_WEBKIT + value + Enum_MOZ + value + Enum_MS + value + value;
-    // flex, flex-direction
-
-    case 6828:
-    case 4268:
-      return Enum_WEBKIT + value + Enum_MS + value + value;
-    // order
-
-    case 6165:
-      return Enum_WEBKIT + value + Enum_MS + 'flex-' + value + value;
-    // align-items
-
-    case 5187:
-      return Enum_WEBKIT + value + Utility_replace(value, /(\w+).+(:[^]+)/, Enum_WEBKIT + 'box-$1$2' + Enum_MS + 'flex-$1$2') + value;
-    // align-self
-
-    case 5443:
-      return Enum_WEBKIT + value + Enum_MS + 'flex-item-' + Utility_replace(value, /flex-|-self/, '') + value;
-    // align-content
-
-    case 4675:
-      return Enum_WEBKIT + value + Enum_MS + 'flex-line-pack' + Utility_replace(value, /align-content|flex-|-self/, '') + value;
-    // flex-shrink
-
-    case 5548:
-      return Enum_WEBKIT + value + Enum_MS + Utility_replace(value, 'shrink', 'negative') + value;
-    // flex-basis
-
-    case 5292:
-      return Enum_WEBKIT + value + Enum_MS + Utility_replace(value, 'basis', 'preferred-size') + value;
-    // flex-grow
-
-    case 6060:
-      return Enum_WEBKIT + 'box-' + Utility_replace(value, '-grow', '') + Enum_WEBKIT + value + Enum_MS + Utility_replace(value, 'grow', 'positive') + value;
-    // transition
-
-    case 4554:
-      return Enum_WEBKIT + Utility_replace(value, /([^-])(transform)/g, '$1' + Enum_WEBKIT + '$2') + value;
-    // cursor
-
-    case 6187:
-      return Utility_replace(Utility_replace(Utility_replace(value, /(zoom-|grab)/, Enum_WEBKIT + '$1'), /(image-set)/, Enum_WEBKIT + '$1'), value, '') + value;
-    // background, background-image
-
-    case 5495:
-    case 3959:
-      return Utility_replace(value, /(image-set\([^]*)/, Enum_WEBKIT + '$1' + '$`$1');
-    // justify-content
-
-    case 4968:
-      return Utility_replace(Utility_replace(value, /(.+:)(flex-)?(.*)/, Enum_WEBKIT + 'box-pack:$3' + Enum_MS + 'flex-pack:$3'), /s.+-b[^;]+/, 'justify') + Enum_WEBKIT + value + value;
-    // (margin|padding)-inline-(start|end)
-
-    case 4095:
-    case 3583:
-    case 4068:
-    case 2532:
-      return Utility_replace(value, /(.+)-inline(.+)/, Enum_WEBKIT + '$1$2') + value;
-    // (min|max)?(width|height|inline-size|block-size)
-
-    case 8116:
-    case 7059:
-    case 5753:
-    case 5535:
-    case 5445:
-    case 5701:
-    case 4933:
-    case 4677:
-    case 5533:
-    case 5789:
-    case 5021:
-    case 4765:
-      // stretch, max-content, min-content, fill-available
-      if (Utility_strlen(value) - 1 - length > 6) switch (Utility_charat(value, length + 1)) {
-        // (m)ax-content, (m)in-content
-        case 109:
-          // -
-          if (Utility_charat(value, length + 4) !== 45) break;
-        // (f)ill-available, (f)it-content
-
-        case 102:
-          return Utility_replace(value, /(.+:)(.+)-([^]+)/, '$1' + Enum_WEBKIT + '$2-$3' + '$1' + Enum_MOZ + (Utility_charat(value, length + 3) == 108 ? '$3' : '$2-$3')) + value;
-        // (s)tretch
-
-        case 115:
-          return ~indexof(value, 'stretch') ? emotion_cache_browser_esm_prefix(Utility_replace(value, 'stretch', 'fill-available'), length) + value : value;
-      }
-      break;
-    // position: sticky
-
-    case 4949:
-      // (s)ticky?
-      if (Utility_charat(value, length + 1) !== 115) break;
-    // display: (flex|inline-flex)
-
-    case 6444:
-      switch (Utility_charat(value, Utility_strlen(value) - 3 - (~indexof(value, '!important') && 10))) {
-        // stic(k)y
-        case 107:
-          return Utility_replace(value, ':', ':' + Enum_WEBKIT) + value;
-        // (inline-)?fl(e)x
-
-        case 101:
-          return Utility_replace(value, /(.+:)([^;!]+)(;|!.+)?/, '$1' + Enum_WEBKIT + (Utility_charat(value, 14) === 45 ? 'inline-' : '') + 'box$3' + '$1' + Enum_WEBKIT + '$2$3' + '$1' + Enum_MS + '$2box$3') + value;
-      }
-
-      break;
-    // writing-mode
-
-    case 5936:
-      switch (Utility_charat(value, length + 11)) {
-        // vertical-l(r)
-        case 114:
-          return Enum_WEBKIT + value + Enum_MS + Utility_replace(value, /[svh]\w+-[tblr]{2}/, 'tb') + value;
-        // vertical-r(l)
-
-        case 108:
-          return Enum_WEBKIT + value + Enum_MS + Utility_replace(value, /[svh]\w+-[tblr]{2}/, 'tb-rl') + value;
-        // horizontal(-)tb
-
-        case 45:
-          return Enum_WEBKIT + value + Enum_MS + Utility_replace(value, /[svh]\w+-[tblr]{2}/, 'lr') + value;
-      }
-
-      return Enum_WEBKIT + value + Enum_MS + value + value;
-  }
-
-  return value;
-}
-
-var emotion_cache_browser_esm_prefixer = function prefixer(element, index, children, callback) {
-  if (element.length > -1) if (!element["return"]) switch (element.type) {
-    case Enum_DECLARATION:
-      element["return"] = emotion_cache_browser_esm_prefix(element.value, element.length);
-      break;
-
-    case Enum_KEYFRAMES:
-      return Serializer_serialize([Tokenizer_copy(element, {
-        value: Utility_replace(element.value, '@', '@' + Enum_WEBKIT)
-      })], callback);
-
-    case Enum_RULESET:
-      if (element.length) return Utility_combine(element.props, function (value) {
-        switch (Utility_match(value, /(::plac\w+|:read-\w+)/)) {
-          // :read-(only|write)
-          case ':read-only':
-          case ':read-write':
-            return Serializer_serialize([Tokenizer_copy(element, {
-              props: [Utility_replace(value, /:(read-\w+)/, ':' + Enum_MOZ + '$1')]
-            })], callback);
-          // :placeholder
-
-          case '::placeholder':
-            return Serializer_serialize([Tokenizer_copy(element, {
-              props: [Utility_replace(value, /:(plac\w+)/, ':' + Enum_WEBKIT + 'input-$1')]
-            }), Tokenizer_copy(element, {
-              props: [Utility_replace(value, /:(plac\w+)/, ':' + Enum_MOZ + '$1')]
-            }), Tokenizer_copy(element, {
-              props: [Utility_replace(value, /:(plac\w+)/, Enum_MS + 'input-$1')]
-            })], callback);
-        }
-
-        return '';
-      });
-  }
-};
-
-var defaultStylisPlugins = [emotion_cache_browser_esm_prefixer];
+var defaultStylisPlugins = [prefixer];
 
 var createCache = function createCache(options) {
   var key = options.key;
@@ -1365,7 +1246,8 @@ var createCache = function createCache(options) {
 
   if (false) {}
 
-  var inserted = {};
+  var inserted = {}; // $FlowFixMe
+
   var container;
   var nodesToHydrate = [];
 
@@ -1398,7 +1280,7 @@ var createCache = function createCache(options) {
     var serializer = middleware(omnipresentPlugins.concat(stylisPlugins, finalizingPlugins));
 
     var stylis = function stylis(styles) {
-      return Serializer_serialize(compile(styles), serializer);
+      return serialize(compile(styles), serializer);
     };
 
     _insert = function insert(selector, serialized, sheet, shouldCache) {
@@ -1438,7 +1320,7 @@ var createCache = function createCache(options) {
 
 /***/ }),
 
-/***/ 5042:
+/***/ 7866:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -1458,7 +1340,7 @@ function memoize(fn) {
 
 /***/ }),
 
-/***/ 1095:
+/***/ 4199:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -1468,7 +1350,7 @@ __webpack_require__.d(__webpack_exports__, {
   "O": () => (/* binding */ serializeStyles)
 });
 
-;// CONCATENATED MODULE: ./node_modules/@emotion/serialize/node_modules/@emotion/hash/dist/emotion-hash.esm.js
+;// CONCATENATED MODULE: ./node_modules/@emotion/hash/dist/hash.browser.esm.js
 /* eslint-disable */
 // Inspired by https://github.com/garycourt/murmurhash-js
 // Ported from https://github.com/aappleby/smhasher/blob/61a0530f28277f2e850bfc39600ce61d02b518de/src/MurmurHash2.cpp#L37-L86
@@ -1523,9 +1405,9 @@ function murmur2(str) {
   return ((h ^ h >>> 15) >>> 0).toString(36);
 }
 
-/* harmony default export */ const emotion_hash_esm = (murmur2);
+/* harmony default export */ const hash_browser_esm = (murmur2);
 
-;// CONCATENATED MODULE: ./node_modules/@emotion/unitless/dist/emotion-unitless.esm.js
+;// CONCATENATED MODULE: ./node_modules/@emotion/unitless/dist/unitless.browser.esm.js
 var unitlessKeys = {
   animationIterationCount: 1,
   borderImageOutset: 1,
@@ -1575,10 +1457,10 @@ var unitlessKeys = {
   strokeWidth: 1
 };
 
-/* harmony default export */ const emotion_unitless_esm = (unitlessKeys);
+/* harmony default export */ const unitless_browser_esm = (unitlessKeys);
 
-// EXTERNAL MODULE: ./node_modules/@emotion/memoize/dist/emotion-memoize.esm.js
-var emotion_memoize_esm = __webpack_require__(5042);
+// EXTERNAL MODULE: ./node_modules/@emotion/memoize/dist/emotion-memoize.browser.esm.js
+var emotion_memoize_browser_esm = __webpack_require__(7866);
 ;// CONCATENATED MODULE: ./node_modules/@emotion/serialize/dist/emotion-serialize.browser.esm.js
 
 
@@ -1597,7 +1479,7 @@ var isProcessableValue = function isProcessableValue(value) {
   return value != null && typeof value !== 'boolean';
 };
 
-var processStyleName = /* #__PURE__ */(0,emotion_memoize_esm/* default */.Z)(function (styleName) {
+var processStyleName = /* #__PURE__ */(0,emotion_memoize_browser_esm/* default */.Z)(function (styleName) {
   return isCustomProperty(styleName) ? styleName : styleName.replace(hyphenateRegex, '-$&').toLowerCase();
 });
 
@@ -1619,7 +1501,7 @@ var processStyleValue = function processStyleValue(key, value) {
       }
   }
 
-  if (emotion_unitless_esm[key] !== 1 && !isCustomProperty(key) && typeof value === 'number' && value !== 0) {
+  if (unitless_browser_esm[key] !== 1 && !isCustomProperty(key) && typeof value === 'number' && value !== 0) {
     return value + 'px';
   }
 
@@ -1627,8 +1509,6 @@ var processStyleValue = function processStyleValue(key, value) {
 };
 
 if (false) { var hyphenatedCache, hyphenPattern, msPattern, oldProcessStyleValue, contentValues, contentValuePattern; }
-
-var noComponentSelectorMessage = (/* unused pure expression or super */ null && ('Component selectors can only be used in conjunction with ' + '@emotion/babel-plugin, the swc Emotion plugin, or another Emotion-aware ' + 'compiler transform.'));
 
 function handleInterpolation(mergedProps, registered, interpolation) {
   if (interpolation == null) {
@@ -1815,7 +1695,7 @@ var serializeStyles = function serializeStyles(args, registered, mergedProps) {
     match[1];
   }
 
-  var name = emotion_hash_esm(styles) + identifierName;
+  var name = hash_browser_esm(styles) + identifierName;
 
   if (false) {}
 
@@ -1831,29 +1711,111 @@ var serializeStyles = function serializeStyles(args, registered, mergedProps) {
 
 /***/ }),
 
-/***/ 7278:
+/***/ 8076:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-var react__WEBPACK_IMPORTED_MODULE_0___namespace_cache;
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "L": () => (/* binding */ useInsertionEffectAlwaysWithSyncFallback)
+/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* unused harmony export useInsertionEffectWithLayoutFallback */
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7294);
+const defaultGenerator = componentName => componentName;
 
+const createClassNameGenerator = () => {
+  let generate = defaultGenerator;
+  return {
+    configure(generator) {
+      generate = generator;
+    },
 
+    generate(componentName) {
+      return generate(componentName);
+    },
 
-var syncFallback = function syncFallback(create) {
-  return create();
+    reset() {
+      generate = defaultGenerator;
+    }
+
+  };
 };
 
-var useInsertionEffect = /*#__PURE__*/ (react__WEBPACK_IMPORTED_MODULE_0___namespace_cache || (react__WEBPACK_IMPORTED_MODULE_0___namespace_cache = __webpack_require__.t(react__WEBPACK_IMPORTED_MODULE_0__, 2)))['useInsertion' + 'Effect'] ? /*#__PURE__*/ (react__WEBPACK_IMPORTED_MODULE_0___namespace_cache || (react__WEBPACK_IMPORTED_MODULE_0___namespace_cache = __webpack_require__.t(react__WEBPACK_IMPORTED_MODULE_0__, 2)))['useInsertion' + 'Effect'] : false;
-var useInsertionEffectAlwaysWithSyncFallback =  useInsertionEffect || syncFallback;
-var useInsertionEffectWithLayoutFallback = useInsertionEffect || react__WEBPACK_IMPORTED_MODULE_0__.useLayoutEffect;
+const ClassNameGenerator = createClassNameGenerator();
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ClassNameGenerator);
 
+/***/ }),
 
+/***/ 7192:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Z": () => (/* binding */ composeClasses)
+/* harmony export */ });
+function composeClasses(slots, getUtilityClass, classes) {
+  const output = {};
+  Object.keys(slots).forEach( // `Objet.keys(slots)` can't be wider than `T` because we infer `T` from `slots`.
+  // @ts-expect-error https://github.com/microsoft/TypeScript/pull/12253#issuecomment-263132208
+  slot => {
+    output[slot] = slots[slot].reduce((acc, key) => {
+      if (key) {
+        if (classes && classes[key]) {
+          acc.push(classes[key]);
+        }
+
+        acc.push(getUtilityClass(key));
+      }
+
+      return acc;
+    }, []).join(' ');
+  });
+  return output;
+}
+
+/***/ }),
+
+/***/ 8979:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Z": () => (/* binding */ generateUtilityClass)
+/* harmony export */ });
+/* harmony import */ var _className_ClassNameGenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(8076);
+
+const globalStateClassesMapping = {
+  active: 'Mui-active',
+  checked: 'Mui-checked',
+  completed: 'Mui-completed',
+  disabled: 'Mui-disabled',
+  error: 'Mui-error',
+  expanded: 'Mui-expanded',
+  focused: 'Mui-focused',
+  focusVisible: 'Mui-focusVisible',
+  required: 'Mui-required',
+  selected: 'Mui-selected'
+};
+function generateUtilityClass(componentName, slot) {
+  const globalStateClass = globalStateClassesMapping[slot];
+  return globalStateClass || `${_className_ClassNameGenerator__WEBPACK_IMPORTED_MODULE_0__/* ["default"].generate */ .Z.generate(componentName)}-${slot}`;
+}
+
+/***/ }),
+
+/***/ 6087:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Z": () => (/* binding */ generateUtilityClasses)
+/* harmony export */ });
+/* harmony import */ var _generateUtilityClass__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(8979);
+
+function generateUtilityClasses(componentName, slots) {
+  const result = {};
+  slots.forEach(slot => {
+    result[slot] = (0,_generateUtilityClass__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Z)(componentName, slot);
+  });
+  return result;
+}
 
 /***/ }),
 
@@ -1864,16 +1826,21 @@ var useInsertionEffectWithLayoutFallback = useInsertionEffect || react__WEBPACK_
 var __webpack_unused_export__;
 
 
-var _interopRequireDefault = __webpack_require__(1941);
+var _interopRequireDefault = __webpack_require__(5318);
+
 __webpack_unused_export__ = ({
   value: true
 });
 exports.Z = void 0;
+
 var _createSvgIcon = _interopRequireDefault(__webpack_require__(4938));
+
 var _jsxRuntime = __webpack_require__(5893);
+
 var _default = (0, _createSvgIcon.default)( /*#__PURE__*/(0, _jsxRuntime.jsx)("path", {
-  d: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 4c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm0 14c-2.03 0-4.43-.82-6.14-2.88C7.55 15.8 9.68 15 12 15s4.45.8 6.14 2.12C16.43 19.18 14.03 20 12 20z"
+  d: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"
 }), 'AccountCircle');
+
 exports.Z = _default;
 
 /***/ }),
@@ -1885,16 +1852,21 @@ exports.Z = _default;
 var __webpack_unused_export__;
 
 
-var _interopRequireDefault = __webpack_require__(1941);
+var _interopRequireDefault = __webpack_require__(5318);
+
 __webpack_unused_export__ = ({
   value: true
 });
 exports.Z = void 0;
+
 var _createSvgIcon = _interopRequireDefault(__webpack_require__(4938));
+
 var _jsxRuntime = __webpack_require__(5893);
+
 var _default = (0, _createSvgIcon.default)( /*#__PURE__*/(0, _jsxRuntime.jsx)("path", {
   d: "M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-5h2v5zm4 0h-2v-3h2v3zm0-5h-2v-2h2v2zm4 5h-2V7h2v10z"
 }), 'Analytics');
+
 exports.Z = _default;
 
 /***/ }),
@@ -1906,16 +1878,21 @@ exports.Z = _default;
 var __webpack_unused_export__;
 
 
-var _interopRequireDefault = __webpack_require__(1941);
+var _interopRequireDefault = __webpack_require__(5318);
+
 __webpack_unused_export__ = ({
   value: true
 });
 exports.Z = void 0;
+
 var _createSvgIcon = _interopRequireDefault(__webpack_require__(4938));
+
 var _jsxRuntime = __webpack_require__(5893);
+
 var _default = (0, _createSvgIcon.default)( /*#__PURE__*/(0, _jsxRuntime.jsx)("path", {
   d: "M19 5v2h-4V5h4M9 5v6H5V5h4m10 8v6h-4v-6h4M9 17v2H5v-2h4M21 3h-8v6h8V3zM11 3H3v10h8V3zm10 8h-8v10h8V11zm-10 4H3v6h8v-6z"
 }), 'DashboardOutlined');
+
 exports.Z = _default;
 
 /***/ }),
@@ -1927,16 +1904,21 @@ exports.Z = _default;
 var __webpack_unused_export__;
 
 
-var _interopRequireDefault = __webpack_require__(1941);
+var _interopRequireDefault = __webpack_require__(5318);
+
 __webpack_unused_export__ = ({
   value: true
 });
 exports.Z = void 0;
+
 var _createSvgIcon = _interopRequireDefault(__webpack_require__(4938));
+
 var _jsxRuntime = __webpack_require__(5893);
+
 var _default = (0, _createSvgIcon.default)( /*#__PURE__*/(0, _jsxRuntime.jsx)("path", {
   d: "M21 6h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7c0-.55-.45-1-1-1zm-4 6V3c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v14l4-4h10c.55 0 1-.45 1-1z"
 }), 'Forum');
+
 exports.Z = _default;
 
 /***/ }),
@@ -1948,19 +1930,27 @@ exports.Z = _default;
 var __webpack_unused_export__;
 
 
-var _interopRequireDefault = __webpack_require__(1941);
+var _interopRequireDefault = __webpack_require__(5318);
+
 __webpack_unused_export__ = ({
   value: true
 });
 exports.Z = void 0;
+
 var React = _interopRequireWildcard(__webpack_require__(7294));
+
 var _createSvgIcon = _interopRequireDefault(__webpack_require__(4938));
+
 var _jsxRuntime = __webpack_require__(5893);
+
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
 var _default = (0, _createSvgIcon.default)( /*#__PURE__*/(0, _jsxRuntime.jsx)("path", {
   d: "M12 1.27a11 11 0 00-3.48 21.46c.55.09.73-.28.73-.55v-1.84c-3.03.64-3.67-1.46-3.67-1.46-.55-1.29-1.28-1.65-1.28-1.65-.92-.65.1-.65.1-.65 1.1 0 1.73 1.1 1.73 1.1.92 1.65 2.57 1.2 3.21.92a2 2 0 01.64-1.47c-2.47-.27-5.04-1.19-5.04-5.5 0-1.1.46-2.1 1.2-2.84a3.76 3.76 0 010-2.93s.91-.28 3.11 1.1c1.8-.49 3.7-.49 5.5 0 2.1-1.38 3.02-1.1 3.02-1.1a3.76 3.76 0 010 2.93c.83.74 1.2 1.74 1.2 2.94 0 4.21-2.57 5.13-5.04 5.4.45.37.82.92.82 2.02v3.03c0 .27.1.64.73.55A11 11 0 0012 1.27"
 }), 'GitHub');
+
 exports.Z = _default;
 
 /***/ }),
@@ -1972,19 +1962,27 @@ exports.Z = _default;
 var __webpack_unused_export__;
 
 
-var _interopRequireDefault = __webpack_require__(1941);
+var _interopRequireDefault = __webpack_require__(5318);
+
 __webpack_unused_export__ = ({
   value: true
 });
 exports.Z = void 0;
+
 var React = _interopRequireWildcard(__webpack_require__(7294));
+
 var _createSvgIcon = _interopRequireDefault(__webpack_require__(4938));
+
 var _jsxRuntime = __webpack_require__(5893);
+
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
 var _default = (0, _createSvgIcon.default)( /*#__PURE__*/(0, _jsxRuntime.jsx)("path", {
   d: "M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"
 }), 'LinkedIn');
+
 exports.Z = _default;
 
 /***/ }),
@@ -1996,16 +1994,21 @@ exports.Z = _default;
 var __webpack_unused_export__;
 
 
-var _interopRequireDefault = __webpack_require__(1941);
+var _interopRequireDefault = __webpack_require__(5318);
+
 __webpack_unused_export__ = ({
   value: true
 });
 exports.Z = void 0;
+
 var _createSvgIcon = _interopRequireDefault(__webpack_require__(4938));
+
 var _jsxRuntime = __webpack_require__(5893);
+
 var _default = (0, _createSvgIcon.default)( /*#__PURE__*/(0, _jsxRuntime.jsx)("path", {
   d: "M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"
 }), 'Menu');
+
 exports.Z = _default;
 
 /***/ }),
@@ -2017,16 +2020,21 @@ exports.Z = _default;
 var __webpack_unused_export__;
 
 
-var _interopRequireDefault = __webpack_require__(1941);
+var _interopRequireDefault = __webpack_require__(5318);
+
 __webpack_unused_export__ = ({
   value: true
 });
 exports.Z = void 0;
+
 var _createSvgIcon = _interopRequireDefault(__webpack_require__(4938));
+
 var _jsxRuntime = __webpack_require__(5893);
+
 var _default = (0, _createSvgIcon.default)( /*#__PURE__*/(0, _jsxRuntime.jsx)("path", {
   d: "M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
 }), 'Person');
+
 exports.Z = _default;
 
 /***/ }),
@@ -2038,16 +2046,21 @@ exports.Z = _default;
 var __webpack_unused_export__;
 
 
-var _interopRequireDefault = __webpack_require__(1941);
+var _interopRequireDefault = __webpack_require__(5318);
+
 __webpack_unused_export__ = ({
   value: true
 });
 exports.Z = void 0;
+
 var _createSvgIcon = _interopRequireDefault(__webpack_require__(4938));
+
 var _jsxRuntime = __webpack_require__(5893);
+
 var _default = (0, _createSvgIcon.default)( /*#__PURE__*/(0, _jsxRuntime.jsx)("path", {
   d: "M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
 }), 'Star');
+
 exports.Z = _default;
 
 /***/ }),
@@ -2059,19 +2072,27 @@ exports.Z = _default;
 var __webpack_unused_export__;
 
 
-var _interopRequireDefault = __webpack_require__(1941);
+var _interopRequireDefault = __webpack_require__(5318);
+
 __webpack_unused_export__ = ({
   value: true
 });
 exports.Z = void 0;
+
 var React = _interopRequireWildcard(__webpack_require__(7294));
+
 var _createSvgIcon = _interopRequireDefault(__webpack_require__(4938));
+
 var _jsxRuntime = __webpack_require__(5893);
+
 function _getRequireWildcardCache(nodeInterop) { if (typeof WeakMap !== "function") return null; var cacheBabelInterop = new WeakMap(); var cacheNodeInterop = new WeakMap(); return (_getRequireWildcardCache = function (nodeInterop) { return nodeInterop ? cacheNodeInterop : cacheBabelInterop; })(nodeInterop); }
+
 function _interopRequireWildcard(obj, nodeInterop) { if (!nodeInterop && obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(nodeInterop); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
 var _default = (0, _createSvgIcon.default)( /*#__PURE__*/(0, _jsxRuntime.jsx)("path", {
   d: "M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"
 }), 'Telegram');
+
 exports.Z = _default;
 
 /***/ }),
@@ -2091,19 +2112,8 @@ Object.defineProperty(exports, "default", ({
     return _utils.createSvgIcon;
   }
 }));
+
 var _utils = __webpack_require__(7942);
-
-/***/ }),
-
-/***/ 3680:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* unused harmony export clsx */
-function r(e){var t,f,n="";if("string"==typeof e||"number"==typeof e)n+=e;else if("object"==typeof e)if(Array.isArray(e))for(t=0;t<e.length;t++)e[t]&&(f=r(e[t]))&&(n&&(n+=" "),n+=f);else for(t in e)e[t]&&(n&&(n+=" "),n+=t);return n}function clsx(){for(var e,t,f=0,n="";f<arguments.length;)(e=arguments[f++])&&(t=r(e))&&(n&&(n+=" "),n+=t);return n}/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (clsx);
 
 /***/ }),
 
@@ -2119,30 +2129,22 @@ __webpack_require__.d(__webpack_exports__, {
 
 // UNUSED EXPORTS: createMuiTheme
 
-// EXTERNAL MODULE: ./node_modules/@mui/material/node_modules/@babel/runtime/helpers/esm/extends.js
-var esm_extends = __webpack_require__(2793);
-// EXTERNAL MODULE: ./node_modules/@mui/material/node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js
-var objectWithoutPropertiesLoose = __webpack_require__(1048);
-// EXTERNAL MODULE: ./node_modules/@mui/utils/esm/formatMuiErrorMessage.js
-var formatMuiErrorMessage = __webpack_require__(1387);
+// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/extends.js
+var esm_extends = __webpack_require__(7462);
+// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js
+var objectWithoutPropertiesLoose = __webpack_require__(3366);
 // EXTERNAL MODULE: ./node_modules/@mui/utils/esm/deepmerge.js
 var deepmerge = __webpack_require__(9766);
 // EXTERNAL MODULE: ./node_modules/@mui/system/esm/createTheme/createTheme.js + 3 modules
 var createTheme = __webpack_require__(6268);
-// EXTERNAL MODULE: ./node_modules/@mui/system/esm/styleFunctionSx/defaultSxConfig.js + 5 modules
-var defaultSxConfig = __webpack_require__(8010);
-// EXTERNAL MODULE: ./node_modules/@mui/system/esm/styleFunctionSx/styleFunctionSx.js
-var styleFunctionSx = __webpack_require__(6523);
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/styles/createMixins.js
 
-function createMixins(breakpoints, mixins) {
+function createMixins(breakpoints, spacing, mixins) {
   return (0,esm_extends/* default */.Z)({
     toolbar: {
       minHeight: 56,
-      [breakpoints.up('xs')]: {
-        '@media (orientation: landscape)': {
-          minHeight: 48
-        }
+      [`${breakpoints.up('xs')} and (orientation: landscape)`]: {
+        minHeight: 48
       },
       [breakpoints.up('sm')]: {
         minHeight: 64
@@ -2150,6 +2152,8 @@ function createMixins(breakpoints, mixins) {
     }
   }, mixins);
 }
+// EXTERNAL MODULE: ./node_modules/@mui/utils/esm/formatMuiErrorMessage.js
+var formatMuiErrorMessage = __webpack_require__(1387);
 // EXTERNAL MODULE: ./node_modules/@mui/system/esm/colorManipulator.js
 var colorManipulator = __webpack_require__(1796);
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/colors/common.js
@@ -2363,9 +2367,11 @@ const dark = {
     activatedOpacity: 0.24
   }
 };
+
 function addLightOrDark(intent, direction, shade, tonalOffset) {
   const tonalOffsetLight = tonalOffset.light || tonalOffset;
   const tonalOffsetDark = tonalOffset.dark || tonalOffset * 1.5;
+
   if (!intent[direction]) {
     if (intent.hasOwnProperty(shade)) {
       intent[direction] = intent[shade];
@@ -2376,6 +2382,7 @@ function addLightOrDark(intent, direction, shade, tonalOffset) {
     }
   }
 }
+
 function getDefaultPrimary(mode = 'light') {
   if (mode === 'dark') {
     return {
@@ -2384,12 +2391,14 @@ function getDefaultPrimary(mode = 'light') {
       dark: colors_blue[400]
     };
   }
+
   return {
     main: colors_blue[700],
     light: colors_blue[400],
     dark: colors_blue[800]
   };
 }
+
 function getDefaultSecondary(mode = 'light') {
   if (mode === 'dark') {
     return {
@@ -2398,12 +2407,14 @@ function getDefaultSecondary(mode = 'light') {
       dark: colors_purple[400]
     };
   }
+
   return {
     main: colors_purple[500],
     light: colors_purple[300],
     dark: colors_purple[700]
   };
 }
+
 function getDefaultError(mode = 'light') {
   if (mode === 'dark') {
     return {
@@ -2412,12 +2423,14 @@ function getDefaultError(mode = 'light') {
       dark: colors_red[700]
     };
   }
+
   return {
     main: colors_red[700],
     light: colors_red[400],
     dark: colors_red[800]
   };
 }
+
 function getDefaultInfo(mode = 'light') {
   if (mode === 'dark') {
     return {
@@ -2426,12 +2439,14 @@ function getDefaultInfo(mode = 'light') {
       dark: colors_lightBlue[700]
     };
   }
+
   return {
     main: colors_lightBlue[700],
     light: colors_lightBlue[500],
     dark: colors_lightBlue[900]
   };
 }
+
 function getDefaultSuccess(mode = 'light') {
   if (mode === 'dark') {
     return {
@@ -2440,12 +2455,14 @@ function getDefaultSuccess(mode = 'light') {
       dark: colors_green[700]
     };
   }
+
   return {
     main: colors_green[800],
     light: colors_green[500],
     dark: colors_green[900]
   };
 }
+
 function getDefaultWarning(mode = 'light') {
   if (mode === 'dark') {
     return {
@@ -2454,6 +2471,7 @@ function getDefaultWarning(mode = 'light') {
       dark: colors_orange[700]
     };
   }
+
   return {
     main: '#ed6c02',
     // closest to orange[800] that pass 3:1.
@@ -2461,28 +2479,32 @@ function getDefaultWarning(mode = 'light') {
     dark: colors_orange[900]
   };
 }
+
 function createPalette(palette) {
   const {
-      mode = 'light',
-      contrastThreshold = 3,
-      tonalOffset = 0.2
-    } = palette,
-    other = (0,objectWithoutPropertiesLoose/* default */.Z)(palette, _excluded);
+    mode = 'light',
+    contrastThreshold = 3,
+    tonalOffset = 0.2
+  } = palette,
+        other = (0,objectWithoutPropertiesLoose/* default */.Z)(palette, _excluded);
+
   const primary = palette.primary || getDefaultPrimary(mode);
   const secondary = palette.secondary || getDefaultSecondary(mode);
   const error = palette.error || getDefaultError(mode);
   const info = palette.info || getDefaultInfo(mode);
   const success = palette.success || getDefaultSuccess(mode);
-  const warning = palette.warning || getDefaultWarning(mode);
-
-  // Use the same logic as
+  const warning = palette.warning || getDefaultWarning(mode); // Use the same logic as
   // Bootstrap: https://github.com/twbs/bootstrap/blob/1d6e3710dd447de1a200f29e8fa521f8a0908f70/scss/_functions.scss#L59
   // and material-components-web https://github.com/material-components/material-components-web/blob/ac46b8863c4dab9fc22c4c662dc6bd1b65dd652f/packages/mdc-theme/_functions.scss#L54
+
   function getContrastText(background) {
     const contrastText = (0,colorManipulator/* getContrastRatio */.mi)(background, dark.text.primary) >= contrastThreshold ? dark.text.primary : light.text.primary;
+
     if (false) {}
+
     return contrastText;
   }
+
   const augmentColor = ({
     color,
     name,
@@ -2491,31 +2513,39 @@ function createPalette(palette) {
     darkShade = 700
   }) => {
     color = (0,esm_extends/* default */.Z)({}, color);
+
     if (!color.main && color[mainShade]) {
       color.main = color[mainShade];
     }
+
     if (!color.hasOwnProperty('main')) {
       throw new Error( false ? 0 : (0,formatMuiErrorMessage/* default */.Z)(11, name ? ` (${name})` : '', mainShade));
     }
+
     if (typeof color.main !== 'string') {
       throw new Error( false ? 0 : (0,formatMuiErrorMessage/* default */.Z)(12, name ? ` (${name})` : '', JSON.stringify(color.main)));
     }
+
     addLightOrDark(color, 'light', lightShade, tonalOffset);
     addLightOrDark(color, 'dark', darkShade, tonalOffset);
+
     if (!color.contrastText) {
       color.contrastText = getContrastText(color.main);
     }
+
     return color;
   };
+
   const modes = {
     dark,
     light
   };
+
   if (false) {}
+
   const paletteOutput = (0,deepmerge/* default */.Z)((0,esm_extends/* default */.Z)({
     // A collection of common colors.
-    common: (0,esm_extends/* default */.Z)({}, colors_common),
-    // prevent mutable object.
+    common: colors_common,
     // The palette mode, can be light or dark.
     mode,
     // The colors used to represent primary interface elements for a user.
@@ -2572,40 +2602,46 @@ function createPalette(palette) {
 
 const createTypography_excluded = ["fontFamily", "fontSize", "fontWeightLight", "fontWeightRegular", "fontWeightMedium", "fontWeightBold", "htmlFontSize", "allVariants", "pxToRem"];
 
+
 function round(value) {
   return Math.round(value * 1e5) / 1e5;
 }
+
 const caseAllCaps = {
   textTransform: 'uppercase'
 };
 const defaultFontFamily = '"Roboto", "Helvetica", "Arial", sans-serif';
-
 /**
- * @see @link{https://m2.material.io/design/typography/the-type-system.html}
- * @see @link{https://m2.material.io/design/typography/understanding-typography.html}
+ * @see @link{https://material.io/design/typography/the-type-system.html}
+ * @see @link{https://material.io/design/typography/understanding-typography.html}
  */
+
 function createTypography(palette, typography) {
   const _ref = typeof typography === 'function' ? typography(palette) : typography,
-    {
-      fontFamily = defaultFontFamily,
-      // The default font size of the Material Specification.
-      fontSize = 14,
-      // px
-      fontWeightLight = 300,
-      fontWeightRegular = 400,
-      fontWeightMedium = 500,
-      fontWeightBold = 700,
-      // Tell MUI what's the font-size on the html element.
-      // 16px is the default font-size used by browsers.
-      htmlFontSize = 16,
-      // Apply the CSS properties to all the variants.
-      allVariants,
-      pxToRem: pxToRem2
-    } = _ref,
-    other = (0,objectWithoutPropertiesLoose/* default */.Z)(_ref, createTypography_excluded);
+        {
+    fontFamily = defaultFontFamily,
+    // The default font size of the Material Specification.
+    fontSize = 14,
+    // px
+    fontWeightLight = 300,
+    fontWeightRegular = 400,
+    fontWeightMedium = 500,
+    fontWeightBold = 700,
+    // Tell MUI what's the font-size on the html element.
+    // 16px is the default font-size used by browsers.
+    htmlFontSize = 16,
+    // Apply the CSS properties to all the variants.
+    allVariants,
+    pxToRem: pxToRem2
+  } = _ref,
+        other = (0,objectWithoutPropertiesLoose/* default */.Z)(_ref, createTypography_excluded);
+
   if (false) {}
+
   const coef = fontSize / 14;
+
   const pxToRem = pxToRem2 || (size => `${size / htmlFontSize * coef}rem`);
+
   const buildVariant = (fontWeight, size, lineHeight, letterSpacing, casing) => (0,esm_extends/* default */.Z)({
     fontFamily,
     fontWeight,
@@ -2615,6 +2651,7 @@ function createTypography(palette, typography) {
   }, fontFamily === defaultFontFamily ? {
     letterSpacing: `${round(letterSpacing / size)}em`
   } : {}, casing, allVariants);
+
   const variants = {
     h1: buildVariant(fontWeightLight, 96, 1.167, -1.5),
     h2: buildVariant(fontWeightLight, 60, 1.2, -0.5),
@@ -2641,17 +2678,19 @@ function createTypography(palette, typography) {
     fontWeightBold
   }, variants), other, {
     clone: false // No need to clone deep
+
   });
 }
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/styles/shadows.js
 const shadowKeyUmbraOpacity = 0.2;
 const shadowKeyPenumbraOpacity = 0.14;
 const shadowAmbientShadowOpacity = 0.12;
+
 function createShadow(...px) {
   return [`${px[0]}px ${px[1]}px ${px[2]}px ${px[3]}px rgba(0,0,0,${shadowKeyUmbraOpacity})`, `${px[4]}px ${px[5]}px ${px[6]}px ${px[7]}px rgba(0,0,0,${shadowKeyPenumbraOpacity})`, `${px[8]}px ${px[9]}px ${px[10]}px ${px[11]}px rgba(0,0,0,${shadowAmbientShadowOpacity})`].join(',');
-}
+} // Values from https://github.com/material-components/material-components-web/blob/be8747f94574669cb5e7add1a7c54fa41a89cec7/packages/mdc-elevation/_variables.scss
 
-// Values from https://github.com/material-components/material-components-web/blob/be8747f94574669cb5e7add1a7c54fa41a89cec7/packages/mdc-elevation/_variables.scss
+
 const shadows = ['none', createShadow(0, 2, 1, -1, 0, 1, 1, 0, 0, 1, 3, 0), createShadow(0, 3, 1, -2, 0, 2, 2, 0, 0, 1, 5, 0), createShadow(0, 3, 3, -2, 0, 3, 4, 0, 0, 1, 8, 0), createShadow(0, 2, 4, -1, 0, 4, 5, 0, 0, 1, 10, 0), createShadow(0, 3, 5, -1, 0, 5, 8, 0, 0, 1, 14, 0), createShadow(0, 3, 5, -1, 0, 6, 10, 0, 0, 1, 18, 0), createShadow(0, 4, 5, -2, 0, 7, 10, 1, 0, 2, 16, 1), createShadow(0, 5, 5, -3, 0, 8, 10, 1, 0, 3, 14, 2), createShadow(0, 5, 6, -3, 0, 9, 12, 1, 0, 3, 16, 2), createShadow(0, 6, 6, -3, 0, 10, 14, 1, 0, 4, 18, 3), createShadow(0, 6, 7, -4, 0, 11, 15, 1, 0, 4, 20, 3), createShadow(0, 7, 8, -4, 0, 12, 17, 2, 0, 5, 22, 4), createShadow(0, 7, 8, -4, 0, 13, 19, 2, 0, 5, 24, 4), createShadow(0, 7, 9, -4, 0, 14, 21, 2, 0, 5, 26, 4), createShadow(0, 8, 9, -5, 0, 15, 22, 2, 0, 6, 28, 5), createShadow(0, 8, 10, -5, 0, 16, 24, 2, 0, 6, 30, 5), createShadow(0, 8, 11, -5, 0, 17, 26, 2, 0, 6, 32, 5), createShadow(0, 9, 11, -5, 0, 18, 28, 2, 0, 7, 34, 6), createShadow(0, 9, 12, -6, 0, 19, 29, 2, 0, 7, 36, 6), createShadow(0, 10, 13, -6, 0, 20, 31, 3, 0, 8, 38, 7), createShadow(0, 10, 13, -6, 0, 21, 33, 3, 0, 8, 40, 7), createShadow(0, 10, 14, -6, 0, 22, 35, 3, 0, 8, 42, 7), createShadow(0, 11, 14, -7, 0, 23, 36, 3, 0, 9, 44, 8), createShadow(0, 11, 15, -7, 0, 24, 38, 3, 0, 9, 46, 8)];
 /* harmony default export */ const styles_shadows = (shadows);
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/styles/createTransitions.js
@@ -2670,10 +2709,9 @@ const easing = {
   easeIn: 'cubic-bezier(0.4, 0, 1, 1)',
   // The sharp curve is used by objects that may return to the screen at any time.
   sharp: 'cubic-bezier(0.4, 0, 0.6, 1)'
-};
-
-// Follow https://m2.material.io/guidelines/motion/duration-easing.html#duration-easing-common-durations
+}; // Follow https://material.io/guidelines/motion/duration-easing.html#duration-easing-common-durations
 // to learn when use what timing
+
 const duration = {
   shortest: 150,
   shorter: 200,
@@ -2687,31 +2725,39 @@ const duration = {
   // recommended when something is leaving screen
   leavingScreen: 195
 };
+
 function formatMs(milliseconds) {
   return `${Math.round(milliseconds)}ms`;
 }
+
 function getAutoHeightDuration(height) {
   if (!height) {
     return 0;
   }
-  const constant = height / 36;
 
-  // https://www.wolframalpha.com/input/?i=(4+%2B+15+*+(x+%2F+36+)+**+0.25+%2B+(x+%2F+36)+%2F+5)+*+10
+  const constant = height / 36; // https://www.wolframalpha.com/input/?i=(4+%2B+15+*+(x+%2F+36+)+**+0.25+%2B+(x+%2F+36)+%2F+5)+*+10
+
   return Math.round((4 + 15 * constant ** 0.25 + constant / 5) * 10);
 }
+
 function createTransitions(inputTransitions) {
   const mergedEasing = (0,esm_extends/* default */.Z)({}, easing, inputTransitions.easing);
+
   const mergedDuration = (0,esm_extends/* default */.Z)({}, duration, inputTransitions.duration);
+
   const create = (props = ['all'], options = {}) => {
     const {
-        duration: durationOption = mergedDuration.standard,
-        easing: easingOption = mergedEasing.easeInOut,
-        delay = 0
-      } = options,
-      other = (0,objectWithoutPropertiesLoose/* default */.Z)(options, createTransitions_excluded);
+      duration: durationOption = mergedDuration.standard,
+      easing: easingOption = mergedEasing.easeInOut,
+      delay = 0
+    } = options,
+          other = (0,objectWithoutPropertiesLoose/* default */.Z)(options, createTransitions_excluded);
+
     if (false) {}
+
     return (Array.isArray(props) ? props : [props]).map(animatedProp => `${animatedProp} ${typeof durationOption === 'string' ? durationOption : formatMs(durationOption)} ${easingOption} ${typeof delay === 'string' ? delay : formatMs(delay)}`).join(',');
   };
+
   return (0,esm_extends/* default */.Z)({
     getAutoHeightDuration,
     create
@@ -2737,8 +2783,8 @@ const zIndex = {
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/styles/createTheme.js
 
 
-
 const createTheme_excluded = ["breakpoints", "mixins", "spacing", "palette", "transitions", "typography", "shape"];
+
 
 
 
@@ -2750,19 +2796,17 @@ const createTheme_excluded = ["breakpoints", "mixins", "spacing", "palette", "tr
 
 function createTheme_createTheme(options = {}, ...args) {
   const {
-      mixins: mixinsInput = {},
-      palette: paletteInput = {},
-      transitions: transitionsInput = {},
-      typography: typographyInput = {}
-    } = options,
-    other = (0,objectWithoutPropertiesLoose/* default */.Z)(options, createTheme_excluded);
-  if (options.vars) {
-    throw new Error( false ? 0 : (0,formatMuiErrorMessage/* default */.Z)(18));
-  }
+    mixins: mixinsInput = {},
+    palette: paletteInput = {},
+    transitions: transitionsInput = {},
+    typography: typographyInput = {}
+  } = options,
+        other = (0,objectWithoutPropertiesLoose/* default */.Z)(options, createTheme_excluded);
+
   const palette = createPalette(paletteInput);
   const systemTheme = (0,createTheme/* default */.Z)(options);
   let muiTheme = (0,deepmerge/* default */.Z)(systemTheme, {
-    mixins: createMixins(systemTheme.breakpoints, mixinsInput),
+    mixins: createMixins(systemTheme.breakpoints, systemTheme.spacing, mixinsInput),
     palette,
     // Don't use [...shadows] until you've verified its transpiled code is not invoking the iterator protocol.
     shadows: styles_shadows.slice(),
@@ -2772,19 +2816,16 @@ function createTheme_createTheme(options = {}, ...args) {
   });
   muiTheme = (0,deepmerge/* default */.Z)(muiTheme, other);
   muiTheme = args.reduce((acc, argument) => (0,deepmerge/* default */.Z)(acc, argument), muiTheme);
+
   if (false) {}
-  muiTheme.unstable_sxConfig = (0,esm_extends/* default */.Z)({}, defaultSxConfig/* default */.Z, other == null ? void 0 : other.unstable_sxConfig);
-  muiTheme.unstable_sx = function sx(props) {
-    return (0,styleFunctionSx/* default */.Z)({
-      sx: props,
-      theme: this
-    });
-  };
+
   return muiTheme;
 }
+
 let warnedOnce = false;
 function createMuiTheme(...args) {
   if (false) {}
+
   return createTheme_createTheme(...args);
 }
 /* harmony default export */ const styles_createTheme = (createTheme_createTheme);
@@ -2818,12 +2859,12 @@ __webpack_require__.d(__webpack_exports__, {
 
 // UNUSED EXPORTS: slotShouldForwardProp
 
-// EXTERNAL MODULE: ./node_modules/@mui/system/node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js
-var objectWithoutPropertiesLoose = __webpack_require__(916);
-// EXTERNAL MODULE: ./node_modules/@mui/system/node_modules/@babel/runtime/helpers/esm/extends.js
-var esm_extends = __webpack_require__(4695);
-// EXTERNAL MODULE: ./node_modules/@mui/styled-engine/index.js + 6 modules
-var styled_engine = __webpack_require__(2122);
+// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/extends.js
+var esm_extends = __webpack_require__(7462);
+// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js
+var objectWithoutPropertiesLoose = __webpack_require__(3366);
+// EXTERNAL MODULE: ./node_modules/@mui/styled-engine/index.js + 5 modules
+var styled_engine = __webpack_require__(150);
 // EXTERNAL MODULE: ./node_modules/@mui/system/esm/createTheme/createTheme.js + 3 modules
 var createTheme = __webpack_require__(6268);
 // EXTERNAL MODULE: ./node_modules/@mui/utils/esm/capitalize.js
@@ -2832,20 +2873,23 @@ var capitalize = __webpack_require__(8320);
 
 const _excluded = ["variant"];
 
+
 function isEmpty(string) {
   return string.length === 0;
 }
-
 /**
  * Generates string classKey based on the properties provided. It starts with the
  * variant if defined, and then it appends all other properties in alphabetical order.
  * @param {object} props - the properties for which the classKey should be created.
  */
+
+
 function propsToClassKey(props) {
   const {
-      variant
-    } = props,
-    other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, _excluded);
+    variant
+  } = props,
+        other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, _excluded);
+
   let classKey = variant || '';
   Object.keys(other).sort().forEach(key => {
     if (key === 'color') {
@@ -2857,14 +2901,14 @@ function propsToClassKey(props) {
   return classKey;
 }
 // EXTERNAL MODULE: ./node_modules/@mui/system/esm/styleFunctionSx/styleFunctionSx.js
-var styleFunctionSx = __webpack_require__(6523);
+var styleFunctionSx_styleFunctionSx = __webpack_require__(6523);
 ;// CONCATENATED MODULE: ./node_modules/@mui/system/esm/createStyled.js
 
 
 const createStyled_excluded = ["name", "slot", "skipVariantsResolver", "skipSx", "overridesResolver"],
-  _excluded2 = ["theme"],
-  _excluded3 = ["theme"];
-/* eslint-disable no-underscore-dangle */
+      _excluded2 = ["theme"],
+      _excluded3 = ["theme"];
+
 
 
 
@@ -2874,25 +2918,21 @@ function createStyled_isEmpty(obj) {
   return Object.keys(obj).length === 0;
 }
 
-// https://github.com/emotion-js/emotion/blob/26ded6109fcd8ca9875cc2ce4564fee678a3f3c5/packages/styled/src/utils.js#L40
-function isStringTag(tag) {
-  return typeof tag === 'string' &&
-  // 96 is one less than the char code
-  // for "a" so this is checking that
-  // it's a lowercase character
-  tag.charCodeAt(0) > 96;
-}
 const getStyleOverrides = (name, theme) => {
   if (theme.components && theme.components[name] && theme.components[name].styleOverrides) {
     return theme.components[name].styleOverrides;
   }
+
   return null;
 };
+
 const getVariantStyles = (name, theme) => {
   let variants = [];
+
   if (theme && theme.components && theme.components[name] && theme.components[name].variants) {
     variants = theme.components[name].variants;
   }
+
   const variantsStyles = {};
   variants.forEach(definition => {
     const key = propsToClassKey(definition.props);
@@ -2900,13 +2940,16 @@ const getVariantStyles = (name, theme) => {
   });
   return variantsStyles;
 };
+
 const variantsResolver = (props, styles, theme, name) => {
   var _theme$components, _theme$components$nam;
+
   const {
     ownerState = {}
   } = props;
   const variantsStyles = [];
   const themeVariants = theme == null ? void 0 : (_theme$components = theme.components) == null ? void 0 : (_theme$components$nam = _theme$components[name]) == null ? void 0 : _theme$components$nam.variants;
+
   if (themeVariants) {
     themeVariants.forEach(themeVariant => {
       let isMatch = true;
@@ -2915,86 +2958,88 @@ const variantsResolver = (props, styles, theme, name) => {
           isMatch = false;
         }
       });
+
       if (isMatch) {
         variantsStyles.push(styles[propsToClassKey(themeVariant.props)]);
       }
     });
   }
-  return variantsStyles;
-};
 
-// Update /system/styled/#api in case if this changes
+  return variantsStyles;
+}; // Update /system/styled/#api in case if this changes
+
+
 function createStyled_shouldForwardProp(prop) {
   return prop !== 'ownerState' && prop !== 'theme' && prop !== 'sx' && prop !== 'as';
 }
 const systemDefaultTheme = (0,createTheme/* default */.Z)();
+
 const lowercaseFirstLetter = string => {
   return string.charAt(0).toLowerCase() + string.slice(1);
 };
+
 function createStyled(input = {}) {
   const {
     defaultTheme = systemDefaultTheme,
     rootShouldForwardProp = createStyled_shouldForwardProp,
-    slotShouldForwardProp = createStyled_shouldForwardProp
+    slotShouldForwardProp = createStyled_shouldForwardProp,
+    styleFunctionSx = styleFunctionSx_styleFunctionSx/* default */.Z
   } = input;
-  const systemSx = props => {
-    const theme = createStyled_isEmpty(props.theme) ? defaultTheme : props.theme;
-    return (0,styleFunctionSx/* default */.Z)((0,esm_extends/* default */.Z)({}, props, {
-      theme
-    }));
-  };
-  systemSx.__mui_systemSx = true;
   return (tag, inputOptions = {}) => {
-    // Filter out the `sx` style function from the previous styled component to prevent unnecessary styles generated by the composite components.
-    (0,styled_engine/* internal_processStyles */.Co)(tag, styles => styles.filter(style => !(style != null && style.__mui_systemSx)));
     const {
-        name: componentName,
-        slot: componentSlot,
-        skipVariantsResolver: inputSkipVariantsResolver,
-        skipSx: inputSkipSx,
-        overridesResolver
-      } = inputOptions,
-      options = (0,objectWithoutPropertiesLoose/* default */.Z)(inputOptions, createStyled_excluded);
+      name: componentName,
+      slot: componentSlot,
+      skipVariantsResolver: inputSkipVariantsResolver,
+      skipSx: inputSkipSx,
+      overridesResolver
+    } = inputOptions,
+          options = (0,objectWithoutPropertiesLoose/* default */.Z)(inputOptions, createStyled_excluded); // if skipVariantsResolver option is defined, take the value, otherwise, true for root and false for other slots.
 
-    // if skipVariantsResolver option is defined, take the value, otherwise, true for root and false for other slots.
+
     const skipVariantsResolver = inputSkipVariantsResolver !== undefined ? inputSkipVariantsResolver : componentSlot && componentSlot !== 'Root' || false;
     const skipSx = inputSkipSx || false;
     let label;
+
     if (false) {}
+
     let shouldForwardPropOption = createStyled_shouldForwardProp;
+
     if (componentSlot === 'Root') {
       shouldForwardPropOption = rootShouldForwardProp;
     } else if (componentSlot) {
       // any other slot specified
       shouldForwardPropOption = slotShouldForwardProp;
-    } else if (isStringTag(tag)) {
-      // for string (html) tag, preserve the behavior in emotion & styled-components.
-      shouldForwardPropOption = undefined;
     }
+
     const defaultStyledResolver = (0,styled_engine/* default */.ZP)(tag, (0,esm_extends/* default */.Z)({
       shouldForwardProp: shouldForwardPropOption,
       label
     }, options));
+
     const muiStyledResolver = (styleArg, ...expressions) => {
       const expressionsWithDefaultTheme = expressions ? expressions.map(stylesArg => {
-        // On the server Emotion doesn't use React.forwardRef for creating components, so the created
+        // On the server emotion doesn't use React.forwardRef for creating components, so the created
         // component stays as a function. This condition makes sure that we do not interpolate functions
         // which are basically components used as a selectors.
+        // eslint-disable-next-line no-underscore-dangle
         return typeof stylesArg === 'function' && stylesArg.__emotion_real !== stylesArg ? _ref => {
           let {
-              theme: themeInput
-            } = _ref,
-            other = (0,objectWithoutPropertiesLoose/* default */.Z)(_ref, _excluded2);
+            theme: themeInput
+          } = _ref,
+              other = (0,objectWithoutPropertiesLoose/* default */.Z)(_ref, _excluded2);
+
           return stylesArg((0,esm_extends/* default */.Z)({
             theme: createStyled_isEmpty(themeInput) ? defaultTheme : themeInput
           }, other));
         } : stylesArg;
       }) : [];
       let transformedStyleArg = styleArg;
+
       if (componentName && overridesResolver) {
         expressionsWithDefaultTheme.push(props => {
           const theme = createStyled_isEmpty(props.theme) ? defaultTheme : props.theme;
           const styleOverrides = getStyleOverrides(componentName, theme);
+
           if (styleOverrides) {
             const resolvedStyleOverrides = {};
             Object.entries(styleOverrides).forEach(([slotKey, slotStyle]) => {
@@ -3004,47 +3049,63 @@ function createStyled(input = {}) {
             });
             return overridesResolver(props, resolvedStyleOverrides);
           }
+
           return null;
         });
       }
+
       if (componentName && !skipVariantsResolver) {
         expressionsWithDefaultTheme.push(props => {
           const theme = createStyled_isEmpty(props.theme) ? defaultTheme : props.theme;
           return variantsResolver(props, getVariantStyles(componentName, theme), theme, componentName);
         });
       }
+
       if (!skipSx) {
-        expressionsWithDefaultTheme.push(systemSx);
+        expressionsWithDefaultTheme.push(props => {
+          const theme = createStyled_isEmpty(props.theme) ? defaultTheme : props.theme;
+          return styleFunctionSx((0,esm_extends/* default */.Z)({}, props, {
+            theme
+          }));
+        });
       }
+
       const numOfCustomFnsApplied = expressionsWithDefaultTheme.length - expressions.length;
+
       if (Array.isArray(styleArg) && numOfCustomFnsApplied > 0) {
-        const placeholders = new Array(numOfCustomFnsApplied).fill('');
-        // If the type is array, than we need to add placeholders in the template for the overrides, variants and the sx styles.
+        const placeholders = new Array(numOfCustomFnsApplied).fill(''); // If the type is array, than we need to add placeholders in the template for the overrides, variants and the sx styles.
+
         transformedStyleArg = [...styleArg, ...placeholders];
         transformedStyleArg.raw = [...styleArg.raw, ...placeholders];
-      } else if (typeof styleArg === 'function' &&
-      // On the server Emotion doesn't use React.forwardRef for creating components, so the created
+      } else if (typeof styleArg === 'function' && // On the server emotion doesn't use React.forwardRef for creating components, so the created
       // component stays as a function. This condition makes sure that we do not interpolate functions
       // which are basically components used as a selectors.
+      // eslint-disable-next-line no-underscore-dangle
       styleArg.__emotion_real !== styleArg) {
         // If the type is function, we need to define the default theme.
         transformedStyleArg = _ref2 => {
           let {
-              theme: themeInput
-            } = _ref2,
-            other = (0,objectWithoutPropertiesLoose/* default */.Z)(_ref2, _excluded3);
+            theme: themeInput
+          } = _ref2,
+              other = (0,objectWithoutPropertiesLoose/* default */.Z)(_ref2, _excluded3);
+
           return styleArg((0,esm_extends/* default */.Z)({
             theme: createStyled_isEmpty(themeInput) ? defaultTheme : themeInput
           }, other));
         };
       }
+
       const Component = defaultStyledResolver(transformedStyleArg, ...expressionsWithDefaultTheme);
+
       if (false) {}
+
       return Component;
     };
+
     if (defaultStyledResolver.withConfig) {
       muiStyledResolver.withConfig = defaultStyledResolver.withConfig;
     }
+
     return muiStyledResolver;
   };
 }
@@ -3083,9 +3144,11 @@ function getThemeProps(params) {
     name,
     props
   } = params;
+
   if (!theme || !theme.components || !theme.components[name] || !theme.components[name].defaultProps) {
     return props;
   }
+
   return (0,resolveProps/* default */.Z)(theme.components[name].defaultProps, props);
 }
 // EXTERNAL MODULE: ./node_modules/@mui/system/esm/useTheme.js
@@ -3147,28 +3210,27 @@ __webpack_require__.d(__webpack_exports__, {
   "Z": () => (/* binding */ createSvgIcon)
 });
 
-// EXTERNAL MODULE: ./node_modules/@mui/material/node_modules/@babel/runtime/helpers/esm/extends.js
-var esm_extends = __webpack_require__(2793);
+// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/extends.js
+var esm_extends = __webpack_require__(7462);
 // EXTERNAL MODULE: ./node_modules/react/index.js
 var react = __webpack_require__(7294);
-// EXTERNAL MODULE: ./node_modules/@mui/material/node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js
-var objectWithoutPropertiesLoose = __webpack_require__(1048);
-// EXTERNAL MODULE: ./node_modules/@mui/material/node_modules/clsx/dist/clsx.m.js
-var clsx_m = __webpack_require__(3680);
-// EXTERNAL MODULE: ./node_modules/@mui/utils/esm/composeClasses/composeClasses.js
-var composeClasses = __webpack_require__(4780);
+// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js
+var objectWithoutPropertiesLoose = __webpack_require__(3366);
+// EXTERNAL MODULE: ./node_modules/clsx/dist/clsx.m.js
+var clsx_m = __webpack_require__(6010);
+// EXTERNAL MODULE: ./node_modules/@mui/base/composeClasses/composeClasses.js
+var composeClasses = __webpack_require__(7192);
 // EXTERNAL MODULE: ./node_modules/@mui/material/utils/capitalize.js
 var capitalize = __webpack_require__(8216);
 // EXTERNAL MODULE: ./node_modules/@mui/material/styles/useThemeProps.js + 2 modules
 var useThemeProps = __webpack_require__(6122);
 // EXTERNAL MODULE: ./node_modules/@mui/material/styles/styled.js + 2 modules
 var styled = __webpack_require__(9602);
-// EXTERNAL MODULE: ./node_modules/@mui/utils/esm/generateUtilityClasses/generateUtilityClasses.js
-var generateUtilityClasses = __webpack_require__(1588);
-// EXTERNAL MODULE: ./node_modules/@mui/utils/esm/generateUtilityClass/generateUtilityClass.js
-var generateUtilityClass = __webpack_require__(4867);
+// EXTERNAL MODULE: ./node_modules/@mui/base/generateUtilityClass/generateUtilityClass.js
+var generateUtilityClass = __webpack_require__(8979);
+// EXTERNAL MODULE: ./node_modules/@mui/base/generateUtilityClasses/generateUtilityClasses.js
+var generateUtilityClasses = __webpack_require__(6087);
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/SvgIcon/svgIconClasses.js
-
 
 function getSvgIconUtilityClass(slot) {
   return (0,generateUtilityClass/* default */.Z)('MuiSvgIcon', slot);
@@ -3191,6 +3253,7 @@ const _excluded = ["children", "className", "color", "component", "fontSize", "h
 
 
 
+
 const useUtilityClasses = ownerState => {
   const {
     color,
@@ -3202,6 +3265,7 @@ const useUtilityClasses = ownerState => {
   };
   return (0,composeClasses/* default */.Z)(slots, getSvgIconUtilityClass, classes);
 };
+
 const SvgIconRoot = (0,styled/* default */.ZP)('svg', {
   name: 'MuiSvgIcon',
   slot: 'Root',
@@ -3215,7 +3279,8 @@ const SvgIconRoot = (0,styled/* default */.ZP)('svg', {
   theme,
   ownerState
 }) => {
-  var _theme$transitions, _theme$transitions$cr, _theme$transitions2, _theme$transitions2$d, _theme$typography, _theme$typography$pxT, _theme$typography2, _theme$typography2$px, _theme$typography3, _theme$typography3$px, _palette$ownerState$c, _palette, _palette$ownerState$c2, _palette2, _palette2$action, _palette3, _palette3$action;
+  var _theme$transitions, _theme$transitions$cr, _theme$transitions2, _theme$transitions2$d, _theme$typography, _theme$typography$pxT, _theme$typography2, _theme$typography2$px, _theme$typography3, _theme$typography3$px, _theme$palette$ownerS, _theme$palette, _theme$palette$ownerS2, _theme$palette2, _theme$palette2$actio, _theme$palette3, _theme$palette3$actio;
+
   return {
     userSelect: 'none',
     width: '1em',
@@ -3230,12 +3295,12 @@ const SvgIconRoot = (0,styled/* default */.ZP)('svg', {
       inherit: 'inherit',
       small: ((_theme$typography = theme.typography) == null ? void 0 : (_theme$typography$pxT = _theme$typography.pxToRem) == null ? void 0 : _theme$typography$pxT.call(_theme$typography, 20)) || '1.25rem',
       medium: ((_theme$typography2 = theme.typography) == null ? void 0 : (_theme$typography2$px = _theme$typography2.pxToRem) == null ? void 0 : _theme$typography2$px.call(_theme$typography2, 24)) || '1.5rem',
-      large: ((_theme$typography3 = theme.typography) == null ? void 0 : (_theme$typography3$px = _theme$typography3.pxToRem) == null ? void 0 : _theme$typography3$px.call(_theme$typography3, 35)) || '2.1875rem'
+      large: ((_theme$typography3 = theme.typography) == null ? void 0 : (_theme$typography3$px = _theme$typography3.pxToRem) == null ? void 0 : _theme$typography3$px.call(_theme$typography3, 35)) || '2.1875'
     }[ownerState.fontSize],
     // TODO v5 deprecate, v6 remove for sx
-    color: (_palette$ownerState$c = (_palette = (theme.vars || theme).palette) == null ? void 0 : (_palette$ownerState$c2 = _palette[ownerState.color]) == null ? void 0 : _palette$ownerState$c2.main) != null ? _palette$ownerState$c : {
-      action: (_palette2 = (theme.vars || theme).palette) == null ? void 0 : (_palette2$action = _palette2.action) == null ? void 0 : _palette2$action.active,
-      disabled: (_palette3 = (theme.vars || theme).palette) == null ? void 0 : (_palette3$action = _palette3.action) == null ? void 0 : _palette3$action.disabled,
+    color: (_theme$palette$ownerS = (_theme$palette = theme.palette) == null ? void 0 : (_theme$palette$ownerS2 = _theme$palette[ownerState.color]) == null ? void 0 : _theme$palette$ownerS2.main) != null ? _theme$palette$ownerS : {
+      action: (_theme$palette2 = theme.palette) == null ? void 0 : (_theme$palette2$actio = _theme$palette2.action) == null ? void 0 : _theme$palette2$actio.active,
+      disabled: (_theme$palette3 = theme.palette) == null ? void 0 : (_theme$palette3$actio = _theme$palette3.action) == null ? void 0 : _theme$palette3$actio.disabled,
       inherit: undefined
     }[ownerState.color]
   };
@@ -3245,18 +3310,20 @@ const SvgIcon = /*#__PURE__*/react.forwardRef(function SvgIcon(inProps, ref) {
     props: inProps,
     name: 'MuiSvgIcon'
   });
+
   const {
-      children,
-      className,
-      color = 'inherit',
-      component = 'svg',
-      fontSize = 'medium',
-      htmlColor,
-      inheritViewBox = false,
-      titleAccess,
-      viewBox = '0 0 24 24'
-    } = props,
-    other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, _excluded);
+    children,
+    className,
+    color = 'inherit',
+    component = 'svg',
+    fontSize = 'medium',
+    htmlColor,
+    inheritViewBox = false,
+    titleAccess,
+    viewBox = '0 0 24 24'
+  } = props,
+        other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, _excluded);
+
   const ownerState = (0,esm_extends/* default */.Z)({}, props, {
     color,
     component,
@@ -3265,21 +3332,24 @@ const SvgIcon = /*#__PURE__*/react.forwardRef(function SvgIcon(inProps, ref) {
     inheritViewBox,
     viewBox
   });
+
   const more = {};
+
   if (!inheritViewBox) {
     more.viewBox = viewBox;
   }
+
   const classes = useUtilityClasses(ownerState);
   return /*#__PURE__*/(0,jsx_runtime.jsxs)(SvgIconRoot, (0,esm_extends/* default */.Z)({
     as: component,
     className: (0,clsx_m/* default */.Z)(classes.root, className),
+    ownerState: ownerState,
     focusable: "false",
     color: htmlColor,
     "aria-hidden": titleAccess ? undefined : true,
     role: titleAccess ? 'img' : undefined,
     ref: ref
   }, more, other, {
-    ownerState: ownerState,
     children: [children, titleAccess ? /*#__PURE__*/(0,jsx_runtime.jsx)("title", {
       children: titleAccess
     }) : null]
@@ -3292,21 +3362,21 @@ SvgIcon.muiName = 'SvgIcon';
 
 
 
-
 /**
  * Private module reserved for @mui packages.
  */
 
+
 function createSvgIcon(path, displayName) {
-  function Component(props, ref) {
-    return /*#__PURE__*/(0,jsx_runtime.jsx)(SvgIcon_SvgIcon, (0,esm_extends/* default */.Z)({
-      "data-testid": `${displayName}Icon`,
-      ref: ref
-    }, props, {
-      children: path
-    }));
-  }
+  const Component = (props, ref) => /*#__PURE__*/(0,jsx_runtime.jsx)(SvgIcon_SvgIcon, (0,esm_extends/* default */.Z)({
+    "data-testid": `${displayName}Icon`,
+    ref: ref
+  }, props, {
+    children: path
+  }));
+
   if (false) {}
+
   Component.muiName = SvgIcon_SvgIcon.muiName;
   return /*#__PURE__*/react.memo( /*#__PURE__*/react.forwardRef(Component));
 }
@@ -3328,16 +3398,20 @@ __webpack_require__.d(__webpack_exports__, {
 // A few bytes payload overhead when lodash/debounce is ~3 kB and debounce ~300 B.
 function debounce(func, wait = 166) {
   let timeout;
+
   function debounced(...args) {
     const later = () => {
       func.apply(this, args);
     };
+
     clearTimeout(timeout);
     timeout = setTimeout(later, wait);
   }
+
   debounced.clear = () => {
     clearTimeout(timeout);
   };
+
   return debounced;
 }
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/utils/debounce.js
@@ -3375,8 +3449,8 @@ __webpack_require__.d(__webpack_exports__, {
   "useIsFocusVisible": () => (/* reexport */ useIsFocusVisible/* default */.Z)
 });
 
-// EXTERNAL MODULE: ./node_modules/@mui/utils/esm/ClassNameGenerator/ClassNameGenerator.js
-var ClassNameGenerator = __webpack_require__(7078);
+// EXTERNAL MODULE: ./node_modules/@mui/base/className/ClassNameGenerator.js
+var ClassNameGenerator = __webpack_require__(8076);
 // EXTERNAL MODULE: ./node_modules/@mui/material/utils/capitalize.js
 var capitalize = __webpack_require__(8216);
 // EXTERNAL MODULE: ./node_modules/@mui/utils/esm/createChainedFunction.js
@@ -3393,12 +3467,15 @@ function deprecatedPropType(validator, reason) {
   if (true) {
     return () => null;
   }
+
   return (props, propName, componentName, location, propFullName) => {
     const componentNameSafe = componentName || '<<anonymous>>';
     const propFullNameSafe = propFullName || propName;
+
     if (typeof props[propName] !== 'undefined') {
       return new Error(`The ${location} \`${propFullNameSafe}\` of ` + `\`${componentNameSafe}\` is deprecated. ${reason}`);
     }
+
     return null;
   };
 }
@@ -3422,31 +3499,37 @@ var ownerDocument = __webpack_require__(7094);
 /* harmony default export */ const utils_ownerDocument = (ownerDocument/* default */.Z);
 // EXTERNAL MODULE: ./node_modules/@mui/material/utils/ownerWindow.js
 var ownerWindow = __webpack_require__(5340);
-// EXTERNAL MODULE: ./node_modules/@mui/utils/node_modules/@babel/runtime/helpers/esm/extends.js
-var esm_extends = __webpack_require__(1860);
+// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/extends.js
+var esm_extends = __webpack_require__(7462);
 ;// CONCATENATED MODULE: ./node_modules/@mui/utils/esm/requirePropFactory.js
 
 function requirePropFactory(componentNameInError, Component) {
   if (true) {
     return () => null;
-  }
+  } // eslint-disable-next-line react/forbid-foreign-prop-types
 
-  // eslint-disable-next-line react/forbid-foreign-prop-types
+
   const prevPropTypes = Component ? (0,esm_extends/* default */.Z)({}, Component.propTypes) : null;
+
   const requireProp = requiredProp => (props, propName, componentName, location, propFullName, ...args) => {
     const propFullNameSafe = propFullName || propName;
     const defaultTypeChecker = prevPropTypes == null ? void 0 : prevPropTypes[propFullNameSafe];
+
     if (defaultTypeChecker) {
       const typeCheckerResult = defaultTypeChecker(props, propName, componentName, location, propFullName, ...args);
+
       if (typeCheckerResult) {
         return typeCheckerResult;
       }
     }
+
     if (typeof props[propName] !== 'undefined' && !props[requiredProp]) {
       return new Error(`The prop \`${propFullNameSafe}\` of ` + `\`${componentNameInError}\` can only be used together with the \`${requiredProp}\` prop.`);
     }
+
     return null;
   };
+
   return requireProp;
 }
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/utils/requirePropFactory.js
@@ -3466,10 +3549,13 @@ function unsupportedProp(props, propName, componentName, location, propFullName)
   if (true) {
     return null;
   }
+
   const propFullNameSafe = propFullName || propName;
+
   if (typeof props[propName] !== 'undefined') {
     return new Error(`The prop \`${propFullNameSafe}\` is not supported. Please remove it.`);
   }
+
   return null;
 }
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/utils/unsupportedProp.js
@@ -3501,12 +3587,12 @@ var useIsFocusVisible = __webpack_require__(3511);
 
 
 
-
-// TODO: remove this export once ClassNameGenerator is stable
+ // TODO: remove this export once ClassNameGenerator is stable
 // eslint-disable-next-line @typescript-eslint/naming-convention
+
 const unstable_ClassNameGenerator = {
   configure: generator => {
-    if (false) {}
+    console.warn(['MUI: `ClassNameGenerator` import from `@mui/material/utils` is outdated and might cause unexpected issues.', '', "You should use `import { unstable_ClassNameGenerator } from '@mui/material/className'` instead", '', 'The detail of the issue: https://github.com/mui/material-ui/issues/30011#issuecomment-1024993401', '', 'The updated documentation: https://mui.com/guides/classname-generator/'].join('\n'));
     ClassNameGenerator/* default.configure */.Z.configure(generator);
   }
 };
@@ -3553,7 +3639,9 @@ function useControlled({
   } = react.useRef(controlled !== undefined);
   const [valueState, setValue] = react.useState(defaultProp);
   const value = isControlled ? controlled : valueState;
+
   if (false) {}
+
   const setValueIfUncontrolled = react.useCallback(newValue => {
     if (!isControlled) {
       setValue(newValue);
@@ -3622,6 +3710,7 @@ var react_namespaceObject = /*#__PURE__*/__webpack_require__.t(react, 2);
 ;// CONCATENATED MODULE: ./node_modules/@mui/utils/esm/useId.js
 
 let globalId = 0;
+
 function useGlobalId(idOverride) {
   const [defaultId, setDefaultId] = react.useState(idOverride);
   const id = idOverride || defaultId;
@@ -3636,9 +3725,9 @@ function useGlobalId(idOverride) {
     }
   }, [defaultId]);
   return id;
-}
+} // eslint-disable-next-line no-useless-concat -- Workaround for https://github.com/webpack/webpack/issues/14814
 
-// eslint-disable-next-line no-useless-concat -- Workaround for https://github.com/webpack/webpack/issues/14814
+
 const maybeReactUseId = react_namespaceObject['useId' + ''];
 /**
  *
@@ -3646,12 +3735,14 @@ const maybeReactUseId = react_namespaceObject['useId' + ''];
  * @param idOverride
  * @returns {string}
  */
+
 function useId(idOverride) {
   if (maybeReactUseId !== undefined) {
     const reactId = maybeReactUseId();
     return idOverride != null ? idOverride : reactId;
-  }
-  // eslint-disable-next-line react-hooks/rules-of-hooks -- `React.useId` is invariant at runtime.
+  } // eslint-disable-next-line react-hooks/rules-of-hooks -- `React.useId` is invariant at runtime.
+
+
   return useGlobalId(idOverride);
 }
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/utils/useId.js
@@ -3693,7 +3784,6 @@ const inputTypesWhitelist = {
   datetime: true,
   'datetime-local': true
 };
-
 /**
  * Computes whether the given element should automatically trigger the
  * `focus-visible` class being added, i.e. whether it should always match
@@ -3701,23 +3791,27 @@ const inputTypesWhitelist = {
  * @param {Element} node
  * @returns {boolean}
  */
+
 function focusTriggersKeyboardModality(node) {
   const {
     type,
     tagName
   } = node;
+
   if (tagName === 'INPUT' && inputTypesWhitelist[type] && !node.readOnly) {
     return true;
   }
+
   if (tagName === 'TEXTAREA' && !node.readOnly) {
     return true;
   }
+
   if (node.isContentEditable) {
     return true;
   }
+
   return false;
 }
-
 /**
  * Keep track of our keyboard modality state with `hadKeyboardEvent`.
  * If the most recent user interaction was via the keyboard;
@@ -3725,13 +3819,15 @@ function focusTriggersKeyboardModality(node) {
  * then the modality is keyboard. Otherwise, the modality is not keyboard.
  * @param {KeyboardEvent} event
  */
+
+
 function handleKeyDown(event) {
   if (event.metaKey || event.altKey || event.ctrlKey) {
     return;
   }
+
   hadKeyboardEvent = true;
 }
-
 /**
  * If at any point a user clicks with a pointing device, ensure that we change
  * the modality away from keyboard.
@@ -3739,9 +3835,12 @@ function handleKeyDown(event) {
  * element, and then clicks on a different element, focusing it with a
  * pointing device, while we still think we're in keyboard modality.
  */
+
+
 function handlePointerDown() {
   hadKeyboardEvent = false;
 }
+
 function handleVisibilityChange() {
   if (this.visibilityState === 'hidden') {
     // If the tab becomes active again, the browser will handle calling focus
@@ -3753,6 +3852,7 @@ function handleVisibilityChange() {
     }
   }
 }
+
 function prepare(doc) {
   doc.addEventListener('keydown', handleKeyDown, true);
   doc.addEventListener('mousedown', handlePointerDown, true);
@@ -3760,6 +3860,7 @@ function prepare(doc) {
   doc.addEventListener('touchstart', handlePointerDown, true);
   doc.addEventListener('visibilitychange', handleVisibilityChange, true);
 }
+
 function teardown(doc) {
   doc.removeEventListener('keydown', handleKeyDown, true);
   doc.removeEventListener('mousedown', handlePointerDown, true);
@@ -3767,23 +3868,25 @@ function teardown(doc) {
   doc.removeEventListener('touchstart', handlePointerDown, true);
   doc.removeEventListener('visibilitychange', handleVisibilityChange, true);
 }
+
 function isFocusVisible(event) {
   const {
     target
   } = event;
+
   try {
     return target.matches(':focus-visible');
-  } catch (error) {
-    // Browsers not implementing :focus-visible will throw a SyntaxError.
+  } catch (error) {// Browsers not implementing :focus-visible will throw a SyntaxError.
     // We use our own heuristic for those browsers.
     // Rethrow might be better if it's not the expected error but do we really
     // want to crash if focus-visible malfunctioned?
-  }
-
-  // No need for validFocusTarget check. The user does that by attaching it to
+  } // No need for validFocusTarget check. The user does that by attaching it to
   // focusable events only.
+
+
   return hadKeyboardEvent || focusTriggersKeyboardModality(target);
 }
+
 function useIsFocusVisible() {
   const ref = react.useCallback(node => {
     if (node != null) {
@@ -3791,10 +3894,10 @@ function useIsFocusVisible() {
     }
   }, []);
   const isFocusVisibleRef = react.useRef(false);
-
   /**
    * Should be called if a blur event is fired
    */
+
   function handleBlurVisible() {
     // checking against potential state variable does not suffice if we focus and blur synchronously.
     // React wouldn't have time to trigger a re-render so `focusVisible` would be stale.
@@ -3814,19 +3917,23 @@ function useIsFocusVisible() {
       isFocusVisibleRef.current = false;
       return true;
     }
+
     return false;
   }
-
   /**
    * Should be called if a blur event is fired
    */
+
+
   function handleFocusVisible(event) {
     if (isFocusVisible(event)) {
       isFocusVisibleRef.current = true;
       return true;
     }
+
     return false;
   }
+
   return {
     isFocusVisibleRef,
     onFocus: handleFocusVisible,
@@ -3840,44 +3947,31 @@ function useIsFocusVisible() {
 
 /***/ }),
 
-/***/ 2122:
+/***/ 150:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, {
-  "ZP": () => (/* binding */ styled),
-  "Co": () => (/* binding */ internal_processStyles)
+  "ZP": () => (/* binding */ styled)
 });
 
 // UNUSED EXPORTS: GlobalStyles, StyledEngineProvider, ThemeContext, css, keyframes
 
 // EXTERNAL MODULE: ./node_modules/react/index.js
 var react = __webpack_require__(7294);
-;// CONCATENATED MODULE: ./node_modules/@emotion/styled/node_modules/@babel/runtime/helpers/esm/extends.js
-function extends_extends() {
-  extends_extends = Object.assign ? Object.assign.bind() : function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-    return target;
-  };
-  return extends_extends.apply(this, arguments);
-}
-// EXTERNAL MODULE: ./node_modules/@emotion/memoize/dist/emotion-memoize.esm.js
-var emotion_memoize_esm = __webpack_require__(5042);
-;// CONCATENATED MODULE: ./node_modules/@emotion/is-prop-valid/dist/emotion-is-prop-valid.esm.js
+var react_namespaceObject = /*#__PURE__*/__webpack_require__.t(react, 2);
+// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/extends.js
+var esm_extends = __webpack_require__(7462);
+// EXTERNAL MODULE: ./node_modules/@emotion/memoize/dist/emotion-memoize.browser.esm.js
+var emotion_memoize_browser_esm = __webpack_require__(7866);
+;// CONCATENATED MODULE: ./node_modules/@emotion/is-prop-valid/dist/emotion-is-prop-valid.browser.esm.js
 
 
 var reactPropsRegex = /^((children|dangerouslySetInnerHTML|key|ref|autoFocus|defaultValue|defaultChecked|innerHTML|suppressContentEditableWarning|suppressHydrationWarning|valueLink|abbr|accept|acceptCharset|accessKey|action|allow|allowUserMedia|allowPaymentRequest|allowFullScreen|allowTransparency|alt|async|autoComplete|autoPlay|capture|cellPadding|cellSpacing|challenge|charSet|checked|cite|classID|className|cols|colSpan|content|contentEditable|contextMenu|controls|controlsList|coords|crossOrigin|data|dateTime|decoding|default|defer|dir|disabled|disablePictureInPicture|download|draggable|encType|enterKeyHint|form|formAction|formEncType|formMethod|formNoValidate|formTarget|frameBorder|headers|height|hidden|high|href|hrefLang|htmlFor|httpEquiv|id|inputMode|integrity|is|keyParams|keyType|kind|label|lang|list|loading|loop|low|marginHeight|marginWidth|max|maxLength|media|mediaGroup|method|min|minLength|multiple|muted|name|nonce|noValidate|open|optimum|pattern|placeholder|playsInline|poster|preload|profile|radioGroup|readOnly|referrerPolicy|rel|required|reversed|role|rows|rowSpan|sandbox|scope|scoped|scrolling|seamless|selected|shape|size|sizes|slot|span|spellCheck|src|srcDoc|srcLang|srcSet|start|step|style|summary|tabIndex|target|title|translate|type|useMap|value|width|wmode|wrap|about|datatype|inlist|prefix|property|resource|typeof|vocab|autoCapitalize|autoCorrect|autoSave|color|incremental|fallback|inert|itemProp|itemScope|itemType|itemID|itemRef|on|option|results|security|unselectable|accentHeight|accumulate|additive|alignmentBaseline|allowReorder|alphabetic|amplitude|arabicForm|ascent|attributeName|attributeType|autoReverse|azimuth|baseFrequency|baselineShift|baseProfile|bbox|begin|bias|by|calcMode|capHeight|clip|clipPathUnits|clipPath|clipRule|colorInterpolation|colorInterpolationFilters|colorProfile|colorRendering|contentScriptType|contentStyleType|cursor|cx|cy|d|decelerate|descent|diffuseConstant|direction|display|divisor|dominantBaseline|dur|dx|dy|edgeMode|elevation|enableBackground|end|exponent|externalResourcesRequired|fill|fillOpacity|fillRule|filter|filterRes|filterUnits|floodColor|floodOpacity|focusable|fontFamily|fontSize|fontSizeAdjust|fontStretch|fontStyle|fontVariant|fontWeight|format|from|fr|fx|fy|g1|g2|glyphName|glyphOrientationHorizontal|glyphOrientationVertical|glyphRef|gradientTransform|gradientUnits|hanging|horizAdvX|horizOriginX|ideographic|imageRendering|in|in2|intercept|k|k1|k2|k3|k4|kernelMatrix|kernelUnitLength|kerning|keyPoints|keySplines|keyTimes|lengthAdjust|letterSpacing|lightingColor|limitingConeAngle|local|markerEnd|markerMid|markerStart|markerHeight|markerUnits|markerWidth|mask|maskContentUnits|maskUnits|mathematical|mode|numOctaves|offset|opacity|operator|order|orient|orientation|origin|overflow|overlinePosition|overlineThickness|panose1|paintOrder|pathLength|patternContentUnits|patternTransform|patternUnits|pointerEvents|points|pointsAtX|pointsAtY|pointsAtZ|preserveAlpha|preserveAspectRatio|primitiveUnits|r|radius|refX|refY|renderingIntent|repeatCount|repeatDur|requiredExtensions|requiredFeatures|restart|result|rotate|rx|ry|scale|seed|shapeRendering|slope|spacing|specularConstant|specularExponent|speed|spreadMethod|startOffset|stdDeviation|stemh|stemv|stitchTiles|stopColor|stopOpacity|strikethroughPosition|strikethroughThickness|string|stroke|strokeDasharray|strokeDashoffset|strokeLinecap|strokeLinejoin|strokeMiterlimit|strokeOpacity|strokeWidth|surfaceScale|systemLanguage|tableValues|targetX|targetY|textAnchor|textDecoration|textRendering|textLength|to|transform|u1|u2|underlinePosition|underlineThickness|unicode|unicodeBidi|unicodeRange|unitsPerEm|vAlphabetic|vHanging|vIdeographic|vMathematical|values|vectorEffect|version|vertAdvY|vertOriginX|vertOriginY|viewBox|viewTarget|visibility|widths|wordSpacing|writingMode|x|xHeight|x1|x2|xChannelSelector|xlinkActuate|xlinkArcrole|xlinkHref|xlinkRole|xlinkShow|xlinkTitle|xlinkType|xmlBase|xmlns|xmlnsXlink|xmlLang|xmlSpace|y|y1|y2|yChannelSelector|z|zoomAndPan|for|class|autofocus)|(([Dd][Aa][Tt][Aa]|[Aa][Rr][Ii][Aa]|x)-.*))$/; // https://esbench.com/bench/5bfee68a4cd7e6009ef61d23
 
-var isPropValid = /* #__PURE__ */(0,emotion_memoize_esm/* default */.Z)(function (prop) {
+var isPropValid = /* #__PURE__ */(0,emotion_memoize_browser_esm/* default */.Z)(function (prop) {
   return reactPropsRegex.test(prop) || prop.charCodeAt(0) === 111
   /* o */
   && prop.charCodeAt(1) === 110
@@ -3887,15 +3981,13 @@ var isPropValid = /* #__PURE__ */(0,emotion_memoize_esm/* default */.Z)(function
 /* Z+1 */
 );
 
-/* harmony default export */ const emotion_is_prop_valid_esm = (isPropValid);
+/* harmony default export */ const emotion_is_prop_valid_browser_esm = (isPropValid);
 
-// EXTERNAL MODULE: ./node_modules/@emotion/cache/dist/emotion-cache.browser.esm.js + 7 modules
-var emotion_cache_browser_esm = __webpack_require__(6751);
+// EXTERNAL MODULE: ./node_modules/@emotion/cache/dist/emotion-cache.browser.esm.js + 8 modules
+var emotion_cache_browser_esm = __webpack_require__(6898);
 // EXTERNAL MODULE: ./node_modules/@emotion/serialize/dist/emotion-serialize.browser.esm.js + 2 modules
-var emotion_serialize_browser_esm = __webpack_require__(1095);
-// EXTERNAL MODULE: ./node_modules/@emotion/use-insertion-effect-with-fallbacks/dist/emotion-use-insertion-effect-with-fallbacks.browser.esm.js
-var emotion_use_insertion_effect_with_fallbacks_browser_esm = __webpack_require__(7278);
-;// CONCATENATED MODULE: ./node_modules/@emotion/react/dist/emotion-element-6a883da9.browser.esm.js
+var emotion_serialize_browser_esm = __webpack_require__(4199);
+;// CONCATENATED MODULE: ./node_modules/@emotion/react/dist/emotion-element-cbed451f.browser.esm.js
 
 
 
@@ -3905,7 +3997,7 @@ var emotion_use_insertion_effect_with_fallbacks_browser_esm = __webpack_require_
 
 
 
-var emotion_element_6a883da9_browser_esm_hasOwnProperty = {}.hasOwnProperty;
+var emotion_element_cbed451f_browser_esm_hasOwnProperty = {}.hasOwnProperty;
 
 var EmotionCacheContext = /* #__PURE__ */(0,react.createContext)( // we're doing this to avoid preconstruct's dead code elimination in this one case
 // because this module is primarily intended for the browser and node
@@ -4031,6 +4123,14 @@ var getLabelFromStackTrace = function getLabelFromStackTrace(stackTrace) {
   return undefined;
 };
 
+var useInsertionEffect = react_namespaceObject['useInsertion' + 'Effect'] ? react_namespaceObject['useInsertion' + 'Effect'] : function useInsertionEffect(create) {
+  create();
+};
+function useInsertionEffectMaybe(create) {
+
+  useInsertionEffect(create);
+}
+
 var typePropName = '__EMOTION_TYPE_PLEASE_DO_NOT_USE__';
 var labelPropName = '__EMOTION_LABEL_PLEASE_DO_NOT_USE__';
 var createEmotionProps = function createEmotionProps(type, props) {
@@ -4039,7 +4139,7 @@ var createEmotionProps = function createEmotionProps(type, props) {
   var newProps = {};
 
   for (var key in props) {
-    if (emotion_element_6a883da9_browser_esm_hasOwnProperty.call(props, key)) {
+    if (emotion_element_cbed451f_browser_esm_hasOwnProperty.call(props, key)) {
       newProps[key] = props[key];
     }
   }
@@ -4057,7 +4157,7 @@ var Insertion = function Insertion(_ref) {
       serialized = _ref.serialized,
       isStringTag = _ref.isStringTag;
   registerStyles(cache, serialized, isStringTag);
-  var rules = useInsertionEffectAlwaysWithSyncFallback(function () {
+  var rules = useInsertionEffectMaybe(function () {
     return insertStyles(cache, serialized, isStringTag);
   });
 
@@ -4091,7 +4191,7 @@ var Emotion = /* #__PURE__ */(/* unused pure expression or super */ null && (wit
   var newProps = {};
 
   for (var key in props) {
-    if (emotion_element_6a883da9_browser_esm_hasOwnProperty.call(props, key) && key !== 'css' && key !== typePropName && ( true || 0)) {
+    if (emotion_element_cbed451f_browser_esm_hasOwnProperty.call(props, key) && key !== 'css' && key !== typePropName && ( true || 0)) {
       newProps[key] = props[key];
     }
   }
@@ -4164,7 +4264,7 @@ var emotion_utils_browser_esm_insertStyles = function insertStyles(cache, serial
 
 
 
-var testOmitPropsOnStringTag = emotion_is_prop_valid_esm;
+var testOmitPropsOnStringTag = emotion_is_prop_valid_browser_esm;
 
 var testOmitPropsOnComponent = function testOmitPropsOnComponent(key) {
   return key !== 'theme';
@@ -4193,6 +4293,14 @@ var composeShouldForwardProps = function composeShouldForwardProps(tag, options,
   return shouldForwardProp;
 };
 
+var emotion_styled_base_browser_esm_useInsertionEffect = react_namespaceObject['useInsertion' + 'Effect'] ? react_namespaceObject['useInsertion' + 'Effect'] : function useInsertionEffect(create) {
+  create();
+};
+function emotion_styled_base_browser_esm_useInsertionEffectMaybe(create) {
+
+  emotion_styled_base_browser_esm_useInsertionEffect(create);
+}
+
 var ILLEGAL_ESCAPE_SEQUENCE_ERROR = "You have illegal escape sequence in your template literal, most likely inside content's property value.\nBecause you write your CSS inside a JavaScript string you actually have to do double escaping, so for example \"content: '\\00d7';\" should become \"content: '\\\\00d7';\".\nYou can read more about this here:\nhttps://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#ES2018_revision_of_illegal_escape_sequences";
 
 var emotion_styled_base_browser_esm_Insertion = function Insertion(_ref) {
@@ -4200,7 +4308,7 @@ var emotion_styled_base_browser_esm_Insertion = function Insertion(_ref) {
       serialized = _ref.serialized,
       isStringTag = _ref.isStringTag;
   emotion_utils_browser_esm_registerStyles(cache, serialized, isStringTag);
-  var rules = (0,emotion_use_insertion_effect_with_fallbacks_browser_esm/* useInsertionEffectAlwaysWithSyncFallback */.L)(function () {
+  var rules = emotion_styled_base_browser_esm_useInsertionEffectMaybe(function () {
     return emotion_utils_browser_esm_insertStyles(cache, serialized, isStringTag);
   });
 
@@ -4313,7 +4421,7 @@ var createStyled = function createStyled(tag, options) {
     });
 
     Styled.withComponent = function (nextTag, nextOptions) {
-      return createStyled(nextTag, extends_extends({}, options, nextOptions, {
+      return createStyled(nextTag, (0,esm_extends/* default */.Z)({}, options, nextOptions, {
         shouldForwardProp: composeShouldForwardProps(Styled, nextOptions, true)
       })).apply(void 0, styles);
     };
@@ -4325,7 +4433,6 @@ var createStyled = function createStyled(tag, options) {
 /* harmony default export */ const emotion_styled_base_browser_esm = (createStyled);
 
 ;// CONCATENATED MODULE: ./node_modules/@emotion/styled/dist/emotion-styled.browser.esm.js
-
 
 
 
@@ -4346,27 +4453,19 @@ tags.forEach(function (tagName) {
 /* harmony default export */ const emotion_styled_browser_esm = (newStyled);
 
 ;// CONCATENATED MODULE: ./node_modules/@mui/styled-engine/index.js
-/** @license MUI v5.11.0
+/** @license MUI v5.6.1
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-/* eslint-disable no-underscore-dangle */
 
 function styled(tag, options) {
   const stylesFactory = emotion_styled_browser_esm(tag, options);
+
   if (false) {}
+
   return stylesFactory;
 }
-
-// eslint-disable-next-line @typescript-eslint/naming-convention
-const internal_processStyles = (tag, processor) => {
-  // Emotion attaches all the styles as `__emotion_styles`.
-  // Ref: https://github.com/emotion-js/emotion/blob/16d971d0da229596d6bcc39d282ba9753c9ee7cf/packages/styled/src/base.js#L186
-  if (Array.isArray(tag.__emotion_styles)) {
-    tag.__emotion_styles = processor(tag.__emotion_styles);
-  }
-};
 
 
 
@@ -4387,10 +4486,9 @@ const internal_processStyles = (tag, processor) => {
 
 
 
-
-
-// The breakpoint **start** at this value.
+ // The breakpoint **start** at this value.
 // For instance with the first breakpoint xs: [xs, sm[.
+
 const values = {
   xs: 0,
   // phone
@@ -4401,8 +4499,8 @@ const values = {
   lg: 1200,
   // desktop
   xl: 1536 // large screen
-};
 
+};
 const defaultBreakpoints = {
   // Sorted ASC by size. That's important.
   // It can't be configured as it's used statically for propTypes.
@@ -4411,6 +4509,7 @@ const defaultBreakpoints = {
 };
 function handleBreakpoints(props, propValue, styleFromPropValue) {
   const theme = props.theme || {};
+
   if (Array.isArray(propValue)) {
     const themeBreakpoints = theme.breakpoints || defaultBreakpoints;
     return propValue.reduce((acc, item, index) => {
@@ -4418,6 +4517,7 @@ function handleBreakpoints(props, propValue, styleFromPropValue) {
       return acc;
     }, {});
   }
+
   if (typeof propValue === 'object') {
     const themeBreakpoints = theme.breakpoints || defaultBreakpoints;
     return Object.keys(propValue).reduce((acc, breakpoint) => {
@@ -4429,15 +4529,16 @@ function handleBreakpoints(props, propValue, styleFromPropValue) {
         const cssKey = breakpoint;
         acc[cssKey] = propValue[cssKey];
       }
+
       return acc;
     }, {});
   }
+
   const output = styleFromPropValue(propValue);
   return output;
 }
+
 function breakpoints(styleFunction) {
-  // false positive
-  // eslint-disable-next-line react/function-component-definition
   const newStyleFunction = props => {
     const theme = props.theme || {};
     const base = styleFunction(props);
@@ -4449,17 +4550,21 @@ function breakpoints(styleFunction) {
           theme
         }, props[key]));
       }
+
       return acc;
     }, null);
     return merge(base, extended);
   };
+
   newStyleFunction.propTypes =  false ? 0 : {};
   newStyleFunction.filterProps = ['xs', 'sm', 'md', 'lg', 'xl', ...styleFunction.filterProps];
   return newStyleFunction;
 }
+
 function createEmptyBreakpointObject(breakpointsInput = {}) {
   var _breakpointsInput$key;
-  const breakpointsInOrder = (_breakpointsInput$key = breakpointsInput.keys) == null ? void 0 : _breakpointsInput$key.reduce((acc, key) => {
+
+  const breakpointsInOrder = breakpointsInput == null ? void 0 : (_breakpointsInput$key = breakpointsInput.keys) == null ? void 0 : _breakpointsInput$key.reduce((acc, key) => {
     const breakpointStyleKey = breakpointsInput.up(key);
     acc[breakpointStyleKey] = {};
     return acc;
@@ -4470,9 +4575,11 @@ function removeUnusedBreakpoints(breakpointKeys, style) {
   return breakpointKeys.reduce((acc, key) => {
     const breakpointOutput = acc[key];
     const isBreakpointUnused = !breakpointOutput || Object.keys(breakpointOutput).length === 0;
+
     if (isBreakpointUnused) {
       delete acc[key];
     }
+
     return acc;
   }, style);
 }
@@ -4480,18 +4587,19 @@ function mergeBreakpointsInOrder(breakpointsInput, ...styles) {
   const emptyBreakpoints = createEmptyBreakpointObject(breakpointsInput);
   const mergedOutput = [emptyBreakpoints, ...styles].reduce((prev, next) => deepmerge(prev, next), {});
   return removeUnusedBreakpoints(Object.keys(emptyBreakpoints), mergedOutput);
-}
-
-// compute base for responsive values; e.g.,
+} // compute base for responsive values; e.g.,
 // [1,2,3] => {xs: true, sm: true, md: true}
 // {xs: 1, sm: 2, md: 3} => {xs: true, sm: true, md: true}
+
 function computeBreakpointsBase(breakpointValues, themeBreakpoints) {
   // fixed value
   if (typeof breakpointValues !== 'object') {
     return {};
   }
+
   const base = {};
   const breakpointsKeys = Object.keys(themeBreakpoints);
+
   if (Array.isArray(breakpointValues)) {
     breakpointsKeys.forEach((breakpoint, i) => {
       if (i < breakpointValues.length) {
@@ -4505,6 +4613,7 @@ function computeBreakpointsBase(breakpointValues, themeBreakpoints) {
       }
     });
   }
+
   return base;
 }
 function resolveBreakpointValues({
@@ -4514,20 +4623,21 @@ function resolveBreakpointValues({
 }) {
   const base = customBase || computeBreakpointsBase(breakpointValues, themeBreakpoints);
   const keys = Object.keys(base);
+
   if (keys.length === 0) {
     return breakpointValues;
   }
+
   let previous;
   return keys.reduce((acc, breakpoint, i) => {
     if (Array.isArray(breakpointValues)) {
       acc[breakpoint] = breakpointValues[i] != null ? breakpointValues[i] : breakpointValues[previous];
       previous = i;
-    } else if (typeof breakpointValues === 'object') {
-      acc[breakpoint] = breakpointValues[breakpoint] != null ? breakpointValues[breakpoint] : breakpointValues[previous];
-      previous = breakpoint;
     } else {
-      acc[breakpoint] = breakpointValues;
+      acc[breakpoint] = breakpointValues[breakpoint] != null ? breakpointValues[breakpoint] : breakpointValues[previous] || breakpointValues;
+      previous = breakpoint;
     }
+
     return acc;
   }, {});
 }
@@ -4545,8 +4655,9 @@ function resolveBreakpointValues({
 /* harmony export */   "_j": () => (/* binding */ darken),
 /* harmony export */   "mi": () => (/* binding */ getContrastRatio)
 /* harmony export */ });
-/* unused harmony exports hexToRgb, decomposeColor, colorChannel, private_safeColorChannel, recomposeColor, rgbToHex, hslToRgb, getLuminance, private_safeAlpha, private_safeDarken, private_safeLighten, emphasize, private_safeEmphasize */
+/* unused harmony exports hexToRgb, decomposeColor, colorChannel, recomposeColor, rgbToHex, hslToRgb, getLuminance, emphasize */
 /* harmony import */ var _mui_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1387);
+
 
 /**
  * Returns a number whose value is limited to the given range.
@@ -4557,64 +4668,78 @@ function resolveBreakpointValues({
  */
 function clamp(value, min = 0, max = 1) {
   if (false) {}
+
   return Math.min(Math.max(min, value), max);
 }
-
 /**
  * Converts a color from CSS hex format to CSS rgb format.
  * @param {string} color - Hex color, i.e. #nnn or #nnnnnn
  * @returns {string} A CSS rgb color string
  */
+
+
 function hexToRgb(color) {
   color = color.slice(1);
   const re = new RegExp(`.{1,${color.length >= 6 ? 2 : 1}}`, 'g');
   let colors = color.match(re);
+
   if (colors && colors[0].length === 1) {
     colors = colors.map(n => n + n);
   }
+
   return colors ? `rgb${colors.length === 4 ? 'a' : ''}(${colors.map((n, index) => {
     return index < 3 ? parseInt(n, 16) : Math.round(parseInt(n, 16) / 255 * 1000) / 1000;
   }).join(', ')})` : '';
 }
+
 function intToHex(int) {
   const hex = int.toString(16);
   return hex.length === 1 ? `0${hex}` : hex;
 }
-
 /**
  * Returns an object with the type and values of a color.
  *
  * Note: Does not support rgb % values.
- * @param {string} color - CSS color, i.e. one of: #nnn, #nnnnnn, rgb(), rgba(), hsl(), hsla(), color()
+ * @param {string} color - CSS color, i.e. one of: #nnn, #nnnnnn, rgb(), rgba(), hsl(), hsla()
  * @returns {object} - A MUI color object: {type: string, values: number[]}
  */
+
+
 function decomposeColor(color) {
   // Idempotent
   if (color.type) {
     return color;
   }
+
   if (color.charAt(0) === '#') {
     return decomposeColor(hexToRgb(color));
   }
+
   const marker = color.indexOf('(');
   const type = color.substring(0, marker);
+
   if (['rgb', 'rgba', 'hsl', 'hsla', 'color'].indexOf(type) === -1) {
     throw new Error( false ? 0 : (0,_mui_utils__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Z)(9, color));
   }
+
   let values = color.substring(marker + 1, color.length - 1);
   let colorSpace;
+
   if (type === 'color') {
     values = values.split(' ');
     colorSpace = values.shift();
+
     if (values.length === 4 && values[3].charAt(0) === '/') {
       values[3] = values[3].slice(1);
     }
+
     if (['srgb', 'display-p3', 'a98-rgb', 'prophoto-rgb', 'rec-2020'].indexOf(colorSpace) === -1) {
       throw new Error( false ? 0 : (0,_mui_utils__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Z)(10, colorSpace));
     }
   } else {
     values = values.split(',');
   }
+
   values = values.map(value => parseFloat(value));
   return {
     type,
@@ -4622,33 +4747,25 @@ function decomposeColor(color) {
     colorSpace
   };
 }
-
 /**
  * Returns a channel created from the input color.
  *
- * @param {string} color - CSS color, i.e. one of: #nnn, #nnnnnn, rgb(), rgba(), hsl(), hsla(), color()
+ * @param {string} color - CSS color, i.e. one of: #nnn, #nnnnnn, rgb(), rgba(), hsl(), hsla()
  * @returns {string} - The channel for the color, that can be used in rgba or hsla colors
  */
+
 const colorChannel = color => {
   const decomposedColor = decomposeColor(color);
   return decomposedColor.values.slice(0, 3).map((val, idx) => decomposedColor.type.indexOf('hsl') !== -1 && idx !== 0 ? `${val}%` : val).join(' ');
 };
-const private_safeColorChannel = (color, warning) => {
-  try {
-    return colorChannel(color);
-  } catch (error) {
-    if (warning && "production" !== 'production') {}
-    return color;
-  }
-};
-
 /**
  * Converts a color object with type and values to a string.
  * @param {object} color - Decomposed color
- * @param {string} color.type - One of: 'rgb', 'rgba', 'hsl', 'hsla', 'color'
+ * @param {string} color.type - One of: 'rgb', 'rgba', 'hsl', 'hsla'
  * @param {array} color.values - [n,n,n] or [n,n,n,n]
  * @returns {string} A CSS color string
  */
+
 function recomposeColor(color) {
   const {
     type,
@@ -4657,6 +4774,7 @@ function recomposeColor(color) {
   let {
     values
   } = color;
+
   if (type.indexOf('rgb') !== -1) {
     // Only convert the first 3 values to int (i.e. not alpha)
     values = values.map((n, i) => i < 3 ? parseInt(n, 10) : n);
@@ -4664,35 +4782,38 @@ function recomposeColor(color) {
     values[1] = `${values[1]}%`;
     values[2] = `${values[2]}%`;
   }
+
   if (type.indexOf('color') !== -1) {
     values = `${colorSpace} ${values.join(' ')}`;
   } else {
     values = `${values.join(', ')}`;
   }
+
   return `${type}(${values})`;
 }
-
 /**
  * Converts a color from CSS rgb format to CSS hex format.
  * @param {string} color - RGB color, i.e. rgb(n, n, n)
  * @returns {string} A CSS rgb color string, i.e. #nnnnnn
  */
+
 function rgbToHex(color) {
   // Idempotent
   if (color.indexOf('#') === 0) {
     return color;
   }
+
   const {
     values
   } = decomposeColor(color);
   return `#${values.map((n, i) => intToHex(i === 3 ? Math.round(255 * n) : n)).join('')}`;
 }
-
 /**
  * Converts a color from hsl format to rgb format.
  * @param {string} color - HSL color values
  * @returns {string} rgb color values
  */
+
 function hslToRgb(color) {
   color = decomposeColor(color);
   const {
@@ -4702,13 +4823,17 @@ function hslToRgb(color) {
   const s = values[1] / 100;
   const l = values[2] / 100;
   const a = s * Math.min(l, 1 - l);
+
   const f = (n, k = (n + h / 30) % 12) => l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+
   let type = 'rgb';
   const rgb = [Math.round(f(0) * 255), Math.round(f(8) * 255), Math.round(f(4) * 255)];
+
   if (color.type === 'hsla') {
     type += 'a';
     rgb.push(values[3]);
   }
+
   return recomposeColor({
     type,
     values: rgb
@@ -4722,21 +4847,20 @@ function hslToRgb(color) {
  * @param {string} color - CSS color, i.e. one of: #nnn, #nnnnnn, rgb(), rgba(), hsl(), hsla(), color()
  * @returns {number} The relative brightness of the color in the range 0 - 1
  */
+
 function getLuminance(color) {
   color = decomposeColor(color);
-  let rgb = color.type === 'hsl' || color.type === 'hsla' ? decomposeColor(hslToRgb(color)).values : color.values;
+  let rgb = color.type === 'hsl' ? decomposeColor(hslToRgb(color)).values : color.values;
   rgb = rgb.map(val => {
     if (color.type !== 'color') {
       val /= 255; // normalized
     }
 
     return val <= 0.03928 ? val / 12.92 : ((val + 0.055) / 1.055) ** 2.4;
-  });
+  }); // Truncate at 3 digits
 
-  // Truncate at 3 digits
   return Number((0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2]).toFixed(3));
 }
-
 /**
  * Calculates the contrast ratio between two colors.
  *
@@ -4745,12 +4869,12 @@ function getLuminance(color) {
  * @param {string} background - CSS color, i.e. one of: #nnn, #nnnnnn, rgb(), rgba(), hsl(), hsla()
  * @returns {number} A contrast ratio value in the range 0 - 21.
  */
+
 function getContrastRatio(foreground, background) {
   const lumA = getLuminance(foreground);
   const lumB = getLuminance(background);
   return (Math.max(lumA, lumB) + 0.05) / (Math.min(lumA, lumB) + 0.05);
 }
-
 /**
  * Sets the absolute transparency of a color.
  * Any existing alpha values are overwritten.
@@ -4758,37 +4882,34 @@ function getContrastRatio(foreground, background) {
  * @param {number} value - value to set the alpha channel to in the range 0 - 1
  * @returns {string} A CSS color string. Hex input values are returned as rgb
  */
+
 function alpha(color, value) {
   color = decomposeColor(color);
   value = clamp(value);
+
   if (color.type === 'rgb' || color.type === 'hsl') {
     color.type += 'a';
   }
+
   if (color.type === 'color') {
     color.values[3] = `/${value}`;
   } else {
     color.values[3] = value;
   }
+
   return recomposeColor(color);
 }
-function private_safeAlpha(color, value, warning) {
-  try {
-    return alpha(color, value);
-  } catch (error) {
-    if (warning && "production" !== 'production') {}
-    return color;
-  }
-}
-
 /**
  * Darkens a color.
  * @param {string} color - CSS color, i.e. one of: #nnn, #nnnnnn, rgb(), rgba(), hsl(), hsla(), color()
  * @param {number} coefficient - multiplier in the range 0 - 1
  * @returns {string} A CSS color string. Hex input values are returned as rgb
  */
+
 function darken(color, coefficient) {
   color = decomposeColor(color);
   coefficient = clamp(coefficient);
+
   if (color.type.indexOf('hsl') !== -1) {
     color.values[2] *= 1 - coefficient;
   } else if (color.type.indexOf('rgb') !== -1 || color.type.indexOf('color') !== -1) {
@@ -4796,26 +4917,20 @@ function darken(color, coefficient) {
       color.values[i] *= 1 - coefficient;
     }
   }
+
   return recomposeColor(color);
 }
-function private_safeDarken(color, coefficient, warning) {
-  try {
-    return darken(color, coefficient);
-  } catch (error) {
-    if (warning && "production" !== 'production') {}
-    return color;
-  }
-}
-
 /**
  * Lightens a color.
  * @param {string} color - CSS color, i.e. one of: #nnn, #nnnnnn, rgb(), rgba(), hsl(), hsla(), color()
  * @param {number} coefficient - multiplier in the range 0 - 1
  * @returns {string} A CSS color string. Hex input values are returned as rgb
  */
+
 function lighten(color, coefficient) {
   color = decomposeColor(color);
   coefficient = clamp(coefficient);
+
   if (color.type.indexOf('hsl') !== -1) {
     color.values[2] += (100 - color.values[2]) * coefficient;
   } else if (color.type.indexOf('rgb') !== -1) {
@@ -4827,17 +4942,9 @@ function lighten(color, coefficient) {
       color.values[i] += (1 - color.values[i]) * coefficient;
     }
   }
+
   return recomposeColor(color);
 }
-function private_safeLighten(color, coefficient, warning) {
-  try {
-    return lighten(color, coefficient);
-  } catch (error) {
-    if (warning && "production" !== 'production') {}
-    return color;
-  }
-}
-
 /**
  * Darken or lighten a color, depending on its luminance.
  * Light colors are darkened, dark colors are lightened.
@@ -4845,16 +4952,9 @@ function private_safeLighten(color, coefficient, warning) {
  * @param {number} coefficient=0.15 - multiplier in the range 0 - 1
  * @returns {string} A CSS color string. Hex input values are returned as rgb
  */
+
 function emphasize(color, coefficient = 0.15) {
   return getLuminance(color) > 0.5 ? darken(color, coefficient) : lighten(color, coefficient);
-}
-function private_safeEmphasize(color, coefficient, warning) {
-  try {
-    return private_safeEmphasize(color, coefficient);
-  } catch (error) {
-    if (warning && "production" !== 'production') {}
-    return color;
-  }
 }
 
 /***/ }),
@@ -4869,10 +4969,10 @@ __webpack_require__.d(__webpack_exports__, {
   "Z": () => (/* binding */ createTheme_createTheme)
 });
 
-// EXTERNAL MODULE: ./node_modules/@mui/system/node_modules/@babel/runtime/helpers/esm/extends.js
-var esm_extends = __webpack_require__(4695);
-// EXTERNAL MODULE: ./node_modules/@mui/system/node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js
-var objectWithoutPropertiesLoose = __webpack_require__(916);
+// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/extends.js
+var esm_extends = __webpack_require__(7462);
+// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js
+var objectWithoutPropertiesLoose = __webpack_require__(3366);
 // EXTERNAL MODULE: ./node_modules/@mui/utils/esm/deepmerge.js
 var deepmerge = __webpack_require__(9766);
 ;// CONCATENATED MODULE: ./node_modules/@mui/system/esm/createTheme/createBreakpoints.js
@@ -4882,72 +4982,84 @@ const _excluded = ["values", "unit", "step"];
 // Sorted ASC by size. That's important.
 // It can't be configured as it's used statically for propTypes.
 const breakpointKeys = (/* unused pure expression or super */ null && (['xs', 'sm', 'md', 'lg', 'xl']));
+
 const sortBreakpointsValues = values => {
   const breakpointsAsArray = Object.keys(values).map(key => ({
     key,
     val: values[key]
-  })) || [];
-  // Sort in ascending order
+  })) || []; // Sort in ascending order
+
   breakpointsAsArray.sort((breakpoint1, breakpoint2) => breakpoint1.val - breakpoint2.val);
   return breakpointsAsArray.reduce((acc, obj) => {
     return (0,esm_extends/* default */.Z)({}, acc, {
       [obj.key]: obj.val
     });
   }, {});
-};
+}; // Keep in mind that @media is inclusive by the CSS specification.
 
-// Keep in mind that @media is inclusive by the CSS specification.
+
 function createBreakpoints(breakpoints) {
   const {
-      // The breakpoint **start** at this value.
-      // For instance with the first breakpoint xs: [xs, sm).
-      values = {
-        xs: 0,
-        // phone
-        sm: 600,
-        // tablet
-        md: 900,
-        // small laptop
-        lg: 1200,
-        // desktop
-        xl: 1536 // large screen
-      },
+    // The breakpoint **start** at this value.
+    // For instance with the first breakpoint xs: [xs, sm).
+    values = {
+      xs: 0,
+      // phone
+      sm: 600,
+      // tablet
+      md: 900,
+      // small laptop
+      lg: 1200,
+      // desktop
+      xl: 1536 // large screen
 
-      unit = 'px',
-      step = 5
-    } = breakpoints,
-    other = (0,objectWithoutPropertiesLoose/* default */.Z)(breakpoints, _excluded);
+    },
+    unit = 'px',
+    step = 5
+  } = breakpoints,
+        other = (0,objectWithoutPropertiesLoose/* default */.Z)(breakpoints, _excluded);
+
   const sortedValues = sortBreakpointsValues(values);
   const keys = Object.keys(sortedValues);
+
   function up(key) {
     const value = typeof values[key] === 'number' ? values[key] : key;
     return `@media (min-width:${value}${unit})`;
   }
+
   function down(key) {
     const value = typeof values[key] === 'number' ? values[key] : key;
     return `@media (max-width:${value - step / 100}${unit})`;
   }
+
   function between(start, end) {
     const endIndex = keys.indexOf(end);
     return `@media (min-width:${typeof values[start] === 'number' ? values[start] : start}${unit}) and ` + `(max-width:${(endIndex !== -1 && typeof values[keys[endIndex]] === 'number' ? values[keys[endIndex]] : end) - step / 100}${unit})`;
   }
+
   function only(key) {
     if (keys.indexOf(key) + 1 < keys.length) {
       return between(key, keys[keys.indexOf(key) + 1]);
     }
+
     return up(key);
   }
+
   function not(key) {
     // handle first and last key separately, for better readability
     const keyIndex = keys.indexOf(key);
+
     if (keyIndex === 0) {
       return up(keys[1]);
     }
+
     if (keyIndex === keys.length - 1) {
       return down(keys[keyIndex]);
     }
+
     return between(key, keys[keys.indexOf(key) + 1]).replace('@media', '@media not all and');
   }
+
   return (0,esm_extends/* default */.Z)({
     keys,
     values: sortedValues,
@@ -4968,35 +5080,34 @@ const shape = {
 var esm_spacing = __webpack_require__(2605);
 ;// CONCATENATED MODULE: ./node_modules/@mui/system/esm/createTheme/createSpacing.js
 
-/* tslint:enable:unified-signatures */
 
+/* tslint:enable:unified-signatures */
 function createSpacing(spacingInput = 8) {
   // Already transformed.
   if (spacingInput.mui) {
     return spacingInput;
-  }
-
-  // Material Design layouts are visually balanced. Most measurements align to an 8dp grid, which aligns both spacing and the overall layout.
+  } // Material Design layouts are visually balanced. Most measurements align to an 8dp grid, which aligns both spacing and the overall layout.
   // Smaller components, such as icons, can align to a 4dp grid.
-  // https://m2.material.io/design/layout/understanding-layout.html
+  // https://material.io/design/layout/understanding-layout.html#usage
+
+
   const transform = (0,esm_spacing/* createUnarySpacing */.hB)({
     spacing: spacingInput
   });
+
   const spacing = (...argsInput) => {
     if (false) {}
+
     const args = argsInput.length === 0 ? [1] : argsInput;
     return args.map(argument => {
       const output = transform(argument);
       return typeof output === 'number' ? `${output}px` : output;
     }).join(' ');
   };
+
   spacing.mui = true;
   return spacing;
 }
-// EXTERNAL MODULE: ./node_modules/@mui/system/esm/styleFunctionSx/styleFunctionSx.js
-var styleFunctionSx = __webpack_require__(6523);
-// EXTERNAL MODULE: ./node_modules/@mui/system/esm/styleFunctionSx/defaultSxConfig.js + 5 modules
-var defaultSxConfig = __webpack_require__(8010);
 ;// CONCATENATED MODULE: ./node_modules/@mui/system/esm/createTheme/createTheme.js
 
 
@@ -5006,15 +5117,15 @@ const createTheme_excluded = ["breakpoints", "palette", "spacing", "shape"];
 
 
 
-
 function createTheme(options = {}, ...args) {
   const {
-      breakpoints: breakpointsInput = {},
-      palette: paletteInput = {},
-      spacing: spacingInput,
-      shape: shapeInput = {}
-    } = options,
-    other = (0,objectWithoutPropertiesLoose/* default */.Z)(options, createTheme_excluded);
+    breakpoints: breakpointsInput = {},
+    palette: paletteInput = {},
+    spacing: spacingInput,
+    shape: shapeInput = {}
+  } = options,
+        other = (0,objectWithoutPropertiesLoose/* default */.Z)(options, createTheme_excluded);
+
   const breakpoints = createBreakpoints(breakpointsInput);
   const spacing = createSpacing(spacingInput);
   let muiTheme = (0,deepmerge/* default */.Z)({
@@ -5029,16 +5140,491 @@ function createTheme(options = {}, ...args) {
     shape: (0,esm_extends/* default */.Z)({}, createTheme_shape, shapeInput)
   }, other);
   muiTheme = args.reduce((acc, argument) => (0,deepmerge/* default */.Z)(acc, argument), muiTheme);
-  muiTheme.unstable_sxConfig = (0,esm_extends/* default */.Z)({}, defaultSxConfig/* default */.Z, other == null ? void 0 : other.unstable_sxConfig);
-  muiTheme.unstable_sx = function sx(props) {
-    return (0,styleFunctionSx/* default */.Z)({
-      sx: props,
-      theme: this
-    });
-  };
   return muiTheme;
 }
+
 /* harmony default export */ const createTheme_createTheme = (createTheme);
+
+/***/ }),
+
+/***/ 4178:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+
+// EXPORTS
+__webpack_require__.d(__webpack_exports__, {
+  "Gc": () => (/* binding */ propToStyleFunction),
+  "G$": () => (/* binding */ styleFunctionMapping)
+});
+
+// UNUSED EXPORTS: default
+
+// EXTERNAL MODULE: ./node_modules/@mui/system/esm/style.js
+var style = __webpack_require__(4844);
+// EXTERNAL MODULE: ./node_modules/@mui/system/esm/merge.js
+var merge = __webpack_require__(7730);
+;// CONCATENATED MODULE: ./node_modules/@mui/system/esm/compose.js
+
+
+function compose(...styles) {
+  const handlers = styles.reduce((acc, style) => {
+    style.filterProps.forEach(prop => {
+      acc[prop] = style;
+    });
+    return acc;
+  }, {});
+
+  const fn = props => {
+    return Object.keys(props).reduce((acc, prop) => {
+      if (handlers[prop]) {
+        return (0,merge/* default */.Z)(acc, handlers[prop](props));
+      }
+
+      return acc;
+    }, {});
+  };
+
+  fn.propTypes =  false ? 0 : {};
+  fn.filterProps = styles.reduce((acc, style) => acc.concat(style.filterProps), []);
+  return fn;
+}
+
+/* harmony default export */ const esm_compose = (compose);
+// EXTERNAL MODULE: ./node_modules/@mui/system/esm/spacing.js + 1 modules
+var spacing = __webpack_require__(2605);
+// EXTERNAL MODULE: ./node_modules/@mui/system/esm/breakpoints.js
+var breakpoints = __webpack_require__(5408);
+;// CONCATENATED MODULE: ./node_modules/@mui/system/esm/borders.js
+
+
+
+
+
+
+function getBorder(value) {
+  if (typeof value !== 'number') {
+    return value;
+  }
+
+  return `${value}px solid`;
+}
+
+const border = (0,style/* default */.Z)({
+  prop: 'border',
+  themeKey: 'borders',
+  transform: getBorder
+});
+const borderTop = (0,style/* default */.Z)({
+  prop: 'borderTop',
+  themeKey: 'borders',
+  transform: getBorder
+});
+const borderRight = (0,style/* default */.Z)({
+  prop: 'borderRight',
+  themeKey: 'borders',
+  transform: getBorder
+});
+const borderBottom = (0,style/* default */.Z)({
+  prop: 'borderBottom',
+  themeKey: 'borders',
+  transform: getBorder
+});
+const borderLeft = (0,style/* default */.Z)({
+  prop: 'borderLeft',
+  themeKey: 'borders',
+  transform: getBorder
+});
+const borderColor = (0,style/* default */.Z)({
+  prop: 'borderColor',
+  themeKey: 'palette'
+});
+const borderTopColor = (0,style/* default */.Z)({
+  prop: 'borderTopColor',
+  themeKey: 'palette'
+});
+const borderRightColor = (0,style/* default */.Z)({
+  prop: 'borderRightColor',
+  themeKey: 'palette'
+});
+const borderBottomColor = (0,style/* default */.Z)({
+  prop: 'borderBottomColor',
+  themeKey: 'palette'
+});
+const borderLeftColor = (0,style/* default */.Z)({
+  prop: 'borderLeftColor',
+  themeKey: 'palette'
+});
+const borderRadius = props => {
+  if (props.borderRadius !== undefined && props.borderRadius !== null) {
+    const transformer = (0,spacing/* createUnaryUnit */.eI)(props.theme, 'shape.borderRadius', 4, 'borderRadius');
+
+    const styleFromPropValue = propValue => ({
+      borderRadius: (0,spacing/* getValue */.NA)(transformer, propValue)
+    });
+
+    return (0,breakpoints/* handleBreakpoints */.k9)(props, props.borderRadius, styleFromPropValue);
+  }
+
+  return null;
+};
+borderRadius.propTypes =  false ? 0 : {};
+borderRadius.filterProps = ['borderRadius'];
+const borders = esm_compose(border, borderTop, borderRight, borderBottom, borderLeft, borderColor, borderTopColor, borderRightColor, borderBottomColor, borderLeftColor, borderRadius);
+/* harmony default export */ const esm_borders = (borders);
+;// CONCATENATED MODULE: ./node_modules/@mui/system/esm/display.js
+
+
+const displayPrint = (0,style/* default */.Z)({
+  prop: 'displayPrint',
+  cssProperty: false,
+  transform: value => ({
+    '@media print': {
+      display: value
+    }
+  })
+});
+const displayRaw = (0,style/* default */.Z)({
+  prop: 'display'
+});
+const overflow = (0,style/* default */.Z)({
+  prop: 'overflow'
+});
+const textOverflow = (0,style/* default */.Z)({
+  prop: 'textOverflow'
+});
+const visibility = (0,style/* default */.Z)({
+  prop: 'visibility'
+});
+const whiteSpace = (0,style/* default */.Z)({
+  prop: 'whiteSpace'
+});
+/* harmony default export */ const display = (esm_compose(displayPrint, displayRaw, overflow, textOverflow, visibility, whiteSpace));
+;// CONCATENATED MODULE: ./node_modules/@mui/system/esm/flexbox.js
+
+
+const flexBasis = (0,style/* default */.Z)({
+  prop: 'flexBasis'
+});
+const flexDirection = (0,style/* default */.Z)({
+  prop: 'flexDirection'
+});
+const flexWrap = (0,style/* default */.Z)({
+  prop: 'flexWrap'
+});
+const justifyContent = (0,style/* default */.Z)({
+  prop: 'justifyContent'
+});
+const alignItems = (0,style/* default */.Z)({
+  prop: 'alignItems'
+});
+const alignContent = (0,style/* default */.Z)({
+  prop: 'alignContent'
+});
+const order = (0,style/* default */.Z)({
+  prop: 'order'
+});
+const flex = (0,style/* default */.Z)({
+  prop: 'flex'
+});
+const flexGrow = (0,style/* default */.Z)({
+  prop: 'flexGrow'
+});
+const flexShrink = (0,style/* default */.Z)({
+  prop: 'flexShrink'
+});
+const alignSelf = (0,style/* default */.Z)({
+  prop: 'alignSelf'
+});
+const justifyItems = (0,style/* default */.Z)({
+  prop: 'justifyItems'
+});
+const justifySelf = (0,style/* default */.Z)({
+  prop: 'justifySelf'
+});
+const flexbox = esm_compose(flexBasis, flexDirection, flexWrap, justifyContent, alignItems, alignContent, order, flex, flexGrow, flexShrink, alignSelf, justifyItems, justifySelf);
+/* harmony default export */ const esm_flexbox = (flexbox);
+;// CONCATENATED MODULE: ./node_modules/@mui/system/esm/grid.js
+
+
+
+
+
+const gap = props => {
+  if (props.gap !== undefined && props.gap !== null) {
+    const transformer = (0,spacing/* createUnaryUnit */.eI)(props.theme, 'spacing', 8, 'gap');
+
+    const styleFromPropValue = propValue => ({
+      gap: (0,spacing/* getValue */.NA)(transformer, propValue)
+    });
+
+    return (0,breakpoints/* handleBreakpoints */.k9)(props, props.gap, styleFromPropValue);
+  }
+
+  return null;
+};
+gap.propTypes =  false ? 0 : {};
+gap.filterProps = ['gap'];
+const columnGap = props => {
+  if (props.columnGap !== undefined && props.columnGap !== null) {
+    const transformer = (0,spacing/* createUnaryUnit */.eI)(props.theme, 'spacing', 8, 'columnGap');
+
+    const styleFromPropValue = propValue => ({
+      columnGap: (0,spacing/* getValue */.NA)(transformer, propValue)
+    });
+
+    return (0,breakpoints/* handleBreakpoints */.k9)(props, props.columnGap, styleFromPropValue);
+  }
+
+  return null;
+};
+columnGap.propTypes =  false ? 0 : {};
+columnGap.filterProps = ['columnGap'];
+const rowGap = props => {
+  if (props.rowGap !== undefined && props.rowGap !== null) {
+    const transformer = (0,spacing/* createUnaryUnit */.eI)(props.theme, 'spacing', 8, 'rowGap');
+
+    const styleFromPropValue = propValue => ({
+      rowGap: (0,spacing/* getValue */.NA)(transformer, propValue)
+    });
+
+    return (0,breakpoints/* handleBreakpoints */.k9)(props, props.rowGap, styleFromPropValue);
+  }
+
+  return null;
+};
+rowGap.propTypes =  false ? 0 : {};
+rowGap.filterProps = ['rowGap'];
+const gridColumn = (0,style/* default */.Z)({
+  prop: 'gridColumn'
+});
+const gridRow = (0,style/* default */.Z)({
+  prop: 'gridRow'
+});
+const gridAutoFlow = (0,style/* default */.Z)({
+  prop: 'gridAutoFlow'
+});
+const gridAutoColumns = (0,style/* default */.Z)({
+  prop: 'gridAutoColumns'
+});
+const gridAutoRows = (0,style/* default */.Z)({
+  prop: 'gridAutoRows'
+});
+const gridTemplateColumns = (0,style/* default */.Z)({
+  prop: 'gridTemplateColumns'
+});
+const gridTemplateRows = (0,style/* default */.Z)({
+  prop: 'gridTemplateRows'
+});
+const gridTemplateAreas = (0,style/* default */.Z)({
+  prop: 'gridTemplateAreas'
+});
+const gridArea = (0,style/* default */.Z)({
+  prop: 'gridArea'
+});
+const grid = esm_compose(gap, columnGap, rowGap, gridColumn, gridRow, gridAutoFlow, gridAutoColumns, gridAutoRows, gridTemplateColumns, gridTemplateRows, gridTemplateAreas, gridArea);
+/* harmony default export */ const esm_grid = (grid);
+;// CONCATENATED MODULE: ./node_modules/@mui/system/esm/positions.js
+
+
+const position = (0,style/* default */.Z)({
+  prop: 'position'
+});
+const zIndex = (0,style/* default */.Z)({
+  prop: 'zIndex',
+  themeKey: 'zIndex'
+});
+const positions_top = (0,style/* default */.Z)({
+  prop: 'top'
+});
+const right = (0,style/* default */.Z)({
+  prop: 'right'
+});
+const bottom = (0,style/* default */.Z)({
+  prop: 'bottom'
+});
+const left = (0,style/* default */.Z)({
+  prop: 'left'
+});
+/* harmony default export */ const positions = (esm_compose(position, zIndex, positions_top, right, bottom, left));
+;// CONCATENATED MODULE: ./node_modules/@mui/system/esm/palette.js
+
+
+const color = (0,style/* default */.Z)({
+  prop: 'color',
+  themeKey: 'palette'
+});
+const bgcolor = (0,style/* default */.Z)({
+  prop: 'bgcolor',
+  cssProperty: 'backgroundColor',
+  themeKey: 'palette'
+});
+const backgroundColor = (0,style/* default */.Z)({
+  prop: 'backgroundColor',
+  themeKey: 'palette'
+});
+const palette = esm_compose(color, bgcolor, backgroundColor);
+/* harmony default export */ const esm_palette = (palette);
+;// CONCATENATED MODULE: ./node_modules/@mui/system/esm/shadows.js
+
+const boxShadow = (0,style/* default */.Z)({
+  prop: 'boxShadow',
+  themeKey: 'shadows'
+});
+/* harmony default export */ const shadows = (boxShadow);
+;// CONCATENATED MODULE: ./node_modules/@mui/system/esm/sizing.js
+
+
+
+
+function transform(value) {
+  return value <= 1 && value !== 0 ? `${value * 100}%` : value;
+}
+
+const width = (0,style/* default */.Z)({
+  prop: 'width',
+  transform
+});
+const maxWidth = props => {
+  if (props.maxWidth !== undefined && props.maxWidth !== null) {
+    const styleFromPropValue = propValue => {
+      var _props$theme, _props$theme$breakpoi, _props$theme$breakpoi2;
+
+      const breakpoint = ((_props$theme = props.theme) == null ? void 0 : (_props$theme$breakpoi = _props$theme.breakpoints) == null ? void 0 : (_props$theme$breakpoi2 = _props$theme$breakpoi.values) == null ? void 0 : _props$theme$breakpoi2[propValue]) || breakpoints/* values */.VO[propValue];
+      return {
+        maxWidth: breakpoint || transform(propValue)
+      };
+    };
+
+    return (0,breakpoints/* handleBreakpoints */.k9)(props, props.maxWidth, styleFromPropValue);
+  }
+
+  return null;
+};
+maxWidth.filterProps = ['maxWidth'];
+const minWidth = (0,style/* default */.Z)({
+  prop: 'minWidth',
+  transform
+});
+const height = (0,style/* default */.Z)({
+  prop: 'height',
+  transform
+});
+const maxHeight = (0,style/* default */.Z)({
+  prop: 'maxHeight',
+  transform
+});
+const minHeight = (0,style/* default */.Z)({
+  prop: 'minHeight',
+  transform
+});
+const sizeWidth = (0,style/* default */.Z)({
+  prop: 'size',
+  cssProperty: 'width',
+  transform
+});
+const sizeHeight = (0,style/* default */.Z)({
+  prop: 'size',
+  cssProperty: 'height',
+  transform
+});
+const boxSizing = (0,style/* default */.Z)({
+  prop: 'boxSizing'
+});
+const sizing = esm_compose(width, maxWidth, minWidth, height, maxHeight, minHeight, boxSizing);
+/* harmony default export */ const esm_sizing = (sizing);
+;// CONCATENATED MODULE: ./node_modules/@mui/system/esm/typography.js
+
+
+const fontFamily = (0,style/* default */.Z)({
+  prop: 'fontFamily',
+  themeKey: 'typography'
+});
+const fontSize = (0,style/* default */.Z)({
+  prop: 'fontSize',
+  themeKey: 'typography'
+});
+const fontStyle = (0,style/* default */.Z)({
+  prop: 'fontStyle',
+  themeKey: 'typography'
+});
+const fontWeight = (0,style/* default */.Z)({
+  prop: 'fontWeight',
+  themeKey: 'typography'
+});
+const letterSpacing = (0,style/* default */.Z)({
+  prop: 'letterSpacing'
+});
+const textTransform = (0,style/* default */.Z)({
+  prop: 'textTransform'
+});
+const lineHeight = (0,style/* default */.Z)({
+  prop: 'lineHeight'
+});
+const textAlign = (0,style/* default */.Z)({
+  prop: 'textAlign'
+});
+const typographyVariant = (0,style/* default */.Z)({
+  prop: 'typography',
+  cssProperty: false,
+  themeKey: 'typography'
+});
+const typography = esm_compose(typographyVariant, fontFamily, fontSize, fontStyle, fontWeight, letterSpacing, lineHeight, textAlign, textTransform);
+/* harmony default export */ const esm_typography = (typography);
+;// CONCATENATED MODULE: ./node_modules/@mui/system/esm/getThemeValue.js
+
+
+
+
+
+
+
+
+
+
+const filterPropsMapping = {
+  borders: esm_borders.filterProps,
+  display: display.filterProps,
+  flexbox: esm_flexbox.filterProps,
+  grid: esm_grid.filterProps,
+  positions: positions.filterProps,
+  palette: esm_palette.filterProps,
+  shadows: shadows.filterProps,
+  sizing: esm_sizing.filterProps,
+  spacing: spacing/* default.filterProps */.ZP.filterProps,
+  typography: esm_typography.filterProps
+};
+const styleFunctionMapping = {
+  borders: esm_borders,
+  display: display,
+  flexbox: esm_flexbox,
+  grid: esm_grid,
+  positions: positions,
+  palette: esm_palette,
+  shadows: shadows,
+  sizing: esm_sizing,
+  spacing: spacing/* default */.ZP,
+  typography: esm_typography
+};
+const propToStyleFunction = Object.keys(filterPropsMapping).reduce((acc, styleFnName) => {
+  filterPropsMapping[styleFnName].forEach(propName => {
+    acc[propName] = styleFunctionMapping[styleFnName];
+  });
+  return acc;
+}, {});
+
+function getThemeValue(prop, value, theme) {
+  const inputProps = {
+    [prop]: value,
+    theme
+  };
+  const styleFunction = propToStyleFunction[prop];
+  return styleFunction ? styleFunction(inputProps) : {
+    [prop]: value
+  };
+}
+
+/* harmony default export */ const esm_getThemeValue = ((/* unused pure expression or super */ null && (getThemeValue)));
 
 /***/ }),
 
@@ -5051,12 +5637,15 @@ function createTheme(options = {}, ...args) {
 /* harmony export */ });
 /* harmony import */ var _mui_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(9766);
 
+
 function merge(acc, item) {
   if (!item) {
     return acc;
   }
+
   return (0,_mui_utils__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Z)(acc, item, {
     clone: false // No need to clone deep, it's way faster.
+
   });
 }
 
@@ -5073,12 +5662,11 @@ function merge(acc, item) {
 __webpack_require__.d(__webpack_exports__, {
   "hB": () => (/* binding */ createUnarySpacing),
   "eI": () => (/* binding */ createUnaryUnit),
-  "NA": () => (/* binding */ getValue),
-  "e6": () => (/* binding */ margin),
-  "o3": () => (/* binding */ padding)
+  "ZP": () => (/* binding */ esm_spacing),
+  "NA": () => (/* binding */ getValue)
 });
 
-// UNUSED EXPORTS: default, getStyleFromPropValue, marginKeys, paddingKeys
+// UNUSED EXPORTS: getStyleFromPropValue, margin, padding
 
 // EXTERNAL MODULE: ./node_modules/@mui/system/esm/breakpoints.js
 var breakpoints = __webpack_require__(5408);
@@ -5093,6 +5681,7 @@ function memoize(fn) {
     if (cache[arg] === undefined) {
       cache[arg] = fn(arg);
     }
+
     return cache[arg];
   };
 }
@@ -5119,11 +5708,10 @@ const aliases = {
   marginY: 'my',
   paddingX: 'px',
   paddingY: 'py'
-};
-
-// memoize() impact:
+}; // memoize() impact:
 // From 300,000 ops/sec
 // To 350,000 ops/sec
+
 const getCssProperties = memoize(prop => {
   // It's not a shorthand notation.
   if (prop.length > 2) {
@@ -5133,6 +5721,7 @@ const getCssProperties = memoize(prop => {
       return [prop];
     }
   }
+
   const [a, b] = prop.split('');
   const property = properties[a];
   const direction = directions[b] || '';
@@ -5143,29 +5732,39 @@ const paddingKeys = ['p', 'pt', 'pr', 'pb', 'pl', 'px', 'py', 'padding', 'paddin
 const spacingKeys = [...marginKeys, ...paddingKeys];
 function createUnaryUnit(theme, themeKey, defaultValue, propName) {
   var _getPath;
-  const themeSpacing = (_getPath = (0,style/* getPath */.DW)(theme, themeKey, false)) != null ? _getPath : defaultValue;
+
+  const themeSpacing = (_getPath = (0,style/* getPath */.D)(theme, themeKey)) != null ? _getPath : defaultValue;
+
   if (typeof themeSpacing === 'number') {
     return abs => {
       if (typeof abs === 'string') {
         return abs;
       }
+
       if (false) {}
+
       return themeSpacing * abs;
     };
   }
+
   if (Array.isArray(themeSpacing)) {
     return abs => {
       if (typeof abs === 'string') {
         return abs;
       }
+
       if (false) {}
+
       return themeSpacing[abs];
     };
   }
+
   if (typeof themeSpacing === 'function') {
     return themeSpacing;
   }
+
   if (false) {}
+
   return () => undefined;
 }
 function createUnarySpacing(theme) {
@@ -5175,14 +5774,18 @@ function getValue(transformer, propValue) {
   if (typeof propValue === 'string' || propValue == null) {
     return propValue;
   }
+
   const abs = Math.abs(propValue);
   const transformed = transformer(abs);
+
   if (propValue >= 0) {
     return transformed;
   }
+
   if (typeof transformed === 'number') {
     return -transformed;
   }
+
   return `-${transformed}`;
 }
 function getStyleFromPropValue(cssProperties, transformer) {
@@ -5191,21 +5794,25 @@ function getStyleFromPropValue(cssProperties, transformer) {
     return acc;
   }, {});
 }
+
 function resolveCssProperty(props, keys, prop, transformer) {
   // Using a hash computation over an array iteration could be faster, but with only 28 items,
   // it's doesn't worth the bundle size.
   if (keys.indexOf(prop) === -1) {
     return null;
   }
+
   const cssProperties = getCssProperties(prop);
   const styleFromPropValue = getStyleFromPropValue(cssProperties, transformer);
   const propValue = props[prop];
   return (0,breakpoints/* handleBreakpoints */.k9)(props, propValue, styleFromPropValue);
 }
+
 function spacing_style(props, keys) {
   const transformer = createUnarySpacing(props.theme);
   return Object.keys(props).map(prop => resolveCssProperty(props, keys, prop, transformer)).reduce(merge/* default */.Z, {});
 }
+
 function margin(props) {
   return spacing_style(props, marginKeys);
 }
@@ -5216,12 +5823,14 @@ function padding(props) {
 }
 padding.propTypes =  false ? 0 : {};
 padding.filterProps = paddingKeys;
+
 function spacing(props) {
   return spacing_style(props, spacingKeys);
 }
+
 spacing.propTypes =  false ? 0 : {};
 spacing.filterProps = spacingKeys;
-/* harmony default export */ const esm_spacing = ((/* unused pure expression or super */ null && (spacing)));
+/* harmony default export */ const esm_spacing = (spacing);
 
 /***/ }),
 
@@ -5230,36 +5839,40 @@ spacing.filterProps = spacingKeys;
 
 "use strict";
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "DW": () => (/* binding */ getPath),
-/* harmony export */   "Jq": () => (/* binding */ getStyleValue),
-/* harmony export */   "ZP": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   "D": () => (/* binding */ getPath),
+/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _mui_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(8320);
 /* harmony import */ var _breakpoints__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5408);
 
 
 
-function getPath(obj, path, checkVars = true) {
+function getPath(obj, path) {
   if (!path || typeof path !== 'string') {
     return null;
-  }
+  } // Check if CSS variables are used
 
-  // Check if CSS variables are used
-  if (obj && obj.vars && checkVars) {
+
+  if (obj && obj.vars) {
     const val = `vars.${path}`.split('.').reduce((acc, item) => acc && acc[item] ? acc[item] : null, obj);
+
     if (val != null) {
       return val;
     }
   }
+
   return path.split('.').reduce((acc, item) => {
     if (acc && acc[item] != null) {
       return acc[item];
     }
+
     return null;
   }, obj);
 }
-function getStyleValue(themeMapping, transform, propValueFinal, userValue = propValueFinal) {
+
+function getValue(themeMapping, transform, propValueFinal, userValue = propValueFinal) {
   let value;
+
   if (typeof themeMapping === 'function') {
     value = themeMapping(propValueFinal);
   } else if (Array.isArray(themeMapping)) {
@@ -5267,11 +5880,14 @@ function getStyleValue(themeMapping, transform, propValueFinal, userValue = prop
   } else {
     value = getPath(themeMapping, propValueFinal) || userValue;
   }
+
   if (transform) {
-    value = transform(value, userValue, themeMapping);
+    value = transform(value);
   }
+
   return value;
 }
+
 function style(options) {
   const {
     prop,
@@ -5280,603 +5896,41 @@ function style(options) {
     transform
   } = options;
 
-  // false positive
-  // eslint-disable-next-line react/function-component-definition
   const fn = props => {
     if (props[prop] == null) {
       return null;
     }
+
     const propValue = props[prop];
     const theme = props.theme;
     const themeMapping = getPath(theme, themeKey) || {};
+
     const styleFromPropValue = propValueFinal => {
-      let value = getStyleValue(themeMapping, transform, propValueFinal);
+      let value = getValue(themeMapping, transform, propValueFinal);
+
       if (propValueFinal === value && typeof propValueFinal === 'string') {
         // Haven't found value
-        value = getStyleValue(themeMapping, transform, `${prop}${propValueFinal === 'default' ? '' : (0,_mui_utils__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Z)(propValueFinal)}`, propValueFinal);
+        value = getValue(themeMapping, transform, `${prop}${propValueFinal === 'default' ? '' : (0,_mui_utils__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Z)(propValueFinal)}`, propValueFinal);
       }
+
       if (cssProperty === false) {
         return value;
       }
+
       return {
         [cssProperty]: value
       };
     };
+
     return (0,_breakpoints__WEBPACK_IMPORTED_MODULE_1__/* .handleBreakpoints */ .k9)(props, propValue, styleFromPropValue);
   };
+
   fn.propTypes =  false ? 0 : {};
   fn.filterProps = [prop];
   return fn;
 }
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (style);
-
-/***/ }),
-
-/***/ 8010:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-
-// EXPORTS
-__webpack_require__.d(__webpack_exports__, {
-  "Z": () => (/* binding */ styleFunctionSx_defaultSxConfig)
-});
-
-// EXTERNAL MODULE: ./node_modules/@mui/system/esm/spacing.js + 1 modules
-var spacing = __webpack_require__(2605);
-// EXTERNAL MODULE: ./node_modules/@mui/system/esm/style.js
-var style = __webpack_require__(4844);
-// EXTERNAL MODULE: ./node_modules/@mui/system/esm/merge.js
-var merge = __webpack_require__(7730);
-;// CONCATENATED MODULE: ./node_modules/@mui/system/esm/compose.js
-
-function compose(...styles) {
-  const handlers = styles.reduce((acc, style) => {
-    style.filterProps.forEach(prop => {
-      acc[prop] = style;
-    });
-    return acc;
-  }, {});
-
-  // false positive
-  // eslint-disable-next-line react/function-component-definition
-  const fn = props => {
-    return Object.keys(props).reduce((acc, prop) => {
-      if (handlers[prop]) {
-        return (0,merge/* default */.Z)(acc, handlers[prop](props));
-      }
-      return acc;
-    }, {});
-  };
-  fn.propTypes =  false ? 0 : {};
-  fn.filterProps = styles.reduce((acc, style) => acc.concat(style.filterProps), []);
-  return fn;
-}
-/* harmony default export */ const esm_compose = (compose);
-// EXTERNAL MODULE: ./node_modules/@mui/system/esm/breakpoints.js
-var breakpoints = __webpack_require__(5408);
-;// CONCATENATED MODULE: ./node_modules/@mui/system/esm/borders.js
-
-
-
-
-
-function borderTransform(value) {
-  if (typeof value !== 'number') {
-    return value;
-  }
-  return `${value}px solid`;
-}
-const border = (0,style/* default */.ZP)({
-  prop: 'border',
-  themeKey: 'borders',
-  transform: borderTransform
-});
-const borderTop = (0,style/* default */.ZP)({
-  prop: 'borderTop',
-  themeKey: 'borders',
-  transform: borderTransform
-});
-const borderRight = (0,style/* default */.ZP)({
-  prop: 'borderRight',
-  themeKey: 'borders',
-  transform: borderTransform
-});
-const borderBottom = (0,style/* default */.ZP)({
-  prop: 'borderBottom',
-  themeKey: 'borders',
-  transform: borderTransform
-});
-const borderLeft = (0,style/* default */.ZP)({
-  prop: 'borderLeft',
-  themeKey: 'borders',
-  transform: borderTransform
-});
-const borderColor = (0,style/* default */.ZP)({
-  prop: 'borderColor',
-  themeKey: 'palette'
-});
-const borderTopColor = (0,style/* default */.ZP)({
-  prop: 'borderTopColor',
-  themeKey: 'palette'
-});
-const borderRightColor = (0,style/* default */.ZP)({
-  prop: 'borderRightColor',
-  themeKey: 'palette'
-});
-const borderBottomColor = (0,style/* default */.ZP)({
-  prop: 'borderBottomColor',
-  themeKey: 'palette'
-});
-const borderLeftColor = (0,style/* default */.ZP)({
-  prop: 'borderLeftColor',
-  themeKey: 'palette'
-});
-
-// false positive
-// eslint-disable-next-line react/function-component-definition
-const borderRadius = props => {
-  if (props.borderRadius !== undefined && props.borderRadius !== null) {
-    const transformer = (0,spacing/* createUnaryUnit */.eI)(props.theme, 'shape.borderRadius', 4, 'borderRadius');
-    const styleFromPropValue = propValue => ({
-      borderRadius: (0,spacing/* getValue */.NA)(transformer, propValue)
-    });
-    return (0,breakpoints/* handleBreakpoints */.k9)(props, props.borderRadius, styleFromPropValue);
-  }
-  return null;
-};
-borderRadius.propTypes =  false ? 0 : {};
-borderRadius.filterProps = ['borderRadius'];
-const borders = esm_compose(border, borderTop, borderRight, borderBottom, borderLeft, borderColor, borderTopColor, borderRightColor, borderBottomColor, borderLeftColor, borderRadius);
-/* harmony default export */ const esm_borders = ((/* unused pure expression or super */ null && (borders)));
-;// CONCATENATED MODULE: ./node_modules/@mui/system/esm/cssGrid.js
-
-
-
-
-
-
-// false positive
-// eslint-disable-next-line react/function-component-definition
-const gap = props => {
-  if (props.gap !== undefined && props.gap !== null) {
-    const transformer = (0,spacing/* createUnaryUnit */.eI)(props.theme, 'spacing', 8, 'gap');
-    const styleFromPropValue = propValue => ({
-      gap: (0,spacing/* getValue */.NA)(transformer, propValue)
-    });
-    return (0,breakpoints/* handleBreakpoints */.k9)(props, props.gap, styleFromPropValue);
-  }
-  return null;
-};
-gap.propTypes =  false ? 0 : {};
-gap.filterProps = ['gap'];
-
-// false positive
-// eslint-disable-next-line react/function-component-definition
-const columnGap = props => {
-  if (props.columnGap !== undefined && props.columnGap !== null) {
-    const transformer = (0,spacing/* createUnaryUnit */.eI)(props.theme, 'spacing', 8, 'columnGap');
-    const styleFromPropValue = propValue => ({
-      columnGap: (0,spacing/* getValue */.NA)(transformer, propValue)
-    });
-    return (0,breakpoints/* handleBreakpoints */.k9)(props, props.columnGap, styleFromPropValue);
-  }
-  return null;
-};
-columnGap.propTypes =  false ? 0 : {};
-columnGap.filterProps = ['columnGap'];
-
-// false positive
-// eslint-disable-next-line react/function-component-definition
-const rowGap = props => {
-  if (props.rowGap !== undefined && props.rowGap !== null) {
-    const transformer = (0,spacing/* createUnaryUnit */.eI)(props.theme, 'spacing', 8, 'rowGap');
-    const styleFromPropValue = propValue => ({
-      rowGap: (0,spacing/* getValue */.NA)(transformer, propValue)
-    });
-    return (0,breakpoints/* handleBreakpoints */.k9)(props, props.rowGap, styleFromPropValue);
-  }
-  return null;
-};
-rowGap.propTypes =  false ? 0 : {};
-rowGap.filterProps = ['rowGap'];
-const gridColumn = (0,style/* default */.ZP)({
-  prop: 'gridColumn'
-});
-const gridRow = (0,style/* default */.ZP)({
-  prop: 'gridRow'
-});
-const gridAutoFlow = (0,style/* default */.ZP)({
-  prop: 'gridAutoFlow'
-});
-const gridAutoColumns = (0,style/* default */.ZP)({
-  prop: 'gridAutoColumns'
-});
-const gridAutoRows = (0,style/* default */.ZP)({
-  prop: 'gridAutoRows'
-});
-const gridTemplateColumns = (0,style/* default */.ZP)({
-  prop: 'gridTemplateColumns'
-});
-const gridTemplateRows = (0,style/* default */.ZP)({
-  prop: 'gridTemplateRows'
-});
-const gridTemplateAreas = (0,style/* default */.ZP)({
-  prop: 'gridTemplateAreas'
-});
-const gridArea = (0,style/* default */.ZP)({
-  prop: 'gridArea'
-});
-const grid = esm_compose(gap, columnGap, rowGap, gridColumn, gridRow, gridAutoFlow, gridAutoColumns, gridAutoRows, gridTemplateColumns, gridTemplateRows, gridTemplateAreas, gridArea);
-/* harmony default export */ const cssGrid = ((/* unused pure expression or super */ null && (grid)));
-;// CONCATENATED MODULE: ./node_modules/@mui/system/esm/palette.js
-
-
-function paletteTransform(value, userValue) {
-  if (userValue === 'grey') {
-    return userValue;
-  }
-  return value;
-}
-const color = (0,style/* default */.ZP)({
-  prop: 'color',
-  themeKey: 'palette',
-  transform: paletteTransform
-});
-const bgcolor = (0,style/* default */.ZP)({
-  prop: 'bgcolor',
-  cssProperty: 'backgroundColor',
-  themeKey: 'palette',
-  transform: paletteTransform
-});
-const backgroundColor = (0,style/* default */.ZP)({
-  prop: 'backgroundColor',
-  themeKey: 'palette',
-  transform: paletteTransform
-});
-const palette = esm_compose(color, bgcolor, backgroundColor);
-/* harmony default export */ const esm_palette = ((/* unused pure expression or super */ null && (palette)));
-;// CONCATENATED MODULE: ./node_modules/@mui/system/esm/sizing.js
-
-
-
-function sizingTransform(value) {
-  return value <= 1 && value !== 0 ? `${value * 100}%` : value;
-}
-const width = (0,style/* default */.ZP)({
-  prop: 'width',
-  transform: sizingTransform
-});
-const maxWidth = props => {
-  if (props.maxWidth !== undefined && props.maxWidth !== null) {
-    const styleFromPropValue = propValue => {
-      var _props$theme, _props$theme$breakpoi, _props$theme$breakpoi2;
-      const breakpoint = ((_props$theme = props.theme) == null ? void 0 : (_props$theme$breakpoi = _props$theme.breakpoints) == null ? void 0 : (_props$theme$breakpoi2 = _props$theme$breakpoi.values) == null ? void 0 : _props$theme$breakpoi2[propValue]) || breakpoints/* values */.VO[propValue];
-      return {
-        maxWidth: breakpoint || sizingTransform(propValue)
-      };
-    };
-    return (0,breakpoints/* handleBreakpoints */.k9)(props, props.maxWidth, styleFromPropValue);
-  }
-  return null;
-};
-maxWidth.filterProps = ['maxWidth'];
-const minWidth = (0,style/* default */.ZP)({
-  prop: 'minWidth',
-  transform: sizingTransform
-});
-const height = (0,style/* default */.ZP)({
-  prop: 'height',
-  transform: sizingTransform
-});
-const maxHeight = (0,style/* default */.ZP)({
-  prop: 'maxHeight',
-  transform: sizingTransform
-});
-const minHeight = (0,style/* default */.ZP)({
-  prop: 'minHeight',
-  transform: sizingTransform
-});
-const sizeWidth = (0,style/* default */.ZP)({
-  prop: 'size',
-  cssProperty: 'width',
-  transform: sizingTransform
-});
-const sizeHeight = (0,style/* default */.ZP)({
-  prop: 'size',
-  cssProperty: 'height',
-  transform: sizingTransform
-});
-const boxSizing = (0,style/* default */.ZP)({
-  prop: 'boxSizing'
-});
-const sizing = esm_compose(width, maxWidth, minWidth, height, maxHeight, minHeight, boxSizing);
-/* harmony default export */ const esm_sizing = ((/* unused pure expression or super */ null && (sizing)));
-;// CONCATENATED MODULE: ./node_modules/@mui/system/esm/styleFunctionSx/defaultSxConfig.js
-
-
-
-
-
-const defaultSxConfig = {
-  // borders
-  border: {
-    themeKey: 'borders',
-    transform: borderTransform
-  },
-  borderTop: {
-    themeKey: 'borders',
-    transform: borderTransform
-  },
-  borderRight: {
-    themeKey: 'borders',
-    transform: borderTransform
-  },
-  borderBottom: {
-    themeKey: 'borders',
-    transform: borderTransform
-  },
-  borderLeft: {
-    themeKey: 'borders',
-    transform: borderTransform
-  },
-  borderColor: {
-    themeKey: 'palette'
-  },
-  borderTopColor: {
-    themeKey: 'palette'
-  },
-  borderRightColor: {
-    themeKey: 'palette'
-  },
-  borderBottomColor: {
-    themeKey: 'palette'
-  },
-  borderLeftColor: {
-    themeKey: 'palette'
-  },
-  borderRadius: {
-    themeKey: 'shape.borderRadius',
-    style: borderRadius
-  },
-  // palette
-  color: {
-    themeKey: 'palette',
-    transform: paletteTransform
-  },
-  bgcolor: {
-    themeKey: 'palette',
-    cssProperty: 'backgroundColor',
-    transform: paletteTransform
-  },
-  backgroundColor: {
-    themeKey: 'palette',
-    transform: paletteTransform
-  },
-  // spacing
-  p: {
-    style: spacing/* padding */.o3
-  },
-  pt: {
-    style: spacing/* padding */.o3
-  },
-  pr: {
-    style: spacing/* padding */.o3
-  },
-  pb: {
-    style: spacing/* padding */.o3
-  },
-  pl: {
-    style: spacing/* padding */.o3
-  },
-  px: {
-    style: spacing/* padding */.o3
-  },
-  py: {
-    style: spacing/* padding */.o3
-  },
-  padding: {
-    style: spacing/* padding */.o3
-  },
-  paddingTop: {
-    style: spacing/* padding */.o3
-  },
-  paddingRight: {
-    style: spacing/* padding */.o3
-  },
-  paddingBottom: {
-    style: spacing/* padding */.o3
-  },
-  paddingLeft: {
-    style: spacing/* padding */.o3
-  },
-  paddingX: {
-    style: spacing/* padding */.o3
-  },
-  paddingY: {
-    style: spacing/* padding */.o3
-  },
-  paddingInline: {
-    style: spacing/* padding */.o3
-  },
-  paddingInlineStart: {
-    style: spacing/* padding */.o3
-  },
-  paddingInlineEnd: {
-    style: spacing/* padding */.o3
-  },
-  paddingBlock: {
-    style: spacing/* padding */.o3
-  },
-  paddingBlockStart: {
-    style: spacing/* padding */.o3
-  },
-  paddingBlockEnd: {
-    style: spacing/* padding */.o3
-  },
-  m: {
-    style: spacing/* margin */.e6
-  },
-  mt: {
-    style: spacing/* margin */.e6
-  },
-  mr: {
-    style: spacing/* margin */.e6
-  },
-  mb: {
-    style: spacing/* margin */.e6
-  },
-  ml: {
-    style: spacing/* margin */.e6
-  },
-  mx: {
-    style: spacing/* margin */.e6
-  },
-  my: {
-    style: spacing/* margin */.e6
-  },
-  margin: {
-    style: spacing/* margin */.e6
-  },
-  marginTop: {
-    style: spacing/* margin */.e6
-  },
-  marginRight: {
-    style: spacing/* margin */.e6
-  },
-  marginBottom: {
-    style: spacing/* margin */.e6
-  },
-  marginLeft: {
-    style: spacing/* margin */.e6
-  },
-  marginX: {
-    style: spacing/* margin */.e6
-  },
-  marginY: {
-    style: spacing/* margin */.e6
-  },
-  marginInline: {
-    style: spacing/* margin */.e6
-  },
-  marginInlineStart: {
-    style: spacing/* margin */.e6
-  },
-  marginInlineEnd: {
-    style: spacing/* margin */.e6
-  },
-  marginBlock: {
-    style: spacing/* margin */.e6
-  },
-  marginBlockStart: {
-    style: spacing/* margin */.e6
-  },
-  marginBlockEnd: {
-    style: spacing/* margin */.e6
-  },
-  // display
-  displayPrint: {
-    cssProperty: false,
-    transform: value => ({
-      '@media print': {
-        display: value
-      }
-    })
-  },
-  display: {},
-  overflow: {},
-  textOverflow: {},
-  visibility: {},
-  whiteSpace: {},
-  // flexbox
-  flexBasis: {},
-  flexDirection: {},
-  flexWrap: {},
-  justifyContent: {},
-  alignItems: {},
-  alignContent: {},
-  order: {},
-  flex: {},
-  flexGrow: {},
-  flexShrink: {},
-  alignSelf: {},
-  justifyItems: {},
-  justifySelf: {},
-  // grid
-  gap: {
-    style: gap
-  },
-  rowGap: {
-    style: rowGap
-  },
-  columnGap: {
-    style: columnGap
-  },
-  gridColumn: {},
-  gridRow: {},
-  gridAutoFlow: {},
-  gridAutoColumns: {},
-  gridAutoRows: {},
-  gridTemplateColumns: {},
-  gridTemplateRows: {},
-  gridTemplateAreas: {},
-  gridArea: {},
-  // positions
-  position: {},
-  zIndex: {
-    themeKey: 'zIndex'
-  },
-  top: {},
-  right: {},
-  bottom: {},
-  left: {},
-  // shadows
-  boxShadow: {
-    themeKey: 'shadows'
-  },
-  // sizing
-  width: {
-    transform: sizingTransform
-  },
-  maxWidth: {
-    style: maxWidth
-  },
-  minWidth: {
-    transform: sizingTransform
-  },
-  height: {
-    transform: sizingTransform
-  },
-  maxHeight: {
-    transform: sizingTransform
-  },
-  minHeight: {
-    transform: sizingTransform
-  },
-  boxSizing: {},
-  // typography
-  fontFamily: {
-    themeKey: 'typography'
-  },
-  fontSize: {
-    themeKey: 'typography'
-  },
-  fontStyle: {
-    themeKey: 'typography'
-  },
-  fontWeight: {
-    themeKey: 'typography'
-  },
-  letterSpacing: {},
-  textTransform: {},
-  lineHeight: {},
-  textAlign: {},
-  typography: {
-    cssProperty: false,
-    themeKey: 'typography'
-  }
-};
-/* harmony default export */ const styleFunctionSx_defaultSxConfig = (defaultSxConfig);
 
 /***/ }),
 
@@ -5888,12 +5942,9 @@ const defaultSxConfig = {
 /* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* unused harmony export unstable_createStyleFunctionSx */
-/* harmony import */ var _mui_utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(8320);
-/* harmony import */ var _merge__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(7730);
-/* harmony import */ var _style__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4844);
-/* harmony import */ var _breakpoints__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(5408);
-/* harmony import */ var _defaultSxConfig__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(8010);
-
+/* harmony import */ var _merge__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(7730);
+/* harmony import */ var _getThemeValue__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4178);
+/* harmony import */ var _breakpoints__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5408);
 
 
 
@@ -5903,112 +5954,98 @@ function objectsHaveSameKeys(...objects) {
   const union = new Set(allKeys);
   return objects.every(object => union.size === Object.keys(object).length);
 }
+
 function callIfFn(maybeFn, arg) {
   return typeof maybeFn === 'function' ? maybeFn(arg) : maybeFn;
-}
+} // eslint-disable-next-line @typescript-eslint/naming-convention
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
-function unstable_createStyleFunctionSx() {
-  function getThemeValue(prop, val, theme, config) {
-    const props = {
-      [prop]: val,
+
+function unstable_createStyleFunctionSx(styleFunctionMapping = _getThemeValue__WEBPACK_IMPORTED_MODULE_0__/* .styleFunctionMapping */ .G$) {
+  const propToStyleFunction = Object.keys(styleFunctionMapping).reduce((acc, styleFnName) => {
+    styleFunctionMapping[styleFnName].filterProps.forEach(propName => {
+      acc[propName] = styleFunctionMapping[styleFnName];
+    });
+    return acc;
+  }, {});
+
+  function getThemeValue(prop, value, theme) {
+    const inputProps = {
+      [prop]: value,
       theme
     };
-    const options = config[prop];
-    if (!options) {
-      return {
-        [prop]: val
-      };
-    }
-    const {
-      cssProperty = prop,
-      themeKey,
-      transform,
-      style
-    } = options;
-    if (val == null) {
-      return null;
-    }
-    const themeMapping = (0,_style__WEBPACK_IMPORTED_MODULE_0__/* .getPath */ .DW)(theme, themeKey) || {};
-    if (style) {
-      return style(props);
-    }
-    const styleFromPropValue = propValueFinal => {
-      let value = (0,_style__WEBPACK_IMPORTED_MODULE_0__/* .getStyleValue */ .Jq)(themeMapping, transform, propValueFinal);
-      if (propValueFinal === value && typeof propValueFinal === 'string') {
-        // Haven't found value
-        value = (0,_style__WEBPACK_IMPORTED_MODULE_0__/* .getStyleValue */ .Jq)(themeMapping, transform, `${prop}${propValueFinal === 'default' ? '' : (0,_mui_utils__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .Z)(propValueFinal)}`, propValueFinal);
-      }
-      if (cssProperty === false) {
-        return value;
-      }
-      return {
-        [cssProperty]: value
-      };
+    const styleFunction = propToStyleFunction[prop];
+    return styleFunction ? styleFunction(inputProps) : {
+      [prop]: value
     };
-    return (0,_breakpoints__WEBPACK_IMPORTED_MODULE_2__/* .handleBreakpoints */ .k9)(props, val, styleFromPropValue);
   }
+
   function styleFunctionSx(props) {
-    var _theme$unstable_sxCon;
     const {
       sx,
       theme = {}
     } = props || {};
+
     if (!sx) {
-      return null; // Emotion & styled-components will neglect null
+      return null; // emotion & styled-components will neglect null
     }
-
-    const config = (_theme$unstable_sxCon = theme.unstable_sxConfig) != null ? _theme$unstable_sxCon : _defaultSxConfig__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .Z;
-
     /*
      * Receive `sxInput` as object or callback
      * and then recursively check keys & values to create media query object styles.
      * (the result will be used in `styled`)
      */
+
+
     function traverse(sxInput) {
       let sxObject = sxInput;
+
       if (typeof sxInput === 'function') {
         sxObject = sxInput(theme);
       } else if (typeof sxInput !== 'object') {
         // value
         return sxInput;
       }
+
       if (!sxObject) {
         return null;
       }
-      const emptyBreakpoints = (0,_breakpoints__WEBPACK_IMPORTED_MODULE_2__/* .createEmptyBreakpointObject */ .W8)(theme.breakpoints);
+
+      const emptyBreakpoints = (0,_breakpoints__WEBPACK_IMPORTED_MODULE_1__/* .createEmptyBreakpointObject */ .W8)(theme.breakpoints);
       const breakpointsKeys = Object.keys(emptyBreakpoints);
       let css = emptyBreakpoints;
       Object.keys(sxObject).forEach(styleKey => {
         const value = callIfFn(sxObject[styleKey], theme);
+
         if (value !== null && value !== undefined) {
           if (typeof value === 'object') {
-            if (config[styleKey]) {
-              css = (0,_merge__WEBPACK_IMPORTED_MODULE_4__/* ["default"] */ .Z)(css, getThemeValue(styleKey, value, theme, config));
+            if (propToStyleFunction[styleKey]) {
+              css = (0,_merge__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .Z)(css, getThemeValue(styleKey, value, theme));
             } else {
-              const breakpointsValues = (0,_breakpoints__WEBPACK_IMPORTED_MODULE_2__/* .handleBreakpoints */ .k9)({
+              const breakpointsValues = (0,_breakpoints__WEBPACK_IMPORTED_MODULE_1__/* .handleBreakpoints */ .k9)({
                 theme
               }, value, x => ({
                 [styleKey]: x
               }));
+
               if (objectsHaveSameKeys(breakpointsValues, value)) {
                 css[styleKey] = styleFunctionSx({
                   sx: value,
                   theme
                 });
               } else {
-                css = (0,_merge__WEBPACK_IMPORTED_MODULE_4__/* ["default"] */ .Z)(css, breakpointsValues);
+                css = (0,_merge__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .Z)(css, breakpointsValues);
               }
             }
           } else {
-            css = (0,_merge__WEBPACK_IMPORTED_MODULE_4__/* ["default"] */ .Z)(css, getThemeValue(styleKey, value, theme, config));
+            css = (0,_merge__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .Z)(css, getThemeValue(styleKey, value, theme));
           }
         }
       });
-      return (0,_breakpoints__WEBPACK_IMPORTED_MODULE_2__/* .removeUnusedBreakpoints */ .L7)(breakpointsKeys, css);
+      return (0,_breakpoints__WEBPACK_IMPORTED_MODULE_1__/* .removeUnusedBreakpoints */ .L7)(breakpointsKeys, css);
     }
+
     return Array.isArray(sx) ? sx.map(traverse) : traverse(sx);
   }
+
   return styleFunctionSx;
 }
 const styleFunctionSx = unstable_createStyleFunctionSx();
@@ -6030,9 +6067,11 @@ styleFunctionSx.filterProps = ['sx'];
 
 
 const systemDefaultTheme = (0,_createTheme__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Z)();
+
 function useTheme(defaultTheme = systemDefaultTheme) {
   return (0,_useThemeWithoutDefault__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .Z)(defaultTheme);
 }
+
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (useTheme);
 
 /***/ }),
@@ -6052,53 +6091,33 @@ var react = __webpack_require__(7294);
 ;// CONCATENATED MODULE: ./node_modules/@mui/private-theming/useTheme/ThemeContext.js
 
 const ThemeContext = /*#__PURE__*/react.createContext(null);
+
 if (false) {}
+
 /* harmony default export */ const useTheme_ThemeContext = (ThemeContext);
 ;// CONCATENATED MODULE: ./node_modules/@mui/private-theming/useTheme/useTheme.js
 
 
 function useTheme() {
   const theme = react.useContext(useTheme_ThemeContext);
+
   if (false) {}
+
   return theme;
 }
 ;// CONCATENATED MODULE: ./node_modules/@mui/system/esm/useThemeWithoutDefault.js
 
+
 function isObjectEmpty(obj) {
   return Object.keys(obj).length === 0;
 }
+
 function useThemeWithoutDefault_useTheme(defaultTheme = null) {
   const contextTheme = useTheme();
   return !contextTheme || isObjectEmpty(contextTheme) ? defaultTheme : contextTheme;
 }
+
 /* harmony default export */ const useThemeWithoutDefault = (useThemeWithoutDefault_useTheme);
-
-/***/ }),
-
-/***/ 7078:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Z": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-const defaultGenerator = componentName => componentName;
-const createClassNameGenerator = () => {
-  let generate = defaultGenerator;
-  return {
-    configure(generator) {
-      generate = generator;
-    },
-    generate(componentName) {
-      return generate(componentName);
-    },
-    reset() {
-      generate = defaultGenerator;
-    }
-  };
-};
-const ClassNameGenerator = createClassNameGenerator();
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (ClassNameGenerator);
 
 /***/ }),
 
@@ -6119,35 +6138,8 @@ function capitalize(string) {
   if (typeof string !== 'string') {
     throw new Error( false ? 0 : (0,_formatMuiErrorMessage__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Z)(7));
   }
+
   return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
-/***/ }),
-
-/***/ 4780:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Z": () => (/* binding */ composeClasses)
-/* harmony export */ });
-function composeClasses(slots, getUtilityClass, classes) {
-  const output = {};
-  Object.keys(slots).forEach(
-  // `Objet.keys(slots)` can't be wider than `T` because we infer `T` from `slots`.
-  // @ts-expect-error https://github.com/microsoft/TypeScript/pull/12253#issuecomment-263132208
-  slot => {
-    output[slot] = slots[slot].reduce((acc, key) => {
-      if (key) {
-        acc.push(getUtilityClass(key));
-        if (classes && classes[key]) {
-          acc.push(classes[key]);
-        }
-      }
-      return acc;
-    }, []).join(' ');
-  });
-  return output;
 }
 
 /***/ }),
@@ -6170,6 +6162,7 @@ function createChainedFunction(...funcs) {
     if (func == null) {
       return acc;
     }
+
     return function chainedFunction(...args) {
       acc.apply(this, args);
       func.apply(this, args);
@@ -6187,41 +6180,32 @@ function createChainedFunction(...funcs) {
 /* harmony export */   "P": () => (/* binding */ isPlainObject),
 /* harmony export */   "Z": () => (/* binding */ deepmerge)
 /* harmony export */ });
-/* harmony import */ var _babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1860);
+/* harmony import */ var _babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7462);
 
 function isPlainObject(item) {
   return item !== null && typeof item === 'object' && item.constructor === Object;
-}
-function deepClone(source) {
-  if (!isPlainObject(source)) {
-    return source;
-  }
-  const output = {};
-  Object.keys(source).forEach(key => {
-    output[key] = deepClone(source[key]);
-  });
-  return output;
 }
 function deepmerge(target, source, options = {
   clone: true
 }) {
   const output = options.clone ? (0,_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Z)({}, target) : target;
+
   if (isPlainObject(target) && isPlainObject(source)) {
     Object.keys(source).forEach(key => {
       // Avoid prototype pollution
       if (key === '__proto__') {
         return;
       }
+
       if (isPlainObject(source[key]) && key in target && isPlainObject(target[key])) {
         // Since `output` is a clone of `target` and we have narrowed `target` in this block we can cast to the same type.
         output[key] = deepmerge(target[key], source[key], options);
-      } else if (options.clone) {
-        output[key] = isPlainObject(source[key]) ? deepClone(source[key]) : source[key];
       } else {
         output[key] = source[key];
       }
     });
   }
+
   return output;
 }
 
@@ -6243,62 +6227,18 @@ function formatMuiErrorMessage(code) {
   // Apply babel-plugin-transform-template-literals in loose mode
   // loose mode is safe iff we're concatenating primitives
   // see https://babeljs.io/docs/en/babel-plugin-transform-template-literals#loose
+
   /* eslint-disable prefer-template */
   let url = 'https://mui.com/production-error/?code=' + code;
+
   for (let i = 1; i < arguments.length; i += 1) {
     // rest params over-transpile for this case
     // eslint-disable-next-line prefer-rest-params
     url += '&args[]=' + encodeURIComponent(arguments[i]);
   }
+
   return 'Minified MUI error #' + code + '; visit ' + url + ' for the full message.';
   /* eslint-enable prefer-template */
-}
-
-/***/ }),
-
-/***/ 4867:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Z": () => (/* binding */ generateUtilityClass)
-/* harmony export */ });
-/* harmony import */ var _ClassNameGenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7078);
-
-const globalStateClassesMapping = {
-  active: 'active',
-  checked: 'checked',
-  completed: 'completed',
-  disabled: 'disabled',
-  error: 'error',
-  expanded: 'expanded',
-  focused: 'focused',
-  focusVisible: 'focusVisible',
-  required: 'required',
-  selected: 'selected'
-};
-function generateUtilityClass(componentName, slot, globalStatePrefix = 'Mui') {
-  const globalStateClass = globalStateClassesMapping[slot];
-  return globalStateClass ? `${globalStatePrefix}-${globalStateClass}` : `${_ClassNameGenerator__WEBPACK_IMPORTED_MODULE_0__/* ["default"].generate */ .Z.generate(componentName)}-${slot}`;
-}
-
-/***/ }),
-
-/***/ 1588:
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Z": () => (/* binding */ generateUtilityClasses)
-/* harmony export */ });
-/* harmony import */ var _generateUtilityClass__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4867);
-
-function generateUtilityClasses(componentName, slots, globalStatePrefix = 'Mui') {
-  const result = {};
-  slots.forEach(slot => {
-    result[slot] = (0,_generateUtilityClass__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Z)(componentName, slot, globalStatePrefix);
-  });
-  return result;
 }
 
 /***/ }),
@@ -6339,7 +6279,8 @@ function ownerWindow(node) {
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "Z": () => (/* binding */ resolveProps)
 /* harmony export */ });
-/* harmony import */ var _babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1860);
+/* harmony import */ var _babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(7462);
+
 
 /**
  * Add keys, values of `defaultProps` that does not exist in `props`
@@ -6349,26 +6290,9 @@ function ownerWindow(node) {
  */
 function resolveProps(defaultProps, props) {
   const output = (0,_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Z)({}, props);
+
   Object.keys(defaultProps).forEach(propName => {
-    if (propName.toString().match(/^(components|slots)$/)) {
-      output[propName] = (0,_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Z)({}, defaultProps[propName], output[propName]);
-    } else if (propName.toString().match(/^(componentsProps|slotProps)$/)) {
-      const defaultSlotProps = defaultProps[propName] || {};
-      const slotProps = props[propName];
-      output[propName] = {};
-      if (!slotProps || !Object.keys(slotProps)) {
-        // Reduce the iteration if the slot props is empty
-        output[propName] = defaultSlotProps;
-      } else if (!defaultSlotProps || !Object.keys(defaultSlotProps)) {
-        // Reduce the iteration if the default slot props is empty
-        output[propName] = slotProps;
-      } else {
-        output[propName] = (0,_babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_0__/* ["default"] */ .Z)({}, slotProps);
-        Object.keys(defaultSlotProps).forEach(slotPropName => {
-          output[propName][slotPropName] = resolveProps(defaultSlotProps[slotPropName], slotProps[slotPropName]);
-        });
-      }
-    } else if (output[propName] === undefined) {
+    if (output[propName] === undefined) {
       output[propName] = defaultProps[propName];
     }
   });
@@ -6432,17 +6356,16 @@ const useEnhancedEffect = typeof window !== 'undefined' ? react__WEBPACK_IMPORTE
 /* harmony import */ var _useEnhancedEffect__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6600);
 
 
-
 /**
  * https://github.com/facebook/react/issues/14099#issuecomment-440013892
  */
+
 function useEventCallback(fn) {
   const ref = react__WEBPACK_IMPORTED_MODULE_0__.useRef(fn);
   (0,_useEnhancedEffect__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .Z)(() => {
     ref.current = fn;
   });
-  return react__WEBPACK_IMPORTED_MODULE_0__.useCallback((...args) =>
-  // @ts-expect-error hide `this`
+  return react__WEBPACK_IMPORTED_MODULE_0__.useCallback((...args) => // @ts-expect-error hide `this`
   // tslint:disable-next-line:ban-comma-operator
   (0, ref.current)(...args), []);
 }
@@ -6460,24 +6383,74 @@ function useEventCallback(fn) {
 /* harmony import */ var _setRef__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7960);
 
 
-function useForkRef(...refs) {
+function useForkRef(refA, refB) {
   /**
-   * This will create a new function if the refs passed to this hook change and are all defined.
+   * This will create a new function if the ref props change and are defined.
    * This means react will call the old forkRef with `null` and the new forkRef
    * with the ref. Cleanup naturally emerges from this behavior.
    */
   return react__WEBPACK_IMPORTED_MODULE_0__.useMemo(() => {
-    if (refs.every(ref => ref == null)) {
+    if (refA == null && refB == null) {
       return null;
     }
-    return instance => {
-      refs.forEach(ref => {
-        (0,_setRef__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .Z)(ref, instance);
-      });
+
+    return refValue => {
+      (0,_setRef__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .Z)(refA, refValue);
+      (0,_setRef__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .Z)(refB, refValue);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, refs);
+  }, [refA, refB]);
 }
+
+/***/ }),
+
+/***/ 6010:
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "Z": () => (/* export default binding */ __WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+function toVal(mix) {
+	var k, y, str='';
+
+	if (typeof mix === 'string' || typeof mix === 'number') {
+		str += mix;
+	} else if (typeof mix === 'object') {
+		if (Array.isArray(mix)) {
+			for (k=0; k < mix.length; k++) {
+				if (mix[k]) {
+					if (y = toVal(mix[k])) {
+						str && (str += ' ');
+						str += y;
+					}
+				}
+			}
+		} else {
+			for (k in mix) {
+				if (mix[k]) {
+					str && (str += ' ');
+					str += k;
+				}
+			}
+		}
+	}
+
+	return str;
+}
+
+/* harmony default export */ function __WEBPACK_DEFAULT_EXPORT__() {
+	var i=0, tmp, x, str='';
+	while (i < arguments.length) {
+		if (tmp = arguments[i++]) {
+			if (x = toVal(tmp)) {
+				str && (str += ' ');
+				str += x
+			}
+		}
+	}
+	return str;
+}
+
 
 /***/ }),
 
@@ -6521,7 +6494,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, ":root{--color-red: #ec1840;--color-pur
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_1___default()((_node_modules_css_loader_dist_runtime_noSourceMaps_js__WEBPACK_IMPORTED_MODULE_0___default()));
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "body{top:0%;background:radial-gradient(ellipse at bottom, #0d1d31 0%, #0c0d13 100%)}.stars{position:relative;top:-270px;right:-270px;left:0;width:100%;height:120%;transform:rotate(-45deg);z-index:-1}.star{--star-color: rgb(255, 255, 255);--star-tail-length: 6em;--star-tail-height: 2px;--star-width: calc(var(--star-tail-length) / 6);--fall-duration: 9s;--tail-fade-duration: var(--fall-duration);z-index:-1;position:relative;top:var(--top-offset);left:0;width:var(--star-tail-length);height:var(--star-tail-height);color:var(--star-color);background:linear-gradient(45deg, currentColor, transparent);border-radius:50%;filter:drop-shadow(0 0 6px currentColor);transform:translate3d(104em, 0, 0);animation:fall var(--fall-duration) var(--fall-delay) linear infinite,tail-fade var(--tail-fade-duration) var(--fall-delay) ease-out infinite}@media screen and (max-width: 750px){.star{animation:fall var(--fall-duration) var(--fall-delay) linear infinite}}.star:nth-child(1){--star-tail-length: 5.77em;--top-offset: 2.37vh;--fall-duration: 8.218s;--fall-delay: 4.022s}.star:nth-child(2){--star-tail-length: 5.9em;--top-offset: 97.1vh;--fall-duration: 7.393s;--fall-delay: 4.254s}.star:nth-child(3){--star-tail-length: 5.54em;--top-offset: 53.55vh;--fall-duration: 8.69s;--fall-delay: 9.619s}.star:nth-child(4){--star-tail-length: 5.52em;--top-offset: 11.48vh;--fall-duration: 7.912s;--fall-delay: 1.237s}.star:nth-child(5){--star-tail-length: 6.04em;--top-offset: 70.07vh;--fall-duration: 11.314s;--fall-delay: 7.972s}.star:nth-child(6){--star-tail-length: 5.56em;--top-offset: 65.28vh;--fall-duration: 8.876s;--fall-delay: 8.686s}.star:nth-child(7){--star-tail-length: 5.16em;--top-offset: 1.59vh;--fall-duration: 6.758s;--fall-delay: 7.332s}.star:nth-child(8){--star-tail-length: 6.1em;--top-offset: 42.31vh;--fall-duration: 10.08s;--fall-delay: 4.889s}.star:nth-child(9){--star-tail-length: 6.03em;--top-offset: 14.07vh;--fall-duration: 11.943s;--fall-delay: 5.422s}.star:nth-child(10){--star-tail-length: 6.64em;--top-offset: 18.6vh;--fall-duration: 8.968s;--fall-delay: 6.421s}.star:nth-child(11){--star-tail-length: 7.39em;--top-offset: 57.32vh;--fall-duration: 7.031s;--fall-delay: 0.336s}.star:nth-child(12){--star-tail-length: 6.32em;--top-offset: 71.48vh;--fall-duration: 8.489s;--fall-delay: 9.971s}.star:nth-child(13){--star-tail-length: 6.36em;--top-offset: 37.23vh;--fall-duration: 11.224s;--fall-delay: 4.058s}.star:nth-child(14){--star-tail-length: 5.71em;--top-offset: 97.74vh;--fall-duration: 11.369s;--fall-delay: 7.892s}.star:nth-child(15){--star-tail-length: 6.22em;--top-offset: 20.25vh;--fall-duration: 7.467s;--fall-delay: 4.589s}.star:nth-child(16){--star-tail-length: 6.74em;--top-offset: 24.35vh;--fall-duration: 8.446s;--fall-delay: 1.298s}.star:nth-child(17){--star-tail-length: 5.54em;--top-offset: 31.59vh;--fall-duration: 6.713s;--fall-delay: 2.837s}.star:nth-child(18){--star-tail-length: 7.5em;--top-offset: 38.87vh;--fall-duration: 8.326s;--fall-delay: 5.048s}.star:nth-child(19){--star-tail-length: 5.81em;--top-offset: 30.96vh;--fall-duration: 6.481s;--fall-delay: 4.378s}.star:nth-child(20){--star-tail-length: 7.03em;--top-offset: 15.15vh;--fall-duration: 10.618s;--fall-delay: 3.682s}.star:nth-child(21){--star-tail-length: 6.11em;--top-offset: 18.46vh;--fall-duration: 9.332s;--fall-delay: 8.211s}.star:nth-child(22){--star-tail-length: 5.14em;--top-offset: 54.25vh;--fall-duration: 8.393s;--fall-delay: 4.422s}.star:nth-child(23){--star-tail-length: 6.18em;--top-offset: 66.88vh;--fall-duration: 10.029s;--fall-delay: 9.664s}.star:nth-child(24){--star-tail-length: 6.74em;--top-offset: 61.99vh;--fall-duration: 9.384s;--fall-delay: 3.693s}.star:nth-child(25){--star-tail-length: 7.04em;--top-offset: 5.37vh;--fall-duration: 8.665s;--fall-delay: 1.913s}.star:nth-child(26){--star-tail-length: 5.82em;--top-offset: 46.22vh;--fall-duration: 11.324s;--fall-delay: 3.128s}.star:nth-child(27){--star-tail-length: 5.58em;--top-offset: 79.81vh;--fall-duration: 9.763s;--fall-delay: 9.501s}.star:nth-child(28){--star-tail-length: 5.15em;--top-offset: 21.09vh;--fall-duration: 7.019s;--fall-delay: 5.115s}.star:nth-child(29){--star-tail-length: 6.09em;--top-offset: 52.83vh;--fall-duration: 7.847s;--fall-delay: 7.324s}.star:nth-child(30){--star-tail-length: 5.23em;--top-offset: 51.09vh;--fall-duration: 11.397s;--fall-delay: 3.525s}.star:nth-child(31){--star-tail-length: 6.32em;--top-offset: 28.67vh;--fall-duration: 10.698s;--fall-delay: 7.215s}.star:nth-child(32){--star-tail-length: 7.14em;--top-offset: 63.16vh;--fall-duration: 10.105s;--fall-delay: 4.504s}.star:nth-child(33){--star-tail-length: 7.12em;--top-offset: 4.51vh;--fall-duration: 6.849s;--fall-delay: 1.11s}.star:nth-child(34){--star-tail-length: 5.77em;--top-offset: 52.66vh;--fall-duration: 8.869s;--fall-delay: 4.51s}.star:nth-child(35){--star-tail-length: 6.34em;--top-offset: 93.18vh;--fall-duration: 6.406s;--fall-delay: 8.989s}.star:nth-child(36){--star-tail-length: 7.14em;--top-offset: 14.24vh;--fall-duration: 11.859s;--fall-delay: 6.254s}.star:nth-child(37){--star-tail-length: 6.37em;--top-offset: 22.66vh;--fall-duration: 9.428s;--fall-delay: 9.807s}.star:nth-child(38){--star-tail-length: 6.07em;--top-offset: 65.46vh;--fall-duration: 10.42s;--fall-delay: 3.586s}.star:nth-child(39){--star-tail-length: 6.06em;--top-offset: 80.61vh;--fall-duration: 8.848s;--fall-delay: 0.515s}.star:nth-child(40){--star-tail-length: 5.94em;--top-offset: 76.85vh;--fall-duration: 11.998s;--fall-delay: 1.115s}.star:nth-child(41){--star-tail-length: 5.84em;--top-offset: 6.98vh;--fall-duration: 9.504s;--fall-delay: 6.776s}.star:nth-child(42){--star-tail-length: 5.53em;--top-offset: 70.15vh;--fall-duration: 11.68s;--fall-delay: 7.452s}.star:nth-child(43){--star-tail-length: 6.35em;--top-offset: 8.28vh;--fall-duration: 7.884s;--fall-delay: 1.827s}.star:nth-child(44){--star-tail-length: 5.67em;--top-offset: 70.68vh;--fall-duration: 6.205s;--fall-delay: 8.136s}.star:nth-child(45){--star-tail-length: 5.9em;--top-offset: 26.21vh;--fall-duration: 6.018s;--fall-delay: 3.888s}.star:nth-child(46){--star-tail-length: 7.12em;--top-offset: 46.36vh;--fall-duration: 11.859s;--fall-delay: 0.867s}.star:nth-child(47){--star-tail-length: 5.07em;--top-offset: 82.59vh;--fall-duration: 10.497s;--fall-delay: 4.931s}.star:nth-child(48){--star-tail-length: 5.83em;--top-offset: 22.08vh;--fall-duration: 8.665s;--fall-delay: 8.911s}.star:nth-child(49){--star-tail-length: 5.39em;--top-offset: 51.85vh;--fall-duration: 6.448s;--fall-delay: 0.014s}.star:nth-child(50){--star-tail-length: 7.4em;--top-offset: 60.37vh;--fall-duration: 9.481s;--fall-delay: 9.826s}.star::before,.star::after{position:absolute;content:\"\";top:0;left:calc(var(--star-width)/-2);width:var(--star-width);height:100%;background:linear-gradient(45deg, transparent, currentColor, transparent);border-radius:inherit;animation:blink 2s linear infinite}.star::before{transform:rotate(45deg)}.star::after{transform:rotate(-45deg)}@keyframes fall{to{transform:translate3d(-30em, 0, 0)}}@keyframes tail-fade{0%,50%{width:var(--star-tail-length);opacity:1}70%,80%{width:0;opacity:.4}100%{width:0;opacity:0}}@keyframes blink{50%{opacity:.6}}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "body{top:0%;background:radial-gradient(ellipse at bottom, #0d1d31 0%, #0c0d13 100%)}.stars{position:relative;top:-270px;right:-270px;left:0;width:100%;height:120%;transform:rotate(-45deg);z-index:-1}.star{--star-color: rgb(255, 255, 255);--star-tail-length: 6em;--star-tail-height: 2px;--star-width: calc(var(--star-tail-length) / 6);--fall-duration: 9s;--tail-fade-duration: var(--fall-duration);z-index:-1;position:relative;top:var(--top-offset);left:0;width:var(--star-tail-length);height:var(--star-tail-height);color:var(--star-color);background:linear-gradient(45deg, currentColor, transparent);border-radius:50%;filter:drop-shadow(0 0 6px currentColor);transform:translate3d(104em, 0, 0);animation:fall var(--fall-duration) var(--fall-delay) linear infinite,tail-fade var(--tail-fade-duration) var(--fall-delay) ease-out infinite}@media screen and (max-width: 750px){.star{animation:fall var(--fall-duration) var(--fall-delay) linear infinite}}.star:nth-child(1){--star-tail-length: 7.23em;--top-offset: 39.74vh;--fall-duration: 9.051s;--fall-delay: 6.502s}.star:nth-child(2){--star-tail-length: 7.47em;--top-offset: 38.51vh;--fall-duration: 7.224s;--fall-delay: 5.012s}.star:nth-child(3){--star-tail-length: 6.17em;--top-offset: 78.04vh;--fall-duration: 11.348s;--fall-delay: 6.014s}.star:nth-child(4){--star-tail-length: 6.39em;--top-offset: 94.43vh;--fall-duration: 10.616s;--fall-delay: 1.248s}.star:nth-child(5){--star-tail-length: 6.67em;--top-offset: 51.71vh;--fall-duration: 10.803s;--fall-delay: 7.096s}.star:nth-child(6){--star-tail-length: 7.22em;--top-offset: 46.27vh;--fall-duration: 6.388s;--fall-delay: 1.396s}.star:nth-child(7){--star-tail-length: 5.74em;--top-offset: 24.06vh;--fall-duration: 6.729s;--fall-delay: 5.226s}.star:nth-child(8){--star-tail-length: 5.37em;--top-offset: 53.49vh;--fall-duration: 8.168s;--fall-delay: 3.571s}.star:nth-child(9){--star-tail-length: 6.07em;--top-offset: 87.37vh;--fall-duration: 8.946s;--fall-delay: 4.949s}.star:nth-child(10){--star-tail-length: 6.38em;--top-offset: 6.19vh;--fall-duration: 6.454s;--fall-delay: 2.187s}.star:nth-child(11){--star-tail-length: 6.05em;--top-offset: 7.69vh;--fall-duration: 11.726s;--fall-delay: 8.694s}.star:nth-child(12){--star-tail-length: 5.84em;--top-offset: 20.85vh;--fall-duration: 6.248s;--fall-delay: 9.454s}.star:nth-child(13){--star-tail-length: 5.51em;--top-offset: 99.2vh;--fall-duration: 6.025s;--fall-delay: 5.905s}.star:nth-child(14){--star-tail-length: 6.94em;--top-offset: 28.82vh;--fall-duration: 11.245s;--fall-delay: 0.121s}.star:nth-child(15){--star-tail-length: 5.95em;--top-offset: 19.97vh;--fall-duration: 7.296s;--fall-delay: 6.63s}.star:nth-child(16){--star-tail-length: 7.1em;--top-offset: 72.96vh;--fall-duration: 9.029s;--fall-delay: 9.635s}.star:nth-child(17){--star-tail-length: 5.9em;--top-offset: 97.56vh;--fall-duration: 8.095s;--fall-delay: 7.986s}.star:nth-child(18){--star-tail-length: 7.3em;--top-offset: 59.78vh;--fall-duration: 8.308s;--fall-delay: 9.699s}.star:nth-child(19){--star-tail-length: 6.26em;--top-offset: 8.81vh;--fall-duration: 8.227s;--fall-delay: 0.171s}.star:nth-child(20){--star-tail-length: 7.5em;--top-offset: 18.19vh;--fall-duration: 11.82s;--fall-delay: 8.456s}.star:nth-child(21){--star-tail-length: 6.28em;--top-offset: 86.18vh;--fall-duration: 11.416s;--fall-delay: 4.974s}.star:nth-child(22){--star-tail-length: 7.21em;--top-offset: 62.45vh;--fall-duration: 7.541s;--fall-delay: 6.95s}.star:nth-child(23){--star-tail-length: 7.16em;--top-offset: 64.05vh;--fall-duration: 10.075s;--fall-delay: 6.847s}.star:nth-child(24){--star-tail-length: 6.42em;--top-offset: 77.81vh;--fall-duration: 9.868s;--fall-delay: 2.965s}.star:nth-child(25){--star-tail-length: 6.43em;--top-offset: 93.29vh;--fall-duration: 10.953s;--fall-delay: 5.537s}.star:nth-child(26){--star-tail-length: 7.34em;--top-offset: 21.39vh;--fall-duration: 9.995s;--fall-delay: 9.423s}.star:nth-child(27){--star-tail-length: 6.56em;--top-offset: 79.68vh;--fall-duration: 8.107s;--fall-delay: 2.489s}.star:nth-child(28){--star-tail-length: 5.61em;--top-offset: 38.47vh;--fall-duration: 6.538s;--fall-delay: 2.842s}.star:nth-child(29){--star-tail-length: 5.29em;--top-offset: 9.3vh;--fall-duration: 8.972s;--fall-delay: 4.935s}.star:nth-child(30){--star-tail-length: 5.67em;--top-offset: 72.3vh;--fall-duration: 10.883s;--fall-delay: 8.645s}.star:nth-child(31){--star-tail-length: 6.12em;--top-offset: 87.03vh;--fall-duration: 9.774s;--fall-delay: 1.965s}.star:nth-child(32){--star-tail-length: 5.95em;--top-offset: 6.26vh;--fall-duration: 7.331s;--fall-delay: 4.491s}.star:nth-child(33){--star-tail-length: 6.41em;--top-offset: 39.32vh;--fall-duration: 7.065s;--fall-delay: 9.228s}.star:nth-child(34){--star-tail-length: 5.79em;--top-offset: 9.87vh;--fall-duration: 11.686s;--fall-delay: 4.39s}.star:nth-child(35){--star-tail-length: 5.26em;--top-offset: 46.92vh;--fall-duration: 8.927s;--fall-delay: 5.732s}.star:nth-child(36){--star-tail-length: 7.38em;--top-offset: 83.83vh;--fall-duration: 10.23s;--fall-delay: 6.002s}.star:nth-child(37){--star-tail-length: 6.72em;--top-offset: 4.03vh;--fall-duration: 6.699s;--fall-delay: 9.593s}.star:nth-child(38){--star-tail-length: 5.92em;--top-offset: 45.45vh;--fall-duration: 11.858s;--fall-delay: 1.593s}.star:nth-child(39){--star-tail-length: 5.09em;--top-offset: 87.81vh;--fall-duration: 11.125s;--fall-delay: 9.872s}.star:nth-child(40){--star-tail-length: 5.32em;--top-offset: 33.66vh;--fall-duration: 11.775s;--fall-delay: 1.573s}.star:nth-child(41){--star-tail-length: 7.03em;--top-offset: 79.18vh;--fall-duration: 10.383s;--fall-delay: 5.37s}.star:nth-child(42){--star-tail-length: 6.61em;--top-offset: 13.09vh;--fall-duration: 11.595s;--fall-delay: 1.109s}.star:nth-child(43){--star-tail-length: 5.35em;--top-offset: 36.93vh;--fall-duration: 10.052s;--fall-delay: 0.102s}.star:nth-child(44){--star-tail-length: 5.49em;--top-offset: 47.57vh;--fall-duration: 6.466s;--fall-delay: 0.069s}.star:nth-child(45){--star-tail-length: 7.29em;--top-offset: 82.41vh;--fall-duration: 6.957s;--fall-delay: 8.859s}.star:nth-child(46){--star-tail-length: 5.51em;--top-offset: 4.93vh;--fall-duration: 7.973s;--fall-delay: 1.733s}.star:nth-child(47){--star-tail-length: 5.56em;--top-offset: 93.98vh;--fall-duration: 7.108s;--fall-delay: 0.983s}.star:nth-child(48){--star-tail-length: 6.74em;--top-offset: 27.07vh;--fall-duration: 8.515s;--fall-delay: 3.377s}.star:nth-child(49){--star-tail-length: 6.09em;--top-offset: 72.61vh;--fall-duration: 9.632s;--fall-delay: 7.808s}.star:nth-child(50){--star-tail-length: 6.53em;--top-offset: 43.3vh;--fall-duration: 7.816s;--fall-delay: 2.803s}.star::before,.star::after{position:absolute;content:\"\";top:0;left:calc(var(--star-width)/-2);width:var(--star-width);height:100%;background:linear-gradient(45deg, transparent, currentColor, transparent);border-radius:inherit;animation:blink 2s linear infinite}.star::before{transform:rotate(45deg)}.star::after{transform:rotate(-45deg)}@keyframes fall{to{transform:translate3d(-30em, 0, 0)}}@keyframes tail-fade{0%,50%{width:var(--star-tail-length);opacity:1}70%,80%{width:0;opacity:.4}100%{width:0;opacity:0}}@keyframes blink{50%{opacity:.6}}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -6539,55 +6512,68 @@ ___CSS_LOADER_EXPORT___.push([module.id, "body{top:0%;background:radial-gradient
   Author Tobias Koppers @sokra
 */
 module.exports = function (cssWithMappingToString) {
-  var list = [];
+  var list = []; // return the list of modules as css string
 
-  // return the list of modules as css string
   list.toString = function toString() {
     return this.map(function (item) {
       var content = "";
       var needLayer = typeof item[5] !== "undefined";
+
       if (item[4]) {
         content += "@supports (".concat(item[4], ") {");
       }
+
       if (item[2]) {
         content += "@media ".concat(item[2], " {");
       }
+
       if (needLayer) {
         content += "@layer".concat(item[5].length > 0 ? " ".concat(item[5]) : "", " {");
       }
+
       content += cssWithMappingToString(item);
+
       if (needLayer) {
         content += "}";
       }
+
       if (item[2]) {
         content += "}";
       }
+
       if (item[4]) {
         content += "}";
       }
+
       return content;
     }).join("");
-  };
+  }; // import a list of modules into the list
 
-  // import a list of modules into the list
+
   list.i = function i(modules, media, dedupe, supports, layer) {
     if (typeof modules === "string") {
       modules = [[null, modules, undefined]];
     }
+
     var alreadyImportedModules = {};
+
     if (dedupe) {
       for (var k = 0; k < this.length; k++) {
         var id = this[k][0];
+
         if (id != null) {
           alreadyImportedModules[id] = true;
         }
       }
     }
+
     for (var _k = 0; _k < modules.length; _k++) {
       var item = [].concat(modules[_k]);
+
       if (dedupe && alreadyImportedModules[item[0]]) {
         continue;
       }
+
       if (typeof layer !== "undefined") {
         if (typeof item[5] === "undefined") {
           item[5] = layer;
@@ -6596,6 +6582,7 @@ module.exports = function (cssWithMappingToString) {
           item[5] = layer;
         }
       }
+
       if (media) {
         if (!item[2]) {
           item[2] = media;
@@ -6604,6 +6591,7 @@ module.exports = function (cssWithMappingToString) {
           item[2] = media;
         }
       }
+
       if (supports) {
         if (!item[4]) {
           item[4] = "".concat(supports);
@@ -6612,9 +6600,11 @@ module.exports = function (cssWithMappingToString) {
           item[4] = supports;
         }
       }
+
       list.push(item);
     }
   };
+
   return list;
 };
 
@@ -7663,19 +7653,7 @@ module.exports = styleTagTransform;
 
 /***/ }),
 
-/***/ 1941:
-/***/ ((module) => {
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : {
-    "default": obj
-  };
-}
-module.exports = _interopRequireDefault, module.exports.__esModule = true, module.exports["default"] = module.exports;
-
-/***/ }),
-
-/***/ 2793:
+/***/ 7462:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -7683,23 +7661,26 @@ module.exports = _interopRequireDefault, module.exports.__esModule = true, modul
 /* harmony export */   "Z": () => (/* binding */ _extends)
 /* harmony export */ });
 function _extends() {
-  _extends = Object.assign ? Object.assign.bind() : function (target) {
+  _extends = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
+
       for (var key in source) {
         if (Object.prototype.hasOwnProperty.call(source, key)) {
           target[key] = source[key];
         }
       }
     }
+
     return target;
   };
+
   return _extends.apply(this, arguments);
 }
 
 /***/ }),
 
-/***/ 1048:
+/***/ 3366:
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -7711,82 +7692,14 @@ function _objectWithoutPropertiesLoose(source, excluded) {
   var target = {};
   var sourceKeys = Object.keys(source);
   var key, i;
+
   for (i = 0; i < sourceKeys.length; i++) {
     key = sourceKeys[i];
     if (excluded.indexOf(key) >= 0) continue;
     target[key] = source[key];
   }
+
   return target;
-}
-
-/***/ }),
-
-/***/ 4695:
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Z": () => (/* binding */ _extends)
-/* harmony export */ });
-function _extends() {
-  _extends = Object.assign ? Object.assign.bind() : function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-    return target;
-  };
-  return _extends.apply(this, arguments);
-}
-
-/***/ }),
-
-/***/ 916:
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Z": () => (/* binding */ _objectWithoutPropertiesLoose)
-/* harmony export */ });
-function _objectWithoutPropertiesLoose(source, excluded) {
-  if (source == null) return {};
-  var target = {};
-  var sourceKeys = Object.keys(source);
-  var key, i;
-  for (i = 0; i < sourceKeys.length; i++) {
-    key = sourceKeys[i];
-    if (excluded.indexOf(key) >= 0) continue;
-    target[key] = source[key];
-  }
-  return target;
-}
-
-/***/ }),
-
-/***/ 1860:
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "Z": () => (/* binding */ _extends)
-/* harmony export */ });
-function _extends() {
-  _extends = Object.assign ? Object.assign.bind() : function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-    return target;
-  };
-  return _extends.apply(this, arguments);
 }
 
 /***/ })
@@ -7936,44 +7849,15 @@ var react = __webpack_require__(7294);
 var react_namespaceObject = /*#__PURE__*/__webpack_require__.t(react, 2);
 // EXTERNAL MODULE: ./node_modules/react-dom/index.js
 var react_dom = __webpack_require__(3935);
-;// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/extends.js
-function extends_extends() {
-  extends_extends = Object.assign || function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
-
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-
-    return target;
-  };
-
-  return extends_extends.apply(this, arguments);
-}
-;// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js
-function _objectWithoutPropertiesLoose(source, excluded) {
-  if (source == null) return {};
-  var target = {};
-  var sourceKeys = Object.keys(source);
-  var key, i;
-
-  for (i = 0; i < sourceKeys.length; i++) {
-    key = sourceKeys[i];
-    if (excluded.indexOf(key) >= 0) continue;
-    target[key] = source[key];
-  }
-
-  return target;
-}
+// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/extends.js
+var esm_extends = __webpack_require__(7462);
+// EXTERNAL MODULE: ./node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js
+var objectWithoutPropertiesLoose = __webpack_require__(3366);
 ;// CONCATENATED MODULE: ./node_modules/@babel/runtime/helpers/esm/objectWithoutProperties.js
 
 function objectWithoutProperties_objectWithoutProperties(source, excluded) {
   if (source == null) return {};
-  var target = _objectWithoutPropertiesLoose(source, excluded);
+  var target = (0,objectWithoutPropertiesLoose/* default */.Z)(source, excluded);
   var key, i;
 
   if (Object.getOwnPropertySymbols) {
@@ -7989,48 +7873,8 @@ function objectWithoutProperties_objectWithoutProperties(source, excluded) {
 
   return target;
 }
-;// CONCATENATED MODULE: ./node_modules/clsx/dist/clsx.m.js
-function toVal(mix) {
-	var k, y, str='';
-
-	if (typeof mix === 'string' || typeof mix === 'number') {
-		str += mix;
-	} else if (typeof mix === 'object') {
-		if (Array.isArray(mix)) {
-			for (k=0; k < mix.length; k++) {
-				if (mix[k]) {
-					if (y = toVal(mix[k])) {
-						str && (str += ' ');
-						str += y;
-					}
-				}
-			}
-		} else {
-			for (k in mix) {
-				if (mix[k]) {
-					str && (str += ' ');
-					str += k;
-				}
-			}
-		}
-	}
-
-	return str;
-}
-
-/* harmony default export */ function clsx_m() {
-	var i=0, tmp, x, str='';
-	while (i < arguments.length) {
-		if (tmp = arguments[i++]) {
-			if (x = toVal(tmp)) {
-				str && (str += ' ');
-				str += x
-			}
-		}
-	}
-	return str;
-}
-
+// EXTERNAL MODULE: ./node_modules/clsx/dist/clsx.m.js
+var clsx_m = __webpack_require__(6010);
 // EXTERNAL MODULE: ./node_modules/hoist-non-react-statics/dist/hoist-non-react-statics.cjs.js
 var hoist_non_react_statics_cjs = __webpack_require__(8679);
 var hoist_non_react_statics_cjs_default = /*#__PURE__*/__webpack_require__.n(hoist_non_react_statics_cjs);
@@ -8150,7 +7994,11 @@ var join = function join(value, by) {
  */
 
 
-var toCssValue = function toCssValue(value) {
+var toCssValue = function toCssValue(value, ignoreImportant) {
+  if (ignoreImportant === void 0) {
+    ignoreImportant = false;
+  }
+
   if (!Array.isArray(value)) return value;
   var cssValue = ''; // Support space separated values via `[['5px', '10px']]`.
 
@@ -8163,7 +8011,7 @@ var toCssValue = function toCssValue(value) {
   } else cssValue = join(value, ', '); // Add !important, because it was ignored.
 
 
-  if (value[value.length - 1] === '!important') {
+  if (!ignoreImportant && value[value.length - 1] === '!important') {
     cssValue += ' !important';
   }
 
@@ -8406,7 +8254,7 @@ function (_BaseStyleRule) {
   _proto2.toString = function toString(options) {
     var sheet = this.options.sheet;
     var link = sheet ? sheet.options.link : false;
-    var opts = link ? extends_extends({}, options, {
+    var opts = link ? (0,esm_extends/* default */.Z)({}, options, {
       allowEmpty: true
     }) : options;
     return toCss(this.selectorText, this.style, opts);
@@ -8468,7 +8316,7 @@ function () {
 
     this.query = options.name || "@" + this.at;
     this.options = options;
-    this.rules = new RuleList(extends_extends({}, options, {
+    this.rules = new RuleList((0,esm_extends/* default */.Z)({}, options, {
       parent: this
     }));
 
@@ -8581,12 +8429,12 @@ function () {
         sheet = options.sheet,
         generateId = options.generateId;
     this.id = scoped === false ? this.name : jss_esm_escape(generateId(this, sheet));
-    this.rules = new RuleList(extends_extends({}, options, {
+    this.rules = new RuleList((0,esm_extends/* default */.Z)({}, options, {
       parent: this
     }));
 
     for (var name in frames) {
-      this.rules.add(name, frames[name], extends_extends({}, options, {
+      this.rules.add(name, frames[name], (0,esm_extends/* default */.Z)({}, options, {
         parent: this
       }));
     }
@@ -8701,7 +8549,7 @@ function (_BaseStyleRule) {
   _proto.toString = function toString(options) {
     var sheet = this.options.sheet;
     var link = sheet ? sheet.options.link : false;
-    var opts = link ? extends_extends({}, options, {
+    var opts = link ? (0,esm_extends/* default */.Z)({}, options, {
       allowEmpty: true
     }) : options;
     return toCss(this.key, this.style, opts);
@@ -8889,7 +8737,7 @@ function () {
         generateId = _this$options.generateId,
         scoped = _this$options.scoped;
 
-    var options = extends_extends({
+    var options = (0,esm_extends/* default */.Z)({
       classes: this.classes,
       parent: parent,
       sheet: sheet,
@@ -8943,7 +8791,7 @@ function () {
     }
 
     var options = ruleOptions;
-    if (oldIndex !== -1) options = extends_extends({}, ruleOptions, {
+    if (oldIndex !== -1) options = (0,esm_extends/* default */.Z)({}, ruleOptions, {
       index: oldIndex
     });
     return this.add(name, decl, options);
@@ -9127,7 +8975,7 @@ function () {
     this.deployed = false;
     this.classes = {};
     this.keyframes = {};
-    this.options = extends_extends({}, options, {
+    this.options = (0,esm_extends/* default */.Z)({}, options, {
       sheet: this,
       parent: this,
       classes: this.classes,
@@ -9535,7 +9383,7 @@ function () {
   _proto.toString = function toString(_temp) {
     var _ref = _temp === void 0 ? {} : _temp,
         attached = _ref.attached,
-        options = _objectWithoutPropertiesLoose(_ref, ["attached"]);
+        options = (0,objectWithoutPropertiesLoose/* default */.Z)(_ref, ["attached"]);
 
     var _getWhitespaceSymbols = getWhitespaceSymbols(options),
         linebreak = _getWhitespaceSymbols.linebreak;
@@ -9685,16 +9533,19 @@ var setProperty = function setProperty(cssRule, prop, value) {
     var cssValue = value;
 
     if (Array.isArray(value)) {
-      cssValue = toCssValue(value);
+      cssValue = toCssValue(value, true);
+
+      if (value[value.length - 1] === '!important') {
+        cssRule.style.setProperty(prop, cssValue, 'important');
+        return true;
+      }
     } // Support CSSTOM.
 
 
     if (cssRule.attributeStyleMap) {
       cssRule.attributeStyleMap.set(prop, cssValue);
     } else {
-      var indexOfImportantFlag = cssValue ? cssValue.indexOf('!important') : -1;
-      var cssValueWithoutImportantFlag = indexOfImportantFlag > -1 ? cssValue.substr(0, indexOfImportantFlag - 1) : cssValue;
-      cssRule.style.setProperty(prop, cssValueWithoutImportantFlag, indexOfImportantFlag > -1 ? 'important' : '');
+      cssRule.style.setProperty(prop, cssValue);
     }
   } catch (err) {
     // IE may throw if property is unknown.
@@ -10107,7 +9958,7 @@ var Jss =
 function () {
   function Jss(options) {
     this.id = instanceCounter++;
-    this.version = "10.9.2";
+    this.version = "10.9.0";
     this.plugins = new PluginsRegistry();
     this.options = {
       id: {
@@ -10148,7 +9999,7 @@ function () {
     }
 
     if (options.id) {
-      this.options.id = extends_extends({}, this.options.id, options.id);
+      this.options.id = (0,esm_extends/* default */.Z)({}, this.options.id, options.id);
     }
 
     if (options.createGenerateId || options.id) {
@@ -10182,7 +10033,7 @@ function () {
       index = sheets.index === 0 ? 0 : sheets.index + 1;
     }
 
-    var sheet = new StyleSheet(styles, extends_extends({}, options, {
+    var sheet = new StyleSheet(styles, (0,esm_extends/* default */.Z)({}, options, {
       jss: this,
       generateId: options.generateId || this.generateId,
       insertionPoint: this.options.insertionPoint,
@@ -10222,7 +10073,7 @@ function () {
       return this.createRule(undefined, name, style);
     }
 
-    var ruleOptions = extends_extends({}, options, {
+    var ruleOptions = (0,esm_extends/* default */.Z)({}, options, {
       name: name,
       jss: this,
       Renderer: this.options.Renderer
@@ -10388,7 +10239,7 @@ function mergeClasses() {
     return baseClasses;
   }
 
-  var nextClasses = extends_extends({}, baseClasses);
+  var nextClasses = (0,esm_extends/* default */.Z)({}, baseClasses);
 
   if (false) {}
 
@@ -10589,7 +10440,7 @@ function () {
     this.isProcessed = false;
     this.key = key;
     this.options = options;
-    this.rules = new RuleList(extends_extends({}, options, {
+    this.rules = new RuleList((0,esm_extends/* default */.Z)({}, options, {
       parent: this
     }));
 
@@ -10659,7 +10510,7 @@ function () {
     this.key = key;
     this.options = options;
     var selector = key.substr(atPrefix.length);
-    this.rule = options.jss.createRule(selector, style, extends_extends({}, options, {
+    this.rule = options.jss.createRule(selector, style, (0,esm_extends/* default */.Z)({}, options, {
       parent: this
     }));
   }
@@ -10694,7 +10545,7 @@ function handleNestedGlobalContainerRule(rule, sheet) {
   if (!rules) return;
 
   for (var name in rules) {
-    sheet.addRule(name, rules[name], extends_extends({}, options, {
+    sheet.addRule(name, rules[name], (0,esm_extends/* default */.Z)({}, options, {
       selector: addScope(name, rule.selector)
     }));
   }
@@ -10709,7 +10560,7 @@ function handlePrefixedGlobalRule(rule, sheet) {
   for (var prop in style) {
     if (prop[0] !== '@' || prop.substr(0, at.length) !== at) continue;
     var selector = addScope(prop.substr(at.length), rule.selector);
-    sheet.addRule(selector, style[prop], extends_extends({}, options, {
+    sheet.addRule(selector, style[prop], (0,esm_extends/* default */.Z)({}, options, {
       selector: selector
     }));
     delete style[prop];
@@ -10808,13 +10659,13 @@ function jssNested() {
 
   function getOptions(rule, container, prevOptions) {
     // Options has been already created, now we only increase index.
-    if (prevOptions) return extends_extends({}, prevOptions, {
+    if (prevOptions) return (0,esm_extends/* default */.Z)({}, prevOptions, {
       index: prevOptions.index + 1
     });
     var nestingLevel = rule.options.nestingLevel;
     nestingLevel = nestingLevel === undefined ? 1 : nestingLevel + 1;
 
-    var options = extends_extends({}, rule.options, {
+    var options = (0,esm_extends/* default */.Z)({}, rule.options, {
       nestingLevel: nestingLevel,
       index: container.indexOf(rule) + 1 // We don't need the parent name to be set options for chlid.
 
@@ -10848,11 +10699,11 @@ function jssNested() {
 
         if ('replaceRule' in container) {
           // for backward compatibility
-          container.replaceRule(name, style[prop], extends_extends({}, options, {
+          container.replaceRule(name, style[prop], (0,esm_extends/* default */.Z)({}, options, {
             selector: selector
           }));
         } else {
-          container.addRule(name, style[prop], extends_extends({}, options, {
+          container.addRule(name, style[prop], (0,esm_extends/* default */.Z)({}, options, {
             selector: selector
           }));
         }
@@ -12042,7 +11893,7 @@ function deepmerge(target, source) {
   var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {
     clone: true
   };
-  var output = options.clone ? extends_extends({}, target) : target;
+  var output = options.clone ? (0,esm_extends/* default */.Z)({}, target) : target;
 
   if (isPlainObject(target) && isPlainObject(source)) {
     Object.keys(source).forEach(function (key) {
@@ -12089,7 +11940,7 @@ function getStylesCreator(stylesOrCreator) {
 
       var overrides = theme.overrides[name];
 
-      var stylesWithOverrides = extends_extends({}, styles);
+      var stylesWithOverrides = (0,esm_extends/* default */.Z)({}, styles);
 
       Object.keys(overrides).forEach(function (key) {
         if (false) {}
@@ -12184,7 +12035,7 @@ function attach(_ref2, props) {
     makeStyles_multiKeyStore.set(stylesOptions.sheetsManager, stylesCreator, theme, sheetManager);
   }
 
-  var options = extends_extends({}, stylesCreator.options, stylesOptions, {
+  var options = (0,esm_extends/* default */.Z)({}, stylesCreator.options, stylesOptions, {
     theme: theme,
     flip: typeof stylesOptions.flip === 'boolean' ? stylesOptions.flip : theme.direction === 'rtl'
   });
@@ -12202,7 +12053,7 @@ function attach(_ref2, props) {
     var styles = stylesCreator.create(theme, name);
 
     if (!staticSheet) {
-      staticSheet = stylesOptions.jss.createStyleSheet(styles, extends_extends({
+      staticSheet = stylesOptions.jss.createStyleSheet(styles, (0,esm_extends/* default */.Z)({
         link: false
       }, options));
       staticSheet.attach();
@@ -12221,7 +12072,7 @@ function attach(_ref2, props) {
   }
 
   if (sheetManager.dynamicStyles) {
-    var dynamicSheet = stylesOptions.jss.createStyleSheet(sheetManager.dynamicStyles, extends_extends({
+    var dynamicSheet = stylesOptions.jss.createStyleSheet(sheetManager.dynamicStyles, (0,esm_extends/* default */.Z)({
       link: true
     }, options));
     dynamicSheet.update(props);
@@ -12329,7 +12180,7 @@ function makeStyles(stylesOrCreator) {
     var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
     var theme = useTheme() || defaultTheme;
 
-    var stylesOptions = extends_extends({}, react.useContext(StylesContext), stylesOptions2);
+    var stylesOptions = (0,esm_extends/* default */.Z)({}, react.useContext(StylesContext), stylesOptions2);
 
     var instance = react.useRef();
     var shouldUpdate = react.useRef();
@@ -12416,7 +12267,7 @@ var withStyles = function withStyles(stylesOrCreator) {
 
     if (false) { var displayName; }
 
-    var useStyles = makeStyles(stylesOrCreator, extends_extends({
+    var useStyles = makeStyles(stylesOrCreator, (0,esm_extends/* default */.Z)({
       defaultTheme: defaultTheme,
       Component: Component,
       name: name || Component.displayName,
@@ -12430,7 +12281,7 @@ var withStyles = function withStyles(stylesOrCreator) {
       // So copying it here would give us the same result in the wrapper as well.
 
 
-      var classes = useStyles(extends_extends({}, Component.defaultProps, props));
+      var classes = useStyles((0,esm_extends/* default */.Z)({}, Component.defaultProps, props));
       var theme;
       var more = other;
 
@@ -12454,7 +12305,7 @@ var withStyles = function withStyles(stylesOrCreator) {
         }
       }
 
-      return /*#__PURE__*/react.createElement(Component, extends_extends({
+      return /*#__PURE__*/react.createElement(Component, (0,esm_extends/* default */.Z)({
         ref: innerRef || ref,
         classes: classes
       }, more));
@@ -12534,7 +12385,7 @@ function createBreakpoints(breakpoints) {
     return values[key];
   }
 
-  return extends_extends({
+  return (0,esm_extends/* default */.Z)({
     keys: keys,
     values: values,
     up: up,
@@ -12565,14 +12416,14 @@ function _defineProperty(obj, key, value) {
 function createMixins(breakpoints, spacing, mixins) {
   var _toolbar;
 
-  return extends_extends({
+  return (0,esm_extends/* default */.Z)({
     gutters: function gutters() {
       var styles = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
       console.warn(['Material-UI: theme.mixins.gutters() is deprecated.', 'You can use the source of the mixin directly:', "\n      paddingLeft: theme.spacing(2),\n      paddingRight: theme.spacing(2),\n      [theme.breakpoints.up('sm')]: {\n        paddingLeft: theme.spacing(3),\n        paddingRight: theme.spacing(3),\n      },\n      "].join('\n'));
-      return extends_extends({
+      return (0,esm_extends/* default */.Z)({
         paddingLeft: spacing(2),
         paddingRight: spacing(2)
-      }, styles, _defineProperty({}, breakpoints.up('sm'), extends_extends({
+      }, styles, _defineProperty({}, breakpoints.up('sm'), (0,esm_extends/* default */.Z)({
         paddingLeft: spacing(3),
         paddingRight: spacing(3)
       }, styles[breakpoints.up('sm')])));
@@ -13193,7 +13044,7 @@ function createPalette(palette) {
     var mainShade = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 500;
     var lightShade = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 300;
     var darkShade = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 700;
-    color = extends_extends({}, color);
+    color = (0,esm_extends/* default */.Z)({}, color);
 
     if (!color.main && color[mainShade]) {
       color.main = color[mainShade];
@@ -13224,7 +13075,7 @@ function createPalette(palette) {
 
   if (false) {}
 
-  var paletteOutput = deepmerge(extends_extends({
+  var paletteOutput = deepmerge((0,esm_extends/* default */.Z)({
     // A collection of common colors.
     common: colors_common,
     // The palette type, can be light or dark.
@@ -13312,7 +13163,7 @@ function createTypography(palette, typography) {
   };
 
   var buildVariant = function buildVariant(fontWeight, size, lineHeight, letterSpacing, casing) {
-    return extends_extends({
+    return (0,esm_extends/* default */.Z)({
       fontFamily: fontFamily,
       fontWeight: fontWeight,
       fontSize: pxToRem(size),
@@ -13338,7 +13189,7 @@ function createTypography(palette, typography) {
     caption: buildVariant(fontWeightRegular, 12, 1.66, 0.4),
     overline: buildVariant(fontWeightRegular, 12, 2.66, 1, caseAllCaps)
   };
-  return deepmerge(extends_extends({
+  return deepmerge((0,esm_extends/* default */.Z)({
     htmlFontSize: htmlFontSize,
     pxToRem: pxToRem,
     round: roundWithDeprecationWarning,
@@ -13860,7 +13711,7 @@ var defaultTheme = styles_createTheme();
 
 
 function styles_withStyles_withStyles(stylesOrCreator, options) {
-  return withStyles_withStyles(stylesOrCreator, extends_extends({
+  return withStyles_withStyles(stylesOrCreator, (0,esm_extends/* default */.Z)({
     defaultTheme: styles_defaultTheme
   }, options));
 }
@@ -13881,7 +13732,7 @@ var styles = function styles(theme) {
       boxShadow: shadow
     };
   });
-  return extends_extends({
+  return (0,esm_extends/* default */.Z)({
     /* Styles applied to the root element. */
     root: {
       backgroundColor: theme.palette.background.paper,
@@ -13913,8 +13764,8 @@ var Paper = /*#__PURE__*/react.forwardRef(function Paper(props, ref) {
       variant = _props$variant === void 0 ? 'elevation' : _props$variant,
       other = objectWithoutProperties_objectWithoutProperties(props, ["classes", "className", "component", "square", "elevation", "variant"]);
 
-  return /*#__PURE__*/react.createElement(Component, extends_extends({
-    className: clsx_m(classes.root, className, variant === 'outlined' ? classes.outlined : classes["elevation".concat(elevation)], !square && classes.rounded),
+  return /*#__PURE__*/react.createElement(Component, (0,esm_extends/* default */.Z)({
+    className: (0,clsx_m/* default */.Z)(classes.root, className, variant === 'outlined' ? classes.outlined : classes["elevation".concat(elevation)], !square && classes.rounded),
     ref: ref
   }, other));
 });
@@ -13943,8 +13794,8 @@ var Card = /*#__PURE__*/react.forwardRef(function Card(props, ref) {
       raised = _props$raised === void 0 ? false : _props$raised,
       other = objectWithoutProperties_objectWithoutProperties(props, ["classes", "className", "raised"]);
 
-  return /*#__PURE__*/react.createElement(Paper_Paper, extends_extends({
-    className: clsx_m(classes.root, className),
+  return /*#__PURE__*/react.createElement(Paper_Paper, (0,esm_extends/* default */.Z)({
+    className: (0,clsx_m/* default */.Z)(classes.root, className),
     elevation: raised ? 8 : 1,
     ref: ref
   }, other));
@@ -13953,37 +13804,26 @@ var Card = /*#__PURE__*/react.forwardRef(function Card(props, ref) {
 /* harmony default export */ const Card_Card = (styles_withStyles(Card_styles, {
   name: 'MuiCard'
 })(Card));
-// EXTERNAL MODULE: ./node_modules/@mui/material/node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js
-var objectWithoutPropertiesLoose = __webpack_require__(1048);
-// EXTERNAL MODULE: ./node_modules/@mui/material/node_modules/@babel/runtime/helpers/esm/extends.js
-var esm_extends = __webpack_require__(2793);
-// EXTERNAL MODULE: ./node_modules/@mui/material/node_modules/clsx/dist/clsx.m.js
-var dist_clsx_m = __webpack_require__(3680);
-// EXTERNAL MODULE: ./node_modules/@mui/utils/esm/composeClasses/composeClasses.js
-var composeClasses = __webpack_require__(4780);
-// EXTERNAL MODULE: ./node_modules/@mui/system/node_modules/@babel/runtime/helpers/esm/extends.js
-var helpers_esm_extends = __webpack_require__(4695);
-// EXTERNAL MODULE: ./node_modules/@mui/system/node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js
-var esm_objectWithoutPropertiesLoose = __webpack_require__(916);
+// EXTERNAL MODULE: ./node_modules/@mui/base/composeClasses/composeClasses.js
+var composeClasses = __webpack_require__(7192);
 // EXTERNAL MODULE: ./node_modules/@mui/utils/esm/deepmerge.js
 var esm_deepmerge = __webpack_require__(9766);
-// EXTERNAL MODULE: ./node_modules/@mui/system/esm/styleFunctionSx/defaultSxConfig.js + 5 modules
-var defaultSxConfig = __webpack_require__(8010);
+// EXTERNAL MODULE: ./node_modules/@mui/system/esm/getThemeValue.js + 10 modules
+var getThemeValue = __webpack_require__(4178);
 ;// CONCATENATED MODULE: ./node_modules/@mui/system/esm/styleFunctionSx/extendSxProp.js
 
 
 const _excluded = ["sx"];
 
 
+
 const splitProps = props => {
-  var _props$theme$unstable, _props$theme;
   const result = {
     systemProps: {},
     otherProps: {}
   };
-  const config = (_props$theme$unstable = props == null ? void 0 : (_props$theme = props.theme) == null ? void 0 : _props$theme.unstable_sxConfig) != null ? _props$theme$unstable : defaultSxConfig/* default */.Z;
   Object.keys(props).forEach(prop => {
-    if (config[prop]) {
+    if (getThemeValue/* propToStyleFunction */.Gc[prop]) {
       result.systemProps[prop] = props[prop];
     } else {
       result.otherProps[prop] = props[prop];
@@ -13991,30 +13831,36 @@ const splitProps = props => {
   });
   return result;
 };
+
 function extendSxProp(props) {
   const {
-      sx: inSx
-    } = props,
-    other = (0,esm_objectWithoutPropertiesLoose/* default */.Z)(props, _excluded);
+    sx: inSx
+  } = props,
+        other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, _excluded);
+
   const {
     systemProps,
     otherProps
   } = splitProps(other);
   let finalSx;
+
   if (Array.isArray(inSx)) {
     finalSx = [systemProps, ...inSx];
   } else if (typeof inSx === 'function') {
     finalSx = (...args) => {
       const result = inSx(...args);
+
       if (!(0,esm_deepmerge/* isPlainObject */.P)(result)) {
         return systemProps;
       }
-      return (0,helpers_esm_extends/* default */.Z)({}, systemProps, result);
+
+      return (0,esm_extends/* default */.Z)({}, systemProps, result);
     };
   } else {
-    finalSx = (0,helpers_esm_extends/* default */.Z)({}, systemProps, inSx);
+    finalSx = (0,esm_extends/* default */.Z)({}, systemProps, inSx);
   }
-  return (0,helpers_esm_extends/* default */.Z)({}, otherProps, {
+
+  return (0,esm_extends/* default */.Z)({}, otherProps, {
     sx: finalSx
   });
 }
@@ -14024,12 +13870,11 @@ var styled = __webpack_require__(9602);
 var useThemeProps = __webpack_require__(6122);
 // EXTERNAL MODULE: ./node_modules/@mui/material/utils/capitalize.js
 var capitalize = __webpack_require__(8216);
-// EXTERNAL MODULE: ./node_modules/@mui/utils/esm/generateUtilityClasses/generateUtilityClasses.js
-var generateUtilityClasses = __webpack_require__(1588);
-// EXTERNAL MODULE: ./node_modules/@mui/utils/esm/generateUtilityClass/generateUtilityClass.js
-var generateUtilityClass_generateUtilityClass = __webpack_require__(4867);
+// EXTERNAL MODULE: ./node_modules/@mui/base/generateUtilityClass/generateUtilityClass.js
+var generateUtilityClass_generateUtilityClass = __webpack_require__(8979);
+// EXTERNAL MODULE: ./node_modules/@mui/base/generateUtilityClasses/generateUtilityClasses.js
+var generateUtilityClasses = __webpack_require__(6087);
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/Typography/typographyClasses.js
-
 
 function getTypographyUtilityClass(slot) {
   return (0,generateUtilityClass_generateUtilityClass/* default */.Z)('MuiTypography', slot);
@@ -14042,6 +13887,7 @@ var jsx_runtime = __webpack_require__(5893);
 
 
 const Typography_excluded = ["align", "className", "component", "gutterBottom", "noWrap", "paragraph", "variant", "variantMapping"];
+
 
 
 
@@ -14066,6 +13912,7 @@ const useUtilityClasses = ownerState => {
   };
   return (0,composeClasses/* default */.Z)(slots, getTypographyUtilityClass, classes);
 };
+
 const TypographyRoot = (0,styled/* default */.ZP)('span', {
   name: 'MuiTypography',
   slot: 'Root',
@@ -14103,9 +13950,8 @@ const defaultVariantMapping = {
   body1: 'p',
   body2: 'p',
   inherit: 'p'
-};
+}; // TODO v6: deprecate these color values in v5.x and remove the transformation in v6
 
-// TODO v6: deprecate these color values in v5.x and remove the transformation in v6
 const colorTransformations = {
   primary: 'primary.main',
   textPrimary: 'text.primary',
@@ -14113,9 +13959,11 @@ const colorTransformations = {
   textSecondary: 'text.secondary',
   error: 'error.main'
 };
+
 const transformDeprecatedColors = color => {
   return colorTransformations[color] || color;
 };
+
 const Typography = /*#__PURE__*/react.forwardRef(function Typography(inProps, ref) {
   const themeProps = (0,useThemeProps/* default */.Z)({
     props: inProps,
@@ -14125,17 +13973,19 @@ const Typography = /*#__PURE__*/react.forwardRef(function Typography(inProps, re
   const props = extendSxProp((0,esm_extends/* default */.Z)({}, themeProps, {
     color
   }));
+
   const {
-      align = 'inherit',
-      className,
-      component,
-      gutterBottom = false,
-      noWrap = false,
-      paragraph = false,
-      variant = 'body1',
-      variantMapping = defaultVariantMapping
-    } = props,
-    other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, Typography_excluded);
+    align = 'inherit',
+    className,
+    component,
+    gutterBottom = false,
+    noWrap = false,
+    paragraph = false,
+    variant = 'body1',
+    variantMapping = defaultVariantMapping
+  } = props,
+        other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, Typography_excluded);
+
   const ownerState = (0,esm_extends/* default */.Z)({}, props, {
     align,
     color,
@@ -14147,19 +13997,19 @@ const Typography = /*#__PURE__*/react.forwardRef(function Typography(inProps, re
     variant,
     variantMapping
   });
+
   const Component = component || (paragraph ? 'p' : variantMapping[variant] || defaultVariantMapping[variant]) || 'span';
   const classes = useUtilityClasses(ownerState);
   return /*#__PURE__*/(0,jsx_runtime.jsx)(TypographyRoot, (0,esm_extends/* default */.Z)({
     as: Component,
     ref: ref,
     ownerState: ownerState,
-    className: (0,dist_clsx_m/* default */.Z)(classes.root, className)
+    className: (0,clsx_m/* default */.Z)(classes.root, className)
   }, other));
 });
  false ? 0 : void 0;
 /* harmony default export */ const Typography_Typography = (Typography);
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/CardHeader/cardHeaderClasses.js
-
 
 function getCardHeaderUtilityClass(slot) {
   return (0,generateUtilityClass_generateUtilityClass/* default */.Z)('MuiCardHeader', slot);
@@ -14170,6 +14020,7 @@ const cardHeaderClasses = (0,generateUtilityClasses/* default */.Z)('MuiCardHead
 
 
 const CardHeader_excluded = ["action", "avatar", "className", "component", "disableTypography", "subheader", "subheaderTypographyProps", "title", "titleTypographyProps"];
+
 
 
 
@@ -14194,6 +14045,7 @@ const CardHeader_useUtilityClasses = ownerState => {
   };
   return (0,composeClasses/* default */.Z)(slots, getCardHeaderUtilityClass, classes);
 };
+
 const CardHeaderRoot = (0,styled/* default */.ZP)('div', {
   name: 'MuiCardHeader',
   slot: 'Root',
@@ -14238,24 +14090,28 @@ const CardHeader = /*#__PURE__*/react.forwardRef(function CardHeader(inProps, re
     props: inProps,
     name: 'MuiCardHeader'
   });
+
   const {
-      action,
-      avatar,
-      className,
-      component = 'div',
-      disableTypography = false,
-      subheader: subheaderProp,
-      subheaderTypographyProps,
-      title: titleProp,
-      titleTypographyProps
-    } = props,
-    other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, CardHeader_excluded);
+    action,
+    avatar,
+    className,
+    component = 'div',
+    disableTypography = false,
+    subheader: subheaderProp,
+    subheaderTypographyProps,
+    title: titleProp,
+    titleTypographyProps
+  } = props,
+        other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, CardHeader_excluded);
+
   const ownerState = (0,esm_extends/* default */.Z)({}, props, {
     component,
     disableTypography
   });
+
   const classes = CardHeader_useUtilityClasses(ownerState);
   let title = titleProp;
+
   if (title != null && title.type !== Typography_Typography && !disableTypography) {
     title = /*#__PURE__*/(0,jsx_runtime.jsx)(Typography_Typography, (0,esm_extends/* default */.Z)({
       variant: avatar ? 'body2' : 'h5',
@@ -14266,7 +14122,9 @@ const CardHeader = /*#__PURE__*/react.forwardRef(function CardHeader(inProps, re
       children: title
     }));
   }
+
   let subheader = subheaderProp;
+
   if (subheader != null && subheader.type !== Typography_Typography && !disableTypography) {
     subheader = /*#__PURE__*/(0,jsx_runtime.jsx)(Typography_Typography, (0,esm_extends/* default */.Z)({
       variant: avatar ? 'body2' : 'body1',
@@ -14278,8 +14136,9 @@ const CardHeader = /*#__PURE__*/react.forwardRef(function CardHeader(inProps, re
       children: subheader
     }));
   }
+
   return /*#__PURE__*/(0,jsx_runtime.jsxs)(CardHeaderRoot, (0,esm_extends/* default */.Z)({
-    className: (0,dist_clsx_m/* default */.Z)(classes.root, className),
+    className: (0,clsx_m/* default */.Z)(classes.root, className),
     as: component,
     ref: ref,
     ownerState: ownerState
@@ -14342,11 +14201,11 @@ var CardMedia = /*#__PURE__*/react.forwardRef(function CardMedia(props, ref) {
       other = objectWithoutProperties_objectWithoutProperties(props, ["children", "classes", "className", "component", "image", "src", "style"]);
 
   var isMediaComponent = MEDIA_COMPONENTS.indexOf(Component) !== -1;
-  var composedStyle = !isMediaComponent && image ? extends_extends({
+  var composedStyle = !isMediaComponent && image ? (0,esm_extends/* default */.Z)({
     backgroundImage: "url(\"".concat(image, "\")")
   }, style) : style;
-  return /*#__PURE__*/react.createElement(Component, extends_extends({
-    className: clsx_m(classes.root, className, isMediaComponent && classes.media, "picture img".indexOf(Component) !== -1 && classes.img),
+  return /*#__PURE__*/react.createElement(Component, (0,esm_extends/* default */.Z)({
+    className: (0,clsx_m/* default */.Z)(classes.root, className, isMediaComponent && classes.media, "picture img".indexOf(Component) !== -1 && classes.img),
     ref: ref,
     style: composedStyle,
     src: isMediaComponent ? image || src : undefined
@@ -14385,8 +14244,8 @@ var CardActions = /*#__PURE__*/react.forwardRef(function CardActions(props, ref)
       className = props.className,
       other = objectWithoutProperties_objectWithoutProperties(props, ["disableSpacing", "classes", "className"]);
 
-  return /*#__PURE__*/react.createElement("div", extends_extends({
-    className: clsx_m(classes.root, className, !disableSpacing && classes.spacing),
+  return /*#__PURE__*/react.createElement("div", (0,esm_extends/* default */.Z)({
+    className: (0,clsx_m/* default */.Z)(classes.root, className, !disableSpacing && classes.spacing),
     ref: ref
   }, other));
 });
@@ -14833,7 +14692,7 @@ var TransitionGroup = /*#__PURE__*/function (_React$Component) {
 
     if (this.mounted) {
       this.setState(function (state) {
-        var children = extends_extends({}, state.children);
+        var children = (0,esm_extends/* default */.Z)({}, state.children);
 
         delete children[child.key];
         return {
@@ -14847,7 +14706,7 @@ var TransitionGroup = /*#__PURE__*/function (_React$Component) {
     var _this$props = this.props,
         Component = _this$props.component,
         childFactory = _this$props.childFactory,
-        props = _objectWithoutPropertiesLoose(_this$props, ["component", "childFactory"]);
+        props = (0,objectWithoutPropertiesLoose/* default */.Z)(_this$props, ["component", "childFactory"]);
 
     var contextValue = this.state.contextValue;
     var children = TransitionGroup_values(this.state.children).map(childFactory);
@@ -14898,14 +14757,14 @@ function Ripple(props) {
       leaving = _React$useState[0],
       setLeaving = _React$useState[1];
 
-  var rippleClassName = clsx_m(classes.ripple, classes.rippleVisible, pulsate && classes.ripplePulsate);
+  var rippleClassName = (0,clsx_m/* default */.Z)(classes.ripple, classes.rippleVisible, pulsate && classes.ripplePulsate);
   var rippleStyles = {
     width: rippleSize,
     height: rippleSize,
     top: -(rippleSize / 2) + rippleY,
     left: -(rippleSize / 2) + rippleX
   };
-  var childClassName = clsx_m(classes.child, leaving && classes.childLeaving, pulsate && classes.childPulsate);
+  var childClassName = (0,clsx_m/* default */.Z)(classes.child, leaving && classes.childLeaving, pulsate && classes.childPulsate);
   var handleExited = useEventCallback(onExited); // Ripple is used for user feedback (e.g. click or press) so we want to apply styles with the highest priority
 
   Ripple_useEnhancedEffect(function () {
@@ -15215,8 +15074,8 @@ var TouchRipple = /*#__PURE__*/react.forwardRef(function TouchRipple(props, ref)
       stop: stop
     };
   }, [pulsate, start, stop]);
-  return /*#__PURE__*/react.createElement("span", extends_extends({
-    className: clsx_m(classes.root, className),
+  return /*#__PURE__*/react.createElement("span", (0,esm_extends/* default */.Z)({
+    className: (0,clsx_m/* default */.Z)(classes.root, className),
     ref: container
   }, other), /*#__PURE__*/react.createElement(esm_TransitionGroup, {
     component: null,
@@ -15523,8 +15382,8 @@ var ButtonBase = /*#__PURE__*/react.forwardRef(function ButtonBase(props, ref) {
 
   if (false) {}
 
-  return /*#__PURE__*/react.createElement(ComponentProp, extends_extends({
-    className: clsx_m(classes.root, className, focusVisible && [classes.focusVisible, focusVisibleClassName], disabled && classes.disabled),
+  return /*#__PURE__*/react.createElement(ComponentProp, (0,esm_extends/* default */.Z)({
+    className: (0,clsx_m/* default */.Z)(classes.root, className, focusVisible && [classes.focusVisible, focusVisibleClassName], disabled && classes.disabled),
     onBlur: handleBlur,
     onClick: onClick,
     onFocus: handleFocus,
@@ -15543,7 +15402,7 @@ var ButtonBase = /*#__PURE__*/react.forwardRef(function ButtonBase(props, ref) {
   /*#__PURE__*/
 
   /* TouchRipple is only needed client-side, x2 boost on the server. */
-  react.createElement(ButtonBase_TouchRipple, extends_extends({
+  react.createElement(ButtonBase_TouchRipple, (0,esm_extends/* default */.Z)({
     ref: rippleRef,
     center: centerRipple
   }, TouchRippleProps)) : null);
@@ -15578,7 +15437,7 @@ function capitalize_capitalize(string) {
 var Button_styles = function styles(theme) {
   return {
     /* Styles applied to the root element. */
-    root: extends_extends({}, theme.typography.button, {
+    root: (0,esm_extends/* default */.Z)({}, theme.typography.button, {
       boxSizing: 'border-box',
       minWidth: 64,
       padding: '6px 16px',
@@ -15883,17 +15742,17 @@ var Button = /*#__PURE__*/react.forwardRef(function Button(props, ref) {
       other = objectWithoutProperties_objectWithoutProperties(props, ["children", "classes", "className", "color", "component", "disabled", "disableElevation", "disableFocusRipple", "endIcon", "focusVisibleClassName", "fullWidth", "size", "startIcon", "type", "variant"]);
 
   var startIcon = startIconProp && /*#__PURE__*/react.createElement("span", {
-    className: clsx_m(classes.startIcon, classes["iconSize".concat(capitalize_capitalize(size))])
+    className: (0,clsx_m/* default */.Z)(classes.startIcon, classes["iconSize".concat(capitalize_capitalize(size))])
   }, startIconProp);
   var endIcon = endIconProp && /*#__PURE__*/react.createElement("span", {
-    className: clsx_m(classes.endIcon, classes["iconSize".concat(capitalize_capitalize(size))])
+    className: (0,clsx_m/* default */.Z)(classes.endIcon, classes["iconSize".concat(capitalize_capitalize(size))])
   }, endIconProp);
-  return /*#__PURE__*/react.createElement(ButtonBase_ButtonBase, extends_extends({
-    className: clsx_m(classes.root, classes[variant], className, color === 'inherit' ? classes.colorInherit : color !== 'default' && classes["".concat(variant).concat(capitalize_capitalize(color))], size !== 'medium' && [classes["".concat(variant, "Size").concat(capitalize_capitalize(size))], classes["size".concat(capitalize_capitalize(size))]], disableElevation && classes.disableElevation, disabled && classes.disabled, fullWidth && classes.fullWidth),
+  return /*#__PURE__*/react.createElement(ButtonBase_ButtonBase, (0,esm_extends/* default */.Z)({
+    className: (0,clsx_m/* default */.Z)(classes.root, classes[variant], className, color === 'inherit' ? classes.colorInherit : color !== 'default' && classes["".concat(variant).concat(capitalize_capitalize(color))], size !== 'medium' && [classes["".concat(variant, "Size").concat(capitalize_capitalize(size))], classes["size".concat(capitalize_capitalize(size))]], disableElevation && classes.disableElevation, disabled && classes.disabled, fullWidth && classes.fullWidth),
     component: component,
     disabled: disabled,
     focusRipple: !disableFocusRipple,
-    focusVisibleClassName: clsx_m(classes.focusVisible, focusVisibleClassName),
+    focusVisibleClassName: (0,clsx_m/* default */.Z)(classes.focusVisible, focusVisibleClassName),
     ref: ref,
     type: type
   }, other), /*#__PURE__*/react.createElement("span", {
@@ -16027,7 +15886,7 @@ function generateGrid(globalStyles, theme, breakpoint) {
   }); // No need for a media query for the first size.
 
   if (breakpoint === 'xs') {
-    extends_extends(globalStyles, styles);
+    (0,esm_extends/* default */.Z)(globalStyles, styles);
   } else {
     globalStyles[theme.breakpoints.up(breakpoint)] = styles;
   }
@@ -16066,7 +15925,7 @@ function generateGutter(theme, breakpoint) {
 
 
 var Grid_styles = function styles(theme) {
-  return extends_extends({
+  return (0,esm_extends/* default */.Z)({
     /* Styles applied to the root element. */
     root: {},
 
@@ -16226,8 +16085,8 @@ var Grid = /*#__PURE__*/react.forwardRef(function Grid(props, ref) {
       zeroMinWidth = _props$zeroMinWidth === void 0 ? false : _props$zeroMinWidth,
       other = objectWithoutProperties_objectWithoutProperties(props, ["alignContent", "alignItems", "classes", "className", "component", "container", "direction", "item", "justify", "justifyContent", "lg", "md", "sm", "spacing", "wrap", "xl", "xs", "zeroMinWidth"]);
 
-  var className = clsx_m(classes.root, classNameProp, container && [classes.container, spacing !== 0 && classes["spacing-xs-".concat(String(spacing))]], item && classes.item, zeroMinWidth && classes.zeroMinWidth, direction !== 'row' && classes["direction-xs-".concat(String(direction))], wrap !== 'wrap' && classes["wrap-xs-".concat(String(wrap))], alignItems !== 'stretch' && classes["align-items-xs-".concat(String(alignItems))], alignContent !== 'stretch' && classes["align-content-xs-".concat(String(alignContent))], (justify || justifyContent) !== 'flex-start' && classes["justify-content-xs-".concat(String(justify || justifyContent))], xs !== false && classes["grid-xs-".concat(String(xs))], sm !== false && classes["grid-sm-".concat(String(sm))], md !== false && classes["grid-md-".concat(String(md))], lg !== false && classes["grid-lg-".concat(String(lg))], xl !== false && classes["grid-xl-".concat(String(xl))]);
-  return /*#__PURE__*/react.createElement(Component, extends_extends({
+  var className = (0,clsx_m/* default */.Z)(classes.root, classNameProp, container && [classes.container, spacing !== 0 && classes["spacing-xs-".concat(String(spacing))]], item && classes.item, zeroMinWidth && classes.zeroMinWidth, direction !== 'row' && classes["direction-xs-".concat(String(direction))], wrap !== 'wrap' && classes["wrap-xs-".concat(String(wrap))], alignItems !== 'stretch' && classes["align-items-xs-".concat(String(alignItems))], alignContent !== 'stretch' && classes["align-content-xs-".concat(String(alignContent))], (justify || justifyContent) !== 'flex-start' && classes["justify-content-xs-".concat(String(justify || justifyContent))], xs !== false && classes["grid-xs-".concat(String(xs))], sm !== false && classes["grid-sm-".concat(String(sm))], md !== false && classes["grid-md-".concat(String(md))], lg !== false && classes["grid-lg-".concat(String(lg))], xl !== false && classes["grid-xl-".concat(String(xl))]);
+  return /*#__PURE__*/react.createElement(Component, (0,esm_extends/* default */.Z)({
     className: className,
     ref: ref
   }, other));
@@ -16240,12 +16099,10 @@ var StyledGrid = styles_withStyles(Grid_styles, {
 if (false) { var requireProp; }
 
 /* harmony default export */ const Grid_Grid = (StyledGrid);
-;// CONCATENATED MODULE: ./node_modules/@mui/system/node_modules/clsx/dist/clsx.m.js
-function r(e){var t,f,n="";if("string"==typeof e||"number"==typeof e)n+=e;else if("object"==typeof e)if(Array.isArray(e))for(t=0;t<e.length;t++)e[t]&&(f=r(e[t]))&&(n&&(n+=" "),n+=f);else for(t in e)e[t]&&(n&&(n+=" "),n+=t);return n}function clsx(){for(var e,t,f=0,n="";f<arguments.length;)(e=arguments[f++])&&(t=r(e))&&(n&&(n+=" "),n+=t);return n}/* harmony default export */ const clsx_dist_clsx_m = (clsx);
-// EXTERNAL MODULE: ./node_modules/@mui/styled-engine/index.js + 6 modules
-var styled_engine = __webpack_require__(2122);
+// EXTERNAL MODULE: ./node_modules/@mui/styled-engine/index.js + 5 modules
+var styled_engine = __webpack_require__(150);
 // EXTERNAL MODULE: ./node_modules/@mui/system/esm/styleFunctionSx/styleFunctionSx.js
-var styleFunctionSx = __webpack_require__(6523);
+var styleFunctionSx_styleFunctionSx = __webpack_require__(6523);
 // EXTERNAL MODULE: ./node_modules/@mui/system/esm/useTheme.js
 var esm_useTheme = __webpack_require__(6682);
 ;// CONCATENATED MODULE: ./node_modules/@mui/system/esm/createBox.js
@@ -16262,23 +16119,24 @@ function createBox(options = {}) {
   const {
     defaultTheme,
     defaultClassName = 'MuiBox-root',
-    generateClassName
+    generateClassName,
+    styleFunctionSx = styleFunctionSx_styleFunctionSx/* default */.Z
   } = options;
-  const BoxRoot = (0,styled_engine/* default */.ZP)('div', {
-    shouldForwardProp: prop => prop !== 'theme' && prop !== 'sx' && prop !== 'as'
-  })(styleFunctionSx/* default */.Z);
+  const BoxRoot = (0,styled_engine/* default */.ZP)('div')(styleFunctionSx);
   const Box = /*#__PURE__*/react.forwardRef(function Box(inProps, ref) {
     const theme = (0,esm_useTheme/* default */.Z)(defaultTheme);
+
     const _extendSxProp = extendSxProp(inProps),
-      {
-        className,
-        component = 'div'
-      } = _extendSxProp,
-      other = (0,esm_objectWithoutPropertiesLoose/* default */.Z)(_extendSxProp, createBox_excluded);
-    return /*#__PURE__*/(0,jsx_runtime.jsx)(BoxRoot, (0,helpers_esm_extends/* default */.Z)({
+          {
+      className,
+      component = 'div'
+    } = _extendSxProp,
+          other = (0,objectWithoutPropertiesLoose/* default */.Z)(_extendSxProp, createBox_excluded);
+
+    return /*#__PURE__*/(0,jsx_runtime.jsx)(BoxRoot, (0,esm_extends/* default */.Z)({
       as: component,
       ref: ref,
-      className: clsx_dist_clsx_m(className, generateClassName ? generateClassName(defaultClassName) : defaultClassName),
+      className: (0,clsx_m/* default */.Z)(className, generateClassName ? generateClassName(defaultClassName) : defaultClassName),
       theme: theme
     }, other));
   });
@@ -16295,6 +16153,7 @@ const Box = createBox();
 
 
 
+
 const ProjectsPage_styles = theme => ({
   root: {
     backgroundColor: 'blue',
@@ -16303,6 +16162,7 @@ const ProjectsPage_styles = theme => ({
     }
   }
 });
+
 function ProjectsPage() {
   return /*#__PURE__*/react.createElement("div", null, /*#__PURE__*/react.createElement("div", null, /*#__PURE__*/react.createElement("div", {
     class: "CardsBlock"
@@ -16347,7 +16207,7 @@ function ProjectsPage() {
   }, /*#__PURE__*/react.createElement(MyCard, {
     className: "dark-mode",
     text: "Advanced crypto portfolio with django + celery backend and JS/Bootstrap front.",
-    title: "Crypto Portfolio Web-App",
+    title: "Crypto Portfolio Web-App (2021)",
     image: "/static/images/crp.png",
     link: "https://github.com/welhoilija/CryptoPortfolio-Django"
   })), /*#__PURE__*/react.createElement(Grid_Grid, {
@@ -16359,10 +16219,10 @@ function ProjectsPage() {
     xl: 3,
     align: "center"
   }, /*#__PURE__*/react.createElement(MyCard, {
-    text: "Updated existing public key cryptography authentication system for django",
-    title: "Web3 Authentication backend for django",
+    text: "Wish i would have had more time for this..",
+    title: "This portfolio (2021)",
     image: "/static/images/pythondjango.png",
-    link: "https://github.com/welhoilija/CryptoPortfolio-Django"
+    link: "https://github.com/welhoilija/Portfolio"
   })), /*#__PURE__*/react.createElement(Grid_Grid, {
     item: true,
     xs: 12,
@@ -16373,7 +16233,7 @@ function ProjectsPage() {
     align: "center"
   }, /*#__PURE__*/react.createElement(MyCard, {
     text: "Bouldering organic growth project done with couple of friends. Pulls a decent amount of organic traffic every month",
-    title: "Boulderinfo",
+    title: "Boulderinfo (2020)",
     image: "/static/images/boulderinfo.png",
     link: "https://boulderinfo.fi"
   })), /*#__PURE__*/react.createElement(Grid_Grid, {
@@ -16386,7 +16246,7 @@ function ProjectsPage() {
     align: "center"
   }, /*#__PURE__*/react.createElement(MyCard, {
     text: "1-day hackathon project done with my friend Steellow!",
-    title: "Yet Another Drinking Game",
+    title: "Yet Another Drinking Game (2022)",
     image: "/static/images/flutter.png",
     link: "https://github.com/welhoilija/yadg"
   }))), /*#__PURE__*/react.createElement(Grid_Grid, {
@@ -16434,18 +16294,18 @@ function omit(input, fields) {
 
 var styleFunctionSx_warnedOnce = false;
 
-function styleFunctionSx_styleFunctionSx(styleFunction) {
+function styleFunctionSx(styleFunction) {
   var newStyleFunction = function newStyleFunction(props) {
     var output = styleFunction(props);
 
     if (props.css) {
-      return extends_extends({}, esm_merge(output, styleFunction(extends_extends({
+      return (0,esm_extends/* default */.Z)({}, esm_merge(output, styleFunction((0,esm_extends/* default */.Z)({
         theme: props.theme
       }, props.css))), omit(props.css, [styleFunction.filterProps]));
     }
 
     if (props.sx) {
-      return extends_extends({}, esm_merge(output, styleFunction(extends_extends({
+      return (0,esm_extends/* default */.Z)({}, esm_merge(output, styleFunction((0,esm_extends/* default */.Z)({
         theme: props.theme
       }, props.sx))), omit(props.sx, [styleFunction.filterProps]));
     }
@@ -16467,9 +16327,9 @@ function styleFunctionSx_styleFunctionSx(styleFunction) {
 function styleFunctionSx_css(styleFunction) {
   if (false) {}
 
-  return styleFunctionSx_styleFunctionSx(styleFunction);
+  return styleFunctionSx(styleFunction);
 }
-/* harmony default export */ const esm_styleFunctionSx = (styleFunctionSx_styleFunctionSx);
+/* harmony default export */ const esm_styleFunctionSx = (styleFunctionSx);
 ;// CONCATENATED MODULE: ./node_modules/@material-ui/system/esm/compose.js
 
 
@@ -16897,7 +16757,7 @@ function styled_styled(Component) {
     var stylesOrCreator = typeof style === 'function' ? function (theme) {
       return {
         root: function root(props) {
-          return style(extends_extends({
+          return style((0,esm_extends/* default */.Z)({
             theme: theme
           }, props));
         }
@@ -16905,7 +16765,7 @@ function styled_styled(Component) {
     } : {
       root: style
     };
-    var useStyles = makeStyles(stylesOrCreator, extends_extends({
+    var useStyles = makeStyles(stylesOrCreator, (0,esm_extends/* default */.Z)({
       Component: Component,
       name: name || Component.displayName,
       classNamePrefix: classNamePrefix
@@ -16935,7 +16795,7 @@ function styled_styled(Component) {
           other = objectWithoutProperties_objectWithoutProperties(props, ["children", "className", "clone", "component"]);
 
       var classes = useStyles(props);
-      var className = clsx_m(classes.root, classNameProp);
+      var className = (0,clsx_m/* default */.Z)(classes.root, classNameProp);
       var spread = other;
 
       if (filterProps) {
@@ -16943,19 +16803,19 @@ function styled_styled(Component) {
       }
 
       if (clone) {
-        return /*#__PURE__*/react.cloneElement(children, extends_extends({
-          className: clsx_m(children.props.className, className)
+        return /*#__PURE__*/react.cloneElement(children, (0,esm_extends/* default */.Z)({
+          className: (0,clsx_m/* default */.Z)(children.props.className, className)
         }, spread));
       }
 
       if (typeof children === 'function') {
-        return children(extends_extends({
+        return children((0,esm_extends/* default */.Z)({
           className: className
         }, spread));
       }
 
       var FinalComponent = ComponentProp || Component;
-      return /*#__PURE__*/react.createElement(FinalComponent, extends_extends({
+      return /*#__PURE__*/react.createElement(FinalComponent, (0,esm_extends/* default */.Z)({
         ref: ref,
         className: className
       }, spread), children);
@@ -16978,7 +16838,7 @@ function styled_styled(Component) {
 var styles_styled_styled = function styled(Component) {
   var componentCreator = styled_styled(Component);
   return function (style, options) {
-    return componentCreator(style, extends_extends({
+    return componentCreator(style, (0,esm_extends/* default */.Z)({
       defaultTheme: styles_defaultTheme
     }, options));
   };
@@ -17035,9 +16895,9 @@ function AboutMePage() {
     className: "container"
   }, /*#__PURE__*/react.createElement("div", {
     className: "center"
-  }, /*#__PURE__*/react.createElement("h1", null, "About me"), /*#__PURE__*/react.createElement("hr", null), /*#__PURE__*/react.createElement("h2", null, "Full stack programmer with deep business knowledge"), /*#__PURE__*/react.createElement("p", null, "I am a highly motivated and skilled web developer with 4 years of professional experience in the industry. My expertise includes Python, Django, web development, and search engine marketing. I have a strong passion for all things digital, including cryptocurrencies, and constantly seek to stay up to date with the latest technologies. In my free time, I enjoy coding personal", /*#__PURE__*/react.createElement("a", {
+  }, /*#__PURE__*/react.createElement("h1", null, "About me"), /*#__PURE__*/react.createElement("hr", null), /*#__PURE__*/react.createElement("h2", null, "Full stack programmer with deep business knowledge"), /*#__PURE__*/react.createElement("p", null, "I'm a motivated Web Developer with four years of hands-on experience in the industry. I have strong skills in Python, Django, TypeScript, and other web development technologies. I'm also skilled in Search Engine Marketing, a key aspect of online visibility. I'm deeply interested in the digital world, including areas like cryptocurrencies, and I always make sure to stay updated with the latest tech trends. In my free time, I enjoy working on personal coding projects that you can see on my ", /*#__PURE__*/react.createElement("a", {
     href: "https://github.com/welhoilija"
-  }, "projects,"), "playing video games, climbing, and running. I am excited to bring my skills and enthusiasm to a new opportunity and make a meaningful impact."))))))));
+  }, "GitHub"), ", playing video games, and keeping fit with climbing and running."))))))));
 }
 ;// CONCATENATED MODULE: ./node_modules/@material-ui/core/esm/FormControl/formControlState.js
 function formControlState(_ref) {
@@ -17239,13 +17099,13 @@ var TextareaAutosize = /*#__PURE__*/react.forwardRef(function TextareaAutosize(p
     }
   };
 
-  return /*#__PURE__*/react.createElement(react.Fragment, null, /*#__PURE__*/react.createElement("textarea", extends_extends({
+  return /*#__PURE__*/react.createElement(react.Fragment, null, /*#__PURE__*/react.createElement("textarea", (0,esm_extends/* default */.Z)({
     value: value,
     onChange: handleChange,
     ref: handleRef // Apply the rows prop to get a "correct" first SSR paint
     ,
     rows: minRows,
-    style: extends_extends({
+    style: (0,esm_extends/* default */.Z)({
       height: state.outerHeightStyle,
       // Need a large enough difference to allow scrolling.
       // This prevents infinite rendering loop.
@@ -17257,7 +17117,7 @@ var TextareaAutosize = /*#__PURE__*/react.forwardRef(function TextareaAutosize(p
     readOnly: true,
     ref: shadowRef,
     tabIndex: -1,
-    style: extends_extends({}, TextareaAutosize_styles.shadow, style)
+    style: (0,esm_extends/* default */.Z)({}, TextareaAutosize_styles.shadow, style)
   }));
 });
  false ? 0 : void 0;
@@ -17331,7 +17191,7 @@ var InputBase_styles = function styles(theme) {
     },
 
     /* Styles applied to the root element. */
-    root: extends_extends({}, theme.typography.body1, {
+    root: (0,esm_extends/* default */.Z)({}, theme.typography.body1, {
       color: theme.palette.text.primary,
       lineHeight: '1.1876em',
       // Reset (19px), match the native input line-height
@@ -17670,12 +17530,12 @@ var InputBase = /*#__PURE__*/react.forwardRef(function InputBase(props, ref) {
 
   var InputComponent = inputComponent;
 
-  var inputProps = extends_extends({}, inputPropsProp, {
+  var inputProps = (0,esm_extends/* default */.Z)({}, inputPropsProp, {
     ref: handleInputRef
   });
 
   if (typeof InputComponent !== 'string') {
-    inputProps = extends_extends({
+    inputProps = (0,esm_extends/* default */.Z)({
       // Rename ref to inputRef as we don't know the
       // provided `inputComponent` structure.
       inputRef: handleInputRef,
@@ -17687,7 +17547,7 @@ var InputBase = /*#__PURE__*/react.forwardRef(function InputBase(props, ref) {
     if (rows && !maxRows && !minRows && !rowsMax && !rowsMin) {
       InputComponent = 'textarea';
     } else {
-      inputProps = extends_extends({
+      inputProps = (0,esm_extends/* default */.Z)({
         minRows: rows || minRows,
         rowsMax: rowsMax,
         maxRows: maxRows
@@ -17695,7 +17555,7 @@ var InputBase = /*#__PURE__*/react.forwardRef(function InputBase(props, ref) {
       InputComponent = TextareaAutosize_TextareaAutosize;
     }
   } else {
-    inputProps = extends_extends({
+    inputProps = (0,esm_extends/* default */.Z)({
       type: type
     }, inputProps);
   }
@@ -17712,13 +17572,13 @@ var InputBase = /*#__PURE__*/react.forwardRef(function InputBase(props, ref) {
       muiFormControl.setAdornedStart(Boolean(startAdornment));
     }
   }, [muiFormControl, startAdornment]);
-  return /*#__PURE__*/react.createElement("div", extends_extends({
-    className: clsx_m(classes.root, classes["color".concat(capitalize_capitalize(fcs.color || 'primary'))], className, fcs.disabled && classes.disabled, fcs.error && classes.error, fullWidth && classes.fullWidth, fcs.focused && classes.focused, muiFormControl && classes.formControl, multiline && classes.multiline, startAdornment && classes.adornedStart, endAdornment && classes.adornedEnd, fcs.margin === 'dense' && classes.marginDense),
+  return /*#__PURE__*/react.createElement("div", (0,esm_extends/* default */.Z)({
+    className: (0,clsx_m/* default */.Z)(classes.root, classes["color".concat(capitalize_capitalize(fcs.color || 'primary'))], className, fcs.disabled && classes.disabled, fcs.error && classes.error, fullWidth && classes.fullWidth, fcs.focused && classes.focused, muiFormControl && classes.formControl, multiline && classes.multiline, startAdornment && classes.adornedStart, endAdornment && classes.adornedEnd, fcs.margin === 'dense' && classes.marginDense),
     onClick: handleClick,
     ref: ref
   }, other), startAdornment, /*#__PURE__*/react.createElement(FormControl_FormControlContext.Provider, {
     value: null
-  }, /*#__PURE__*/react.createElement(InputComponent, extends_extends({
+  }, /*#__PURE__*/react.createElement(InputComponent, (0,esm_extends/* default */.Z)({
     "aria-invalid": fcs.error,
     "aria-describedby": ariaDescribedby,
     autoComplete: autoComplete,
@@ -17736,11 +17596,11 @@ var InputBase = /*#__PURE__*/react.forwardRef(function InputBase(props, ref) {
     onKeyDown: onKeyDown,
     onKeyUp: onKeyUp
   }, inputProps, {
-    className: clsx_m(classes.input, inputPropsProp.className, fcs.disabled && classes.disabled, multiline && classes.inputMultiline, fcs.hiddenLabel && classes.inputHiddenLabel, startAdornment && classes.inputAdornedStart, endAdornment && classes.inputAdornedEnd, type === 'search' && classes.inputTypeSearch, fcs.margin === 'dense' && classes.inputMarginDense),
+    className: (0,clsx_m/* default */.Z)(classes.input, inputPropsProp.className, fcs.disabled && classes.disabled, multiline && classes.inputMultiline, fcs.hiddenLabel && classes.inputHiddenLabel, startAdornment && classes.inputAdornedStart, endAdornment && classes.inputAdornedEnd, type === 'search' && classes.inputTypeSearch, fcs.margin === 'dense' && classes.inputMarginDense),
     onBlur: handleBlur,
     onChange: handleChange,
     onFocus: handleFocus
-  }))), endAdornment, renderSuffix ? renderSuffix(extends_extends({}, fcs, {
+  }))), endAdornment, renderSuffix ? renderSuffix((0,esm_extends/* default */.Z)({}, fcs, {
     startAdornment: startAdornment
   })) : null);
 });
@@ -17876,9 +17736,9 @@ var Input = /*#__PURE__*/react.forwardRef(function Input(props, ref) {
       type = _props$type === void 0 ? 'text' : _props$type,
       other = objectWithoutProperties_objectWithoutProperties(props, ["disableUnderline", "classes", "fullWidth", "inputComponent", "multiline", "type"]);
 
-  return /*#__PURE__*/react.createElement(InputBase_InputBase, extends_extends({
-    classes: extends_extends({}, classes, {
-      root: clsx_m(classes.root, !disableUnderline && classes.underline),
+  return /*#__PURE__*/react.createElement(InputBase_InputBase, (0,esm_extends/* default */.Z)({
+    classes: (0,esm_extends/* default */.Z)({}, classes, {
+      root: (0,clsx_m/* default */.Z)(classes.root, !disableUnderline && classes.underline),
       underline: null
     }),
     fullWidth: fullWidth,
@@ -18075,9 +17935,9 @@ var FilledInput = /*#__PURE__*/react.forwardRef(function FilledInput(props, ref)
       type = _props$type === void 0 ? 'text' : _props$type,
       other = objectWithoutProperties_objectWithoutProperties(props, ["disableUnderline", "classes", "fullWidth", "inputComponent", "multiline", "type"]);
 
-  return /*#__PURE__*/react.createElement(InputBase_InputBase, extends_extends({
-    classes: extends_extends({}, classes, {
-      root: clsx_m(classes.root, !disableUnderline && classes.underline),
+  return /*#__PURE__*/react.createElement(InputBase_InputBase, (0,esm_extends/* default */.Z)({
+    classes: (0,esm_extends/* default */.Z)({}, classes, {
+      root: (0,clsx_m/* default */.Z)(classes.root, !disableUnderline && classes.underline),
       underline: null
     }),
     fullWidth: fullWidth,
@@ -18194,13 +18054,13 @@ var NotchedOutline = /*#__PURE__*/react.forwardRef(function NotchedOutline(props
   var align = theme.direction === 'rtl' ? 'right' : 'left';
 
   if (label !== undefined) {
-    return /*#__PURE__*/react.createElement("fieldset", extends_extends({
+    return /*#__PURE__*/react.createElement("fieldset", (0,esm_extends/* default */.Z)({
       "aria-hidden": true,
-      className: clsx_m(classes.root, className),
+      className: (0,clsx_m/* default */.Z)(classes.root, className),
       ref: ref,
       style: style
     }, other), /*#__PURE__*/react.createElement("legend", {
-      className: clsx_m(classes.legendLabelled, notched && classes.legendNotched)
+      className: (0,clsx_m/* default */.Z)(classes.legendLabelled, notched && classes.legendNotched)
     }, label ? /*#__PURE__*/react.createElement("span", null, label) : /*#__PURE__*/react.createElement("span", {
       dangerouslySetInnerHTML: {
         __html: '&#8203;'
@@ -18209,10 +18069,10 @@ var NotchedOutline = /*#__PURE__*/react.forwardRef(function NotchedOutline(props
   }
 
   var labelWidth = labelWidthProp > 0 ? labelWidthProp * 0.75 + 8 : 0.01;
-  return /*#__PURE__*/react.createElement("fieldset", extends_extends({
+  return /*#__PURE__*/react.createElement("fieldset", (0,esm_extends/* default */.Z)({
     "aria-hidden": true,
-    style: extends_extends(_defineProperty({}, "padding".concat(capitalize_capitalize(align)), 8), style),
-    className: clsx_m(classes.root, className),
+    style: (0,esm_extends/* default */.Z)(_defineProperty({}, "padding".concat(capitalize_capitalize(align)), 8), style),
+    className: (0,clsx_m/* default */.Z)(classes.root, className),
     ref: ref
   }, other), /*#__PURE__*/react.createElement("legend", {
     className: classes.legend,
@@ -18362,7 +18222,7 @@ var OutlinedInput = /*#__PURE__*/react.forwardRef(function OutlinedInput(props, 
       type = _props$type === void 0 ? 'text' : _props$type,
       other = objectWithoutProperties_objectWithoutProperties(props, ["classes", "fullWidth", "inputComponent", "label", "labelWidth", "multiline", "notched", "type"]);
 
-  return /*#__PURE__*/react.createElement(InputBase_InputBase, extends_extends({
+  return /*#__PURE__*/react.createElement(InputBase_InputBase, (0,esm_extends/* default */.Z)({
     renderSuffix: function renderSuffix(state) {
       return /*#__PURE__*/react.createElement(OutlinedInput_NotchedOutline, {
         className: classes.notchedOutline,
@@ -18371,8 +18231,8 @@ var OutlinedInput = /*#__PURE__*/react.forwardRef(function OutlinedInput(props, 
         notched: typeof notched !== 'undefined' ? notched : Boolean(state.startAdornment || state.filled || state.focused)
       });
     },
-    classes: extends_extends({}, classes, {
-      root: clsx_m(classes.root, classes.underline),
+    classes: (0,esm_extends/* default */.Z)({}, classes, {
+      root: (0,clsx_m/* default */.Z)(classes.root, classes.underline),
       notchedOutline: null
     }),
     fullWidth: fullWidth,
@@ -18406,7 +18266,7 @@ function useFormControl_useFormControl() {
 var FormLabel_styles = function styles(theme) {
   return {
     /* Styles applied to the root element. */
-    root: extends_extends({
+    root: (0,esm_extends/* default */.Z)({
       color: theme.palette.text.secondary
     }, theme.typography.body1, {
       lineHeight: 1,
@@ -18472,12 +18332,12 @@ var FormLabel = /*#__PURE__*/react.forwardRef(function FormLabel(props, ref) {
     muiFormControl: muiFormControl,
     states: ['color', 'required', 'focused', 'disabled', 'error', 'filled']
   });
-  return /*#__PURE__*/react.createElement(Component, extends_extends({
-    className: clsx_m(classes.root, classes["color".concat(capitalize_capitalize(fcs.color || 'primary'))], className, fcs.disabled && classes.disabled, fcs.error && classes.error, fcs.filled && classes.filled, fcs.focused && classes.focused, fcs.required && classes.required),
+  return /*#__PURE__*/react.createElement(Component, (0,esm_extends/* default */.Z)({
+    className: (0,clsx_m/* default */.Z)(classes.root, classes["color".concat(capitalize_capitalize(fcs.color || 'primary'))], className, fcs.disabled && classes.disabled, fcs.error && classes.error, fcs.filled && classes.filled, fcs.focused && classes.focused, fcs.required && classes.required),
     ref: ref
   }, other), children, fcs.required && /*#__PURE__*/react.createElement("span", {
     "aria-hidden": true,
-    className: clsx_m(classes.asterisk, fcs.error && classes.error)
+    className: (0,clsx_m/* default */.Z)(classes.asterisk, fcs.error && classes.error)
   }, "\u2009", '*'));
 });
  false ? 0 : void 0;
@@ -18603,9 +18463,9 @@ var InputLabel = /*#__PURE__*/react.forwardRef(function InputLabel(props, ref) {
     muiFormControl: muiFormControl,
     states: ['margin', 'variant']
   });
-  return /*#__PURE__*/react.createElement(FormLabel_FormLabel, extends_extends({
+  return /*#__PURE__*/react.createElement(FormLabel_FormLabel, (0,esm_extends/* default */.Z)({
     "data-shrink": shrink,
-    className: clsx_m(classes.root, className, muiFormControl && classes.formControl, !disableAnimation && classes.animated, shrink && classes.shrink, fcs.margin === 'dense' && classes.marginDense, {
+    className: (0,clsx_m/* default */.Z)(classes.root, className, muiFormControl && classes.formControl, !disableAnimation && classes.animated, shrink && classes.shrink, fcs.margin === 'dense' && classes.marginDense, {
       'filled': classes.filled,
       'outlined': classes.outlined
     }[fcs.variant]),
@@ -18812,8 +18672,8 @@ var FormControl = /*#__PURE__*/react.forwardRef(function FormControl(props, ref)
   };
   return /*#__PURE__*/react.createElement(FormControl_FormControlContext.Provider, {
     value: childContext
-  }, /*#__PURE__*/react.createElement(Component, extends_extends({
-    className: clsx_m(classes.root, className, margin !== 'none' && classes["margin".concat(capitalize_capitalize(margin))], fullWidth && classes.fullWidth),
+  }, /*#__PURE__*/react.createElement(Component, (0,esm_extends/* default */.Z)({
+    className: (0,clsx_m/* default */.Z)(classes.root, className, margin !== 'none' && classes["margin".concat(capitalize_capitalize(margin))], fullWidth && classes.fullWidth),
     ref: ref
   }, other), children));
 });
@@ -18833,7 +18693,7 @@ var FormControl = /*#__PURE__*/react.forwardRef(function FormControl(props, ref)
 var FormHelperText_styles = function styles(theme) {
   return {
     /* Styles applied to the root element. */
-    root: extends_extends({
+    root: (0,esm_extends/* default */.Z)({
       color: theme.palette.text.secondary
     }, theme.typography.caption, {
       textAlign: 'left',
@@ -18895,8 +18755,8 @@ var FormHelperText = /*#__PURE__*/react.forwardRef(function FormHelperText(props
     muiFormControl: muiFormControl,
     states: ['variant', 'margin', 'disabled', 'error', 'filled', 'focused', 'required']
   });
-  return /*#__PURE__*/react.createElement(Component, extends_extends({
-    className: clsx_m(classes.root, (fcs.variant === 'filled' || fcs.variant === 'outlined') && classes.contained, className, fcs.disabled && classes.disabled, fcs.error && classes.error, fcs.filled && classes.filled, fcs.focused && classes.focused, fcs.required && classes.required, fcs.margin === 'dense' && classes.marginDense),
+  return /*#__PURE__*/react.createElement(Component, (0,esm_extends/* default */.Z)({
+    className: (0,clsx_m/* default */.Z)(classes.root, (fcs.variant === 'filled' || fcs.variant === 'outlined') && classes.contained, className, fcs.disabled && classes.disabled, fcs.error && classes.error, fcs.filled && classes.filled, fcs.focused && classes.focused, fcs.required && classes.required, fcs.margin === 'dense' && classes.marginDense),
     ref: ref
   }, other), children === ' ' ?
   /*#__PURE__*/
@@ -19485,11 +19345,11 @@ var SimpleBackdrop = /*#__PURE__*/react.forwardRef(function SimpleBackdrop(props
       open = props.open,
       other = objectWithoutProperties_objectWithoutProperties(props, ["invisible", "open"]);
 
-  return open ? /*#__PURE__*/react.createElement("div", extends_extends({
+  return open ? /*#__PURE__*/react.createElement("div", (0,esm_extends/* default */.Z)({
     "aria-hidden": true,
     ref: ref
   }, other, {
-    style: extends_extends({}, SimpleBackdrop_styles.root, invisible ? SimpleBackdrop_styles.invisible : {}, other.style)
+    style: (0,esm_extends/* default */.Z)({}, SimpleBackdrop_styles.root, invisible ? SimpleBackdrop_styles.invisible : {}, other.style)
   })) : null;
 });
  false ? 0 : void 0;
@@ -19561,7 +19421,7 @@ var Modal = /*#__PURE__*/react.forwardRef(function Modal(inProps, ref) {
   var theme = useTheme();
   var props = getThemeProps({
     name: 'MuiModal',
-    props: extends_extends({}, inProps),
+    props: (0,esm_extends/* default */.Z)({}, inProps),
     theme: theme
   });
 
@@ -19745,13 +19605,13 @@ var Modal = /*#__PURE__*/react.forwardRef(function Modal(inProps, ref) {
     ref: handlePortalRef,
     container: container,
     disablePortal: disablePortal
-  }, /*#__PURE__*/react.createElement("div", extends_extends({
+  }, /*#__PURE__*/react.createElement("div", (0,esm_extends/* default */.Z)({
     ref: handleRef,
     onKeyDown: handleKeyDown,
     role: "presentation"
   }, other, {
-    style: extends_extends({}, inlineStyle.root, !open && exited ? inlineStyle.hidden : {}, other.style)
-  }), hideBackdrop ? null : /*#__PURE__*/react.createElement(BackdropComponent, extends_extends({
+    style: (0,esm_extends/* default */.Z)({}, inlineStyle.root, !open && exited ? inlineStyle.hidden : {}, other.style)
+  }), hideBackdrop ? null : /*#__PURE__*/react.createElement(BackdropComponent, (0,esm_extends/* default */.Z)({
     open: open,
     onClick: handleBackdropClick
   }, BackdropProps)), /*#__PURE__*/react.createElement(Unstable_TrapFocus_Unstable_TrapFocus, {
@@ -20161,7 +20021,7 @@ var Transition = /*#__PURE__*/function (_React$Component) {
         _onExiting = _this$props.onExiting,
         _onExited = _this$props.onExited,
         _nodeRef = _this$props.nodeRef,
-        childProps = _objectWithoutPropertiesLoose(_this$props, ["children", "in", "mountOnEnter", "unmountOnExit", "appear", "enter", "exit", "timeout", "addEndListener", "onEnter", "onEntering", "onEntered", "onExit", "onExiting", "onExited", "nodeRef"]);
+        childProps = (0,objectWithoutPropertiesLoose/* default */.Z)(_this$props, ["children", "in", "mountOnEnter", "unmountOnExit", "appear", "enter", "exit", "timeout", "addEndListener", "onEnter", "onEntering", "onEntered", "onExit", "onExiting", "onExited", "nodeRef"]);
 
     return (
       /*#__PURE__*/
@@ -20372,7 +20232,7 @@ var Grow = /*#__PURE__*/react.forwardRef(function Grow(props, ref) {
       clearTimeout(timer.current);
     };
   }, []);
-  return /*#__PURE__*/react.createElement(TransitionComponent, extends_extends({
+  return /*#__PURE__*/react.createElement(TransitionComponent, (0,esm_extends/* default */.Z)({
     appear: true,
     in: inProp,
     nodeRef: enableStrictModeCompat ? nodeRef : undefined,
@@ -20385,8 +20245,8 @@ var Grow = /*#__PURE__*/react.forwardRef(function Grow(props, ref) {
     addEndListener: addEndListener,
     timeout: timeout === 'auto' ? null : timeout
   }, other), function (state, childProps) {
-    return /*#__PURE__*/react.cloneElement(children, extends_extends({
-      style: extends_extends({
+    return /*#__PURE__*/react.cloneElement(children, (0,esm_extends/* default */.Z)({
+      style: (0,esm_extends/* default */.Z)({
         opacity: 0,
         transform: getScale(0.75),
         visibility: state === 'exited' && !inProp ? 'hidden' : undefined
@@ -20707,15 +20567,15 @@ var Popover = /*#__PURE__*/react.forwardRef(function Popover(props, ref) {
 
 
   var container = containerProp || (anchorEl ? ownerDocument(getAnchorEl(anchorEl)).body : undefined);
-  return /*#__PURE__*/react.createElement(Modal_Modal, extends_extends({
+  return /*#__PURE__*/react.createElement(Modal_Modal, (0,esm_extends/* default */.Z)({
     container: container,
     open: open,
     ref: ref,
     BackdropProps: {
       invisible: true
     },
-    className: clsx_m(classes.root, className)
-  }, other), /*#__PURE__*/react.createElement(TransitionComponent, extends_extends({
+    className: (0,clsx_m/* default */.Z)(classes.root, className)
+  }, other), /*#__PURE__*/react.createElement(TransitionComponent, (0,esm_extends/* default */.Z)({
     appear: true,
     in: open,
     onEnter: onEnter,
@@ -20726,11 +20586,11 @@ var Popover = /*#__PURE__*/react.forwardRef(function Popover(props, ref) {
     timeout: transitionDuration
   }, TransitionProps, {
     onEntering: createChainedFunction(handleEntering, TransitionProps.onEntering)
-  }), /*#__PURE__*/react.createElement(Paper_Paper, extends_extends({
+  }), /*#__PURE__*/react.createElement(Paper_Paper, (0,esm_extends/* default */.Z)({
     elevation: elevation,
     ref: handlePaperRef
   }, PaperProps, {
-    className: clsx_m(classes.paper, PaperProps.className)
+    className: (0,clsx_m/* default */.Z)(classes.paper, PaperProps.className)
   }), children)));
 });
  false ? 0 : void 0;
@@ -20799,8 +20659,8 @@ var List = /*#__PURE__*/react.forwardRef(function List(props, ref) {
   }, [dense]);
   return /*#__PURE__*/react.createElement(List_ListContext.Provider, {
     value: context
-  }, /*#__PURE__*/react.createElement(Component, extends_extends({
-    className: clsx_m(classes.root, className, dense && classes.dense, !disablePadding && classes.padding, subheader && classes.subheader),
+  }, /*#__PURE__*/react.createElement(Component, (0,esm_extends/* default */.Z)({
+    className: (0,clsx_m/* default */.Z)(classes.root, className, dense && classes.dense, !disablePadding && classes.padding, subheader && classes.subheader),
     ref: ref
   }, other), subheader, children));
 });
@@ -21055,7 +20915,7 @@ var MenuList = /*#__PURE__*/react.forwardRef(function MenuList(props, ref) {
 
     return child;
   });
-  return /*#__PURE__*/react.createElement(List_List, extends_extends({
+  return /*#__PURE__*/react.createElement(List_List, (0,esm_extends/* default */.Z)({
     role: "menu",
     ref: handleRef,
     className: className,
@@ -21202,31 +21062,31 @@ var Menu = /*#__PURE__*/react.forwardRef(function Menu(props, ref) {
 
     return child;
   });
-  return /*#__PURE__*/react.createElement(Popover_Popover, extends_extends({
+  return /*#__PURE__*/react.createElement(Popover_Popover, (0,esm_extends/* default */.Z)({
     getContentAnchorEl: getContentAnchorEl,
     classes: PopoverClasses,
     onClose: onClose,
-    TransitionProps: extends_extends({
+    TransitionProps: (0,esm_extends/* default */.Z)({
       onEntering: handleEntering
     }, TransitionProps),
     anchorOrigin: theme.direction === 'rtl' ? RTL_ORIGIN : LTR_ORIGIN,
     transformOrigin: theme.direction === 'rtl' ? RTL_ORIGIN : LTR_ORIGIN,
-    PaperProps: extends_extends({}, PaperProps, {
-      classes: extends_extends({}, PaperProps.classes, {
+    PaperProps: (0,esm_extends/* default */.Z)({}, PaperProps, {
+      classes: (0,esm_extends/* default */.Z)({}, PaperProps.classes, {
         root: classes.paper
       })
     }),
     open: open,
     ref: ref,
     transitionDuration: transitionDuration
-  }, other), /*#__PURE__*/react.createElement(MenuList_MenuList, extends_extends({
+  }, other), /*#__PURE__*/react.createElement(MenuList_MenuList, (0,esm_extends/* default */.Z)({
     onKeyDown: handleListKeyDown,
     actions: menuListActionsRef,
     autoFocus: autoFocus && (activeItemIndex === -1 || disableAutoFocusItem),
     autoFocusItem: autoFocusItem,
     variant: variant
   }, MenuListProps, {
-    className: clsx_m(classes.list, MenuListProps.className)
+    className: (0,clsx_m/* default */.Z)(classes.list, MenuListProps.className)
   }), items));
 });
  false ? 0 : void 0;
@@ -21614,8 +21474,8 @@ var SelectInput = /*#__PURE__*/react.forwardRef(function SelectInput(props, ref)
   }
 
   var buttonId = SelectDisplayProps.id || (name ? "mui-component-select-".concat(name) : undefined);
-  return /*#__PURE__*/react.createElement(react.Fragment, null, /*#__PURE__*/react.createElement("div", extends_extends({
-    className: clsx_m(classes.root, // TODO v5: merge root and select
+  return /*#__PURE__*/react.createElement(react.Fragment, null, /*#__PURE__*/react.createElement("div", (0,esm_extends/* default */.Z)({
+    className: (0,clsx_m/* default */.Z)(classes.root, // TODO v5: merge root and select
     classes.select, classes.selectMenu, classes[variant], className, disabled && classes.disabled),
     ref: setDisplayNode,
     tabIndex: tabIndex,
@@ -21639,7 +21499,7 @@ var SelectInput = /*#__PURE__*/react.forwardRef(function SelectInput(props, ref)
     dangerouslySetInnerHTML: {
       __html: '&#8203;'
     }
-  }) : display), /*#__PURE__*/react.createElement("input", extends_extends({
+  }) : display), /*#__PURE__*/react.createElement("input", (0,esm_extends/* default */.Z)({
     value: Array.isArray(value) ? value.join(',') : value,
     name: name,
     ref: inputRef,
@@ -21649,20 +21509,20 @@ var SelectInput = /*#__PURE__*/react.forwardRef(function SelectInput(props, ref)
     className: classes.nativeInput,
     autoFocus: autoFocus
   }, other)), /*#__PURE__*/react.createElement(IconComponent, {
-    className: clsx_m(classes.icon, classes["icon".concat(capitalize_capitalize(variant))], open && classes.iconOpen, disabled && classes.disabled)
-  }), /*#__PURE__*/react.createElement(Menu_Menu, extends_extends({
+    className: (0,clsx_m/* default */.Z)(classes.icon, classes["icon".concat(capitalize_capitalize(variant))], open && classes.iconOpen, disabled && classes.disabled)
+  }), /*#__PURE__*/react.createElement(Menu_Menu, (0,esm_extends/* default */.Z)({
     id: "menu-".concat(name || ''),
     anchorEl: displayNode,
     open: open,
     onClose: handleClose
   }, MenuProps, {
-    MenuListProps: extends_extends({
+    MenuListProps: (0,esm_extends/* default */.Z)({
       'aria-labelledby': labelId,
       role: 'listbox',
       disableListWrap: true
     }, MenuProps.MenuListProps),
-    PaperProps: extends_extends({}, MenuProps.PaperProps, {
-      style: extends_extends({
+    PaperProps: (0,esm_extends/* default */.Z)({}, MenuProps.PaperProps, {
+      style: (0,esm_extends/* default */.Z)({
         minWidth: menuMinWidth
       }, MenuProps.PaperProps != null ? MenuProps.PaperProps.style : null)
     })
@@ -21752,8 +21612,8 @@ var SvgIcon = /*#__PURE__*/react.forwardRef(function SvgIcon(props, ref) {
       viewBox = _props$viewBox === void 0 ? '0 0 24 24' : _props$viewBox,
       other = objectWithoutProperties_objectWithoutProperties(props, ["children", "classes", "className", "color", "component", "fontSize", "htmlColor", "titleAccess", "viewBox"]);
 
-  return /*#__PURE__*/react.createElement(Component, extends_extends({
-    className: clsx_m(classes.root, className, color !== 'inherit' && classes["color".concat(capitalize_capitalize(color))], fontSize !== 'default' && fontSize !== 'medium' && classes["fontSize".concat(capitalize_capitalize(fontSize))]),
+  return /*#__PURE__*/react.createElement(Component, (0,esm_extends/* default */.Z)({
+    className: (0,clsx_m/* default */.Z)(classes.root, className, color !== 'inherit' && classes["color".concat(capitalize_capitalize(color))], fontSize !== 'default' && fontSize !== 'medium' && classes["fontSize".concat(capitalize_capitalize(fontSize))]),
     focusable: "false",
     viewBox: viewBox,
     color: htmlColor,
@@ -21777,7 +21637,7 @@ SvgIcon.muiName = 'SvgIcon';
 
 function createSvgIcon(path, displayName) {
   var Component = function Component(props, ref) {
-    return /*#__PURE__*/react.createElement(SvgIcon_SvgIcon, extends_extends({
+    return /*#__PURE__*/react.createElement(SvgIcon_SvgIcon, (0,esm_extends/* default */.Z)({
       ref: ref
     }, props), path);
   };
@@ -21819,13 +21679,13 @@ var NativeSelectInput = /*#__PURE__*/react.forwardRef(function NativeSelectInput
       variant = _props$variant === void 0 ? 'standard' : _props$variant,
       other = objectWithoutProperties_objectWithoutProperties(props, ["classes", "className", "disabled", "IconComponent", "inputRef", "variant"]);
 
-  return /*#__PURE__*/react.createElement(react.Fragment, null, /*#__PURE__*/react.createElement("select", extends_extends({
-    className: clsx_m(classes.root, // TODO v5: merge root and select
+  return /*#__PURE__*/react.createElement(react.Fragment, null, /*#__PURE__*/react.createElement("select", (0,esm_extends/* default */.Z)({
+    className: (0,clsx_m/* default */.Z)(classes.root, // TODO v5: merge root and select
     classes.select, classes[variant], className, disabled && classes.disabled),
     disabled: disabled,
     ref: inputRef || ref
   }, other)), props.multiple ? null : /*#__PURE__*/react.createElement(IconComponent, {
-    className: clsx_m(classes.icon, classes["icon".concat(capitalize_capitalize(variant))], disabled && classes.disabled)
+    className: (0,clsx_m/* default */.Z)(classes.icon, classes["icon".concat(capitalize_capitalize(variant))], disabled && classes.disabled)
   }));
 });
  false ? 0 : void 0;
@@ -21977,11 +21837,11 @@ var NativeSelect = /*#__PURE__*/react.forwardRef(function NativeSelect(props, re
     muiFormControl: muiFormControl,
     states: ['variant']
   });
-  return /*#__PURE__*/react.cloneElement(input, extends_extends({
+  return /*#__PURE__*/react.cloneElement(input, (0,esm_extends/* default */.Z)({
     // Most of the logic is implemented in `NativeSelectInput`.
     // The `Select` component is a simple API wrapper to expose something better to play with.
     inputComponent: NativeSelect_NativeSelectInput,
-    inputProps: extends_extends({
+    inputProps: (0,esm_extends/* default */.Z)({
       children: children,
       classes: classes,
       IconComponent: IconComponent,
@@ -22064,11 +21924,11 @@ var Select = /*#__PURE__*/react.forwardRef(function Select(props, ref) {
     }),
     filled: _ref2
   }[variant];
-  return /*#__PURE__*/react.cloneElement(InputComponent, extends_extends({
+  return /*#__PURE__*/react.cloneElement(InputComponent, (0,esm_extends/* default */.Z)({
     // Most of the logic is implemented in `SelectInput`.
     // The `Select` component is a simple API wrapper to expose something better to play with.
     inputComponent: inputComponent,
-    inputProps: extends_extends({
+    inputProps: (0,esm_extends/* default */.Z)({
       children: children,
       IconComponent: IconComponent,
       variant: variant,
@@ -22086,7 +21946,7 @@ var Select = /*#__PURE__*/react.forwardRef(function Select(props, ref) {
       onOpen: onOpen,
       open: open,
       renderValue: renderValue,
-      SelectDisplayProps: extends_extends({
+      SelectDisplayProps: (0,esm_extends/* default */.Z)({
         id: id
       }, SelectDisplayProps)
     }, inputProps, {
@@ -22238,7 +22098,7 @@ var TextField = /*#__PURE__*/react.forwardRef(function TextField(props, ref) {
   var helperTextId = helperText && id ? "".concat(id, "-helper-text") : undefined;
   var inputLabelId = label && id ? "".concat(id, "-label") : undefined;
   var InputComponent = variantComponent[variant];
-  var InputElement = /*#__PURE__*/react.createElement(InputComponent, extends_extends({
+  var InputElement = /*#__PURE__*/react.createElement(InputComponent, (0,esm_extends/* default */.Z)({
     "aria-describedby": helperTextId,
     autoComplete: autoComplete,
     autoFocus: autoFocus,
@@ -22260,8 +22120,8 @@ var TextField = /*#__PURE__*/react.forwardRef(function TextField(props, ref) {
     placeholder: placeholder,
     inputProps: inputProps
   }, InputMore, InputProps));
-  return /*#__PURE__*/react.createElement(FormControl_FormControl, extends_extends({
-    className: clsx_m(classes.root, className),
+  return /*#__PURE__*/react.createElement(FormControl_FormControl, (0,esm_extends/* default */.Z)({
+    className: (0,clsx_m/* default */.Z)(classes.root, className),
     disabled: disabled,
     error: error,
     fullWidth: fullWidth,
@@ -22270,16 +22130,16 @@ var TextField = /*#__PURE__*/react.forwardRef(function TextField(props, ref) {
     required: required,
     color: color,
     variant: variant
-  }, other), label && /*#__PURE__*/react.createElement(InputLabel_InputLabel, extends_extends({
+  }, other), label && /*#__PURE__*/react.createElement(InputLabel_InputLabel, (0,esm_extends/* default */.Z)({
     htmlFor: id,
     id: inputLabelId
-  }, InputLabelProps), label), select ? /*#__PURE__*/react.createElement(Select_Select, extends_extends({
+  }, InputLabelProps), label), select ? /*#__PURE__*/react.createElement(Select_Select, (0,esm_extends/* default */.Z)({
     "aria-describedby": helperTextId,
     id: id,
     labelId: inputLabelId,
     value: value,
     input: InputElement
-  }, SelectProps), children) : InputElement, helperText && /*#__PURE__*/react.createElement(FormHelperText_FormHelperText, extends_extends({
+  }, SelectProps), children) : InputElement, helperText && /*#__PURE__*/react.createElement(FormHelperText_FormHelperText, (0,esm_extends/* default */.Z)({
     id: helperTextId
   }, FormHelperTextProps), helperText));
 });
@@ -22294,8 +22154,11 @@ var AccountCircle = __webpack_require__(8201);
 /**
  * @ignore - internal component.
  */
-const FormControlContext_FormControlContext = /*#__PURE__*/react.createContext(undefined);
+
+const FormControlContext_FormControlContext = /*#__PURE__*/react.createContext();
+
 if (false) {}
+
 /* harmony default export */ const material_FormControl_FormControlContext = (FormControlContext_FormControlContext);
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/FormControl/useFormControl.js
 
@@ -22305,7 +22168,6 @@ function FormControl_useFormControl_useFormControl() {
 }
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/InputAdornment/inputAdornmentClasses.js
 
-
 function getInputAdornmentUtilityClass(slot) {
   return (0,generateUtilityClass_generateUtilityClass/* default */.Z)('MuiInputAdornment', slot);
 }
@@ -22314,8 +22176,11 @@ const inputAdornmentClasses = (0,generateUtilityClasses/* default */.Z)('MuiInpu
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/InputAdornment/InputAdornment.js
 
 
+
 var _span;
+
 const InputAdornment_excluded = ["children", "className", "component", "disablePointerEvents", "disableTypography", "position", "variant"];
+
 
 
 
@@ -22335,6 +22200,7 @@ const overridesResolver = (props, styles) => {
   } = props;
   return [styles.root, styles[`position${(0,capitalize/* default */.Z)(ownerState.position)}`], ownerState.disablePointerEvents === true && styles.disablePointerEvents, styles[ownerState.variant]];
 };
+
 const InputAdornment_useUtilityClasses = ownerState => {
   const {
     classes,
@@ -22349,6 +22215,7 @@ const InputAdornment_useUtilityClasses = ownerState => {
   };
   return (0,composeClasses/* default */.Z)(slots, getInputAdornmentUtilityClass, classes);
 };
+
 const InputAdornmentRoot = (0,styled/* default */.ZP)('div', {
   name: 'MuiInputAdornment',
   slot: 'Root',
@@ -22363,7 +22230,7 @@ const InputAdornmentRoot = (0,styled/* default */.ZP)('div', {
   maxHeight: '2em',
   alignItems: 'center',
   whiteSpace: 'nowrap',
-  color: (theme.vars || theme).palette.action.active
+  color: theme.palette.action.active
 }, ownerState.variant === 'filled' && {
   // Styles applied to the root element if `variant="filled"`.
   [`&.${InputAdornment_inputAdornmentClasses.positionStart}&:not(.${InputAdornment_inputAdornmentClasses.hiddenLabel})`]: {
@@ -22384,24 +22251,29 @@ const InputAdornment = /*#__PURE__*/react.forwardRef(function InputAdornment(inP
     props: inProps,
     name: 'MuiInputAdornment'
   });
+
   const {
-      children,
-      className,
-      component = 'div',
-      disablePointerEvents = false,
-      disableTypography = false,
-      position,
-      variant: variantProp
-    } = props,
-    other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, InputAdornment_excluded);
+    children,
+    className,
+    component = 'div',
+    disablePointerEvents = false,
+    disableTypography = false,
+    position,
+    variant: variantProp
+  } = props,
+        other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, InputAdornment_excluded);
+
   const muiFormControl = FormControl_useFormControl_useFormControl() || {};
   let variant = variantProp;
+
   if (variantProp && muiFormControl.variant) {
     if (false) {}
   }
+
   if (muiFormControl && !variant) {
     variant = muiFormControl.variant;
   }
+
   const ownerState = (0,esm_extends/* default */.Z)({}, props, {
     hiddenLabel: muiFormControl.hiddenLabel,
     size: muiFormControl.size,
@@ -22409,20 +22281,23 @@ const InputAdornment = /*#__PURE__*/react.forwardRef(function InputAdornment(inP
     position,
     variant
   });
+
   const classes = InputAdornment_useUtilityClasses(ownerState);
   return /*#__PURE__*/(0,jsx_runtime.jsx)(material_FormControl_FormControlContext.Provider, {
     value: null,
     children: /*#__PURE__*/(0,jsx_runtime.jsx)(InputAdornmentRoot, (0,esm_extends/* default */.Z)({
       as: component,
       ownerState: ownerState,
-      className: (0,dist_clsx_m/* default */.Z)(classes.root, className),
+      className: (0,clsx_m/* default */.Z)(classes.root, className),
       ref: ref
     }, other, {
       children: typeof children === 'string' && !disableTypography ? /*#__PURE__*/(0,jsx_runtime.jsx)(Typography_Typography, {
         color: "text.secondary",
         children: children
       }) : /*#__PURE__*/(0,jsx_runtime.jsxs)(react.Fragment, {
-        children: [position === 'start' ? /* notranslate needed while Google Translate will not fix zero-width space issue */_span || (_span = /*#__PURE__*/(0,jsx_runtime.jsx)("span", {
+        children: [position === 'start' ?
+        /* notranslate needed while Google Translate will not fix zero-width space issue */
+        _span || (_span = /*#__PURE__*/(0,jsx_runtime.jsx)("span", {
           className: "notranslate",
           children: "\u200B"
         })) : null, children]
@@ -22523,6 +22398,7 @@ var button_update = injectStylesIntoStyleTag_default()(intro_button/* default */
 
 
 
+
 class ContactPage extends react.Component {
   constructor(props) {
     super(props);
@@ -22534,16 +22410,19 @@ class ContactPage extends react.Component {
     this.handletextchange = this.handletextchange.bind(this);
     this.handlenamechange = this.handlenamechange.bind(this);
   }
+
   handletextchange(e) {
     this.setState({
       text: e.target.value
     });
   }
+
   handlenamechange(e) {
     this.setState({
       name: e.target.value
     });
   }
+
   handleSubmitButtonPress() {
     const requestOptions = {
       method: "POST",
@@ -22557,6 +22436,7 @@ class ContactPage extends react.Component {
     };
     fetch("/api/Contact", requestOptions).then(response => response.json()).then(data => console.log(data)).then(document.getElementById("message").style.display = "block");
   }
+
   render() {
     return /*#__PURE__*/react.createElement("div", null, /*#__PURE__*/react.createElement("div", null, /*#__PURE__*/react.createElement(esm_Box_Box, {
       sx: {
@@ -22644,7 +22524,9 @@ class ContactPage extends react.Component {
       }
     }, /*#__PURE__*/react.createElement("p", null, "Your form was uploaded successfully")))))));
   }
+
 }
+
 /* harmony default export */ const contact = (ContactPage);
 ;// CONCATENATED MODULE: ./src/components/FrontPage.js
 
@@ -22687,6 +22569,7 @@ function FrontPage() {
 
 
 
+
 const SkillsPage_styles = theme => ({
   root: {
     backgroundColor: 'blue',
@@ -22695,6 +22578,7 @@ const SkillsPage_styles = theme => ({
     }
   }
 });
+
 function SkillsPage_ProjectsPage() {
   return /*#__PURE__*/react.createElement("div", null, /*#__PURE__*/react.createElement("div", null, /*#__PURE__*/react.createElement("div", null, /*#__PURE__*/react.createElement(Box_Box, {
     sx: {
@@ -22736,7 +22620,7 @@ function SkillsPage_ProjectsPage() {
     alignItems: "center"
   }, /*#__PURE__*/react.createElement(MyCard, {
     className: "dark-mode",
-    text: "Deep knowledge about python, and strengths and weaknesses of it",
+    text: "Deep knowledge about python, and strengths and weaknesses of it. The main language i like to work with.",
     title: "Python",
     image: "/static/images/python.png",
     link: "https://github.com/welhoilija"
@@ -22777,7 +22661,7 @@ function SkillsPage_ProjectsPage() {
     alignItems: "center"
   }, /*#__PURE__*/react.createElement(MyCard, {
     className: "dark-mode",
-    text: "Business knowledge, Strong GNU/Linux knowledge, Facebook ads, Nginx, different databases and the list goes on...",
+    text: "Business knowledge, Strong GNU/Linux knowledge, Facebook ads, Nginx, TypeScript, different databases and the list goes on...",
     title: "Many other skills!",
     image: "/static/images/react.png",
     link: "https://github.com/welhoilija"
@@ -22796,40 +22680,13 @@ function SkillsPage_ProjectsPage() {
     xs: 4
   }))))));
 }
-;// CONCATENATED MODULE: ./node_modules/@remix-run/router/dist/router.js
-/**
- * @remix-run/router v1.3.1
- *
- * Copyright (c) Remix Software Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.md file in the root directory of this source tree.
- *
- * @license MIT
- */
-function router_extends() {
-  router_extends = Object.assign ? Object.assign.bind() : function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
+;// CONCATENATED MODULE: ./node_modules/history/index.js
 
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-
-    return target;
-  };
-  return router_extends.apply(this, arguments);
-}
-
-////////////////////////////////////////////////////////////////////////////////
-//#region Types and Constants
-////////////////////////////////////////////////////////////////////////////////
 
 /**
  * Actions represent the type of change to a location value.
+ *
+ * @see https://github.com/remix-run/history/tree/main/docs/api-reference.md#action
  */
 var Action;
 
@@ -22857,223 +22714,14 @@ var Action;
   Action["Replace"] = "REPLACE";
 })(Action || (Action = {}));
 
-const PopStateEventType = "popstate";
-/**
- * Memory history stores the current location in memory. It is designed for use
- * in stateful non-browser environments like tests and React Native.
- */
+var readOnly =  false ? 0 : function (obj) {
+  return obj;
+};
 
-function router_createMemoryHistory(options) {
-  if (options === void 0) {
-    options = {};
-  }
-
-  let {
-    initialEntries = ["/"],
-    initialIndex,
-    v5Compat = false
-  } = options;
-  let entries; // Declare so we can access from createMemoryLocation
-
-  entries = initialEntries.map((entry, index) => createMemoryLocation(entry, typeof entry === "string" ? null : entry.state, index === 0 ? "default" : undefined));
-  let index = clampIndex(initialIndex == null ? entries.length - 1 : initialIndex);
-  let action = Action.Pop;
-  let listener = null;
-
-  function clampIndex(n) {
-    return Math.min(Math.max(n, 0), entries.length - 1);
-  }
-
-  function getCurrentLocation() {
-    return entries[index];
-  }
-
-  function createMemoryLocation(to, state, key) {
-    if (state === void 0) {
-      state = null;
-    }
-
-    let location = createLocation(entries ? getCurrentLocation().pathname : "/", to, state, key);
-    warning$1(location.pathname.charAt(0) === "/", "relative pathnames are not supported in memory history: " + JSON.stringify(to));
-    return location;
-  }
-
-  function createHref(to) {
-    return typeof to === "string" ? to : router_createPath(to);
-  }
-
-  let history = {
-    get index() {
-      return index;
-    },
-
-    get action() {
-      return action;
-    },
-
-    get location() {
-      return getCurrentLocation();
-    },
-
-    createHref,
-
-    createURL(to) {
-      return new URL(createHref(to), "http://localhost");
-    },
-
-    encodeLocation(to) {
-      let path = typeof to === "string" ? parsePath(to) : to;
-      return {
-        pathname: path.pathname || "",
-        search: path.search || "",
-        hash: path.hash || ""
-      };
-    },
-
-    push(to, state) {
-      action = Action.Push;
-      let nextLocation = createMemoryLocation(to, state);
-      index += 1;
-      entries.splice(index, entries.length, nextLocation);
-
-      if (v5Compat && listener) {
-        listener({
-          action,
-          location: nextLocation,
-          delta: 1
-        });
-      }
-    },
-
-    replace(to, state) {
-      action = Action.Replace;
-      let nextLocation = createMemoryLocation(to, state);
-      entries[index] = nextLocation;
-
-      if (v5Compat && listener) {
-        listener({
-          action,
-          location: nextLocation,
-          delta: 0
-        });
-      }
-    },
-
-    go(delta) {
-      action = Action.Pop;
-      let nextIndex = clampIndex(index + delta);
-      let nextLocation = entries[nextIndex];
-      index = nextIndex;
-
-      if (listener) {
-        listener({
-          action,
-          location: nextLocation,
-          delta
-        });
-      }
-    },
-
-    listen(fn) {
-      listener = fn;
-      return () => {
-        listener = null;
-      };
-    }
-
-  };
-  return history;
-}
-/**
- * Browser history stores the location in regular URLs. This is the standard for
- * most web apps, but it requires some configuration on the server to ensure you
- * serve the same app at multiple URLs.
- *
- * @see https://github.com/remix-run/history/tree/main/docs/api-reference.md#createbrowserhistory
- */
-
-function router_createBrowserHistory(options) {
-  if (options === void 0) {
-    options = {};
-  }
-
-  function createBrowserLocation(window, globalHistory) {
-    let {
-      pathname,
-      search,
-      hash
-    } = window.location;
-    return createLocation("", {
-      pathname,
-      search,
-      hash
-    }, // state defaults to `null` because `window.history.state` does
-    globalHistory.state && globalHistory.state.usr || null, globalHistory.state && globalHistory.state.key || "default");
-  }
-
-  function createBrowserHref(window, to) {
-    return typeof to === "string" ? to : router_createPath(to);
-  }
-
-  return getUrlBasedHistory(createBrowserLocation, createBrowserHref, null, options);
-}
-/**
- * Hash history stores the location in window.location.hash. This makes it ideal
- * for situations where you don't want to send the location to the server for
- * some reason, either because you do cannot configure it or the URL space is
- * reserved for something else.
- *
- * @see https://github.com/remix-run/history/tree/main/docs/api-reference.md#createhashhistory
- */
-
-function router_createHashHistory(options) {
-  if (options === void 0) {
-    options = {};
-  }
-
-  function createHashLocation(window, globalHistory) {
-    let {
-      pathname = "/",
-      search = "",
-      hash = ""
-    } = parsePath(window.location.hash.substr(1));
-    return createLocation("", {
-      pathname,
-      search,
-      hash
-    }, // state defaults to `null` because `window.history.state` does
-    globalHistory.state && globalHistory.state.usr || null, globalHistory.state && globalHistory.state.key || "default");
-  }
-
-  function createHashHref(window, to) {
-    let base = window.document.querySelector("base");
-    let href = "";
-
-    if (base && base.getAttribute("href")) {
-      let url = window.location.href;
-      let hashIndex = url.indexOf("#");
-      href = hashIndex === -1 ? url : url.slice(0, hashIndex);
-    }
-
-    return href + "#" + (typeof to === "string" ? to : router_createPath(to));
-  }
-
-  function validateHashLocation(location, to) {
-    warning$1(location.pathname.charAt(0) === "/", "relative pathnames are not supported in hash history.push(" + JSON.stringify(to) + ")");
-  }
-
-  return getUrlBasedHistory(createHashLocation, createHashHref, validateHashLocation, options);
-}
-function router_invariant(value, message) {
-  if (value === false || value === null || typeof value === "undefined") {
-    throw new Error(message);
-  }
-}
-
-function warning$1(cond, message) {
+function history_warning(cond, message) {
   if (!cond) {
     // eslint-disable-next-line no-console
-    if (typeof console !== "undefined") console.warn(message);
+    if (typeof console !== 'undefined') console.warn(message);
 
     try {
       // Welcome to debugging history!
@@ -23086,76 +22734,726 @@ function warning$1(cond, message) {
   }
 }
 
+var BeforeUnloadEventType = 'beforeunload';
+var HashChangeEventType = 'hashchange';
+var PopStateEventType = 'popstate';
+/**
+ * Browser history stores the location in regular URLs. This is the standard for
+ * most web apps, but it requires some configuration on the server to ensure you
+ * serve the same app at multiple URLs.
+ *
+ * @see https://github.com/remix-run/history/tree/main/docs/api-reference.md#createbrowserhistory
+ */
+
+function createBrowserHistory(options) {
+  if (options === void 0) {
+    options = {};
+  }
+
+  var _options = options,
+      _options$window = _options.window,
+      window = _options$window === void 0 ? document.defaultView : _options$window;
+  var globalHistory = window.history;
+
+  function getIndexAndLocation() {
+    var _window$location = window.location,
+        pathname = _window$location.pathname,
+        search = _window$location.search,
+        hash = _window$location.hash;
+    var state = globalHistory.state || {};
+    return [state.idx, readOnly({
+      pathname: pathname,
+      search: search,
+      hash: hash,
+      state: state.usr || null,
+      key: state.key || 'default'
+    })];
+  }
+
+  var blockedPopTx = null;
+
+  function handlePop() {
+    if (blockedPopTx) {
+      blockers.call(blockedPopTx);
+      blockedPopTx = null;
+    } else {
+      var nextAction = Action.Pop;
+
+      var _getIndexAndLocation = getIndexAndLocation(),
+          nextIndex = _getIndexAndLocation[0],
+          nextLocation = _getIndexAndLocation[1];
+
+      if (blockers.length) {
+        if (nextIndex != null) {
+          var delta = index - nextIndex;
+
+          if (delta) {
+            // Revert the POP
+            blockedPopTx = {
+              action: nextAction,
+              location: nextLocation,
+              retry: function retry() {
+                go(delta * -1);
+              }
+            };
+            go(delta);
+          }
+        } else {
+          // Trying to POP to a location with no index. We did not create
+          // this location, so we can't effectively block the navigation.
+           false ? 0 : void 0;
+        }
+      } else {
+        applyTx(nextAction);
+      }
+    }
+  }
+
+  window.addEventListener(PopStateEventType, handlePop);
+  var action = Action.Pop;
+
+  var _getIndexAndLocation2 = getIndexAndLocation(),
+      index = _getIndexAndLocation2[0],
+      location = _getIndexAndLocation2[1];
+
+  var listeners = createEvents();
+  var blockers = createEvents();
+
+  if (index == null) {
+    index = 0;
+    globalHistory.replaceState((0,esm_extends/* default */.Z)({}, globalHistory.state, {
+      idx: index
+    }), '');
+  }
+
+  function createHref(to) {
+    return typeof to === 'string' ? to : createPath(to);
+  } // state defaults to `null` because `window.history.state` does
+
+
+  function getNextLocation(to, state) {
+    if (state === void 0) {
+      state = null;
+    }
+
+    return readOnly((0,esm_extends/* default */.Z)({
+      pathname: location.pathname,
+      hash: '',
+      search: ''
+    }, typeof to === 'string' ? parsePath(to) : to, {
+      state: state,
+      key: createKey()
+    }));
+  }
+
+  function getHistoryStateAndUrl(nextLocation, index) {
+    return [{
+      usr: nextLocation.state,
+      key: nextLocation.key,
+      idx: index
+    }, createHref(nextLocation)];
+  }
+
+  function allowTx(action, location, retry) {
+    return !blockers.length || (blockers.call({
+      action: action,
+      location: location,
+      retry: retry
+    }), false);
+  }
+
+  function applyTx(nextAction) {
+    action = nextAction;
+
+    var _getIndexAndLocation3 = getIndexAndLocation();
+
+    index = _getIndexAndLocation3[0];
+    location = _getIndexAndLocation3[1];
+    listeners.call({
+      action: action,
+      location: location
+    });
+  }
+
+  function push(to, state) {
+    var nextAction = Action.Push;
+    var nextLocation = getNextLocation(to, state);
+
+    function retry() {
+      push(to, state);
+    }
+
+    if (allowTx(nextAction, nextLocation, retry)) {
+      var _getHistoryStateAndUr = getHistoryStateAndUrl(nextLocation, index + 1),
+          historyState = _getHistoryStateAndUr[0],
+          url = _getHistoryStateAndUr[1]; // TODO: Support forced reloading
+      // try...catch because iOS limits us to 100 pushState calls :/
+
+
+      try {
+        globalHistory.pushState(historyState, '', url);
+      } catch (error) {
+        // They are going to lose state here, but there is no real
+        // way to warn them about it since the page will refresh...
+        window.location.assign(url);
+      }
+
+      applyTx(nextAction);
+    }
+  }
+
+  function replace(to, state) {
+    var nextAction = Action.Replace;
+    var nextLocation = getNextLocation(to, state);
+
+    function retry() {
+      replace(to, state);
+    }
+
+    if (allowTx(nextAction, nextLocation, retry)) {
+      var _getHistoryStateAndUr2 = getHistoryStateAndUrl(nextLocation, index),
+          historyState = _getHistoryStateAndUr2[0],
+          url = _getHistoryStateAndUr2[1]; // TODO: Support forced reloading
+
+
+      globalHistory.replaceState(historyState, '', url);
+      applyTx(nextAction);
+    }
+  }
+
+  function go(delta) {
+    globalHistory.go(delta);
+  }
+
+  var history = {
+    get action() {
+      return action;
+    },
+
+    get location() {
+      return location;
+    },
+
+    createHref: createHref,
+    push: push,
+    replace: replace,
+    go: go,
+    back: function back() {
+      go(-1);
+    },
+    forward: function forward() {
+      go(1);
+    },
+    listen: function listen(listener) {
+      return listeners.push(listener);
+    },
+    block: function block(blocker) {
+      var unblock = blockers.push(blocker);
+
+      if (blockers.length === 1) {
+        window.addEventListener(BeforeUnloadEventType, promptBeforeUnload);
+      }
+
+      return function () {
+        unblock(); // Remove the beforeunload listener so the document may
+        // still be salvageable in the pagehide event.
+        // See https://html.spec.whatwg.org/#unloading-documents
+
+        if (!blockers.length) {
+          window.removeEventListener(BeforeUnloadEventType, promptBeforeUnload);
+        }
+      };
+    }
+  };
+  return history;
+}
+/**
+ * Hash history stores the location in window.location.hash. This makes it ideal
+ * for situations where you don't want to send the location to the server for
+ * some reason, either because you do cannot configure it or the URL space is
+ * reserved for something else.
+ *
+ * @see https://github.com/remix-run/history/tree/main/docs/api-reference.md#createhashhistory
+ */
+
+function history_createHashHistory(options) {
+  if (options === void 0) {
+    options = {};
+  }
+
+  var _options2 = options,
+      _options2$window = _options2.window,
+      window = _options2$window === void 0 ? document.defaultView : _options2$window;
+  var globalHistory = window.history;
+
+  function getIndexAndLocation() {
+    var _parsePath = parsePath(window.location.hash.substr(1)),
+        _parsePath$pathname = _parsePath.pathname,
+        pathname = _parsePath$pathname === void 0 ? '/' : _parsePath$pathname,
+        _parsePath$search = _parsePath.search,
+        search = _parsePath$search === void 0 ? '' : _parsePath$search,
+        _parsePath$hash = _parsePath.hash,
+        hash = _parsePath$hash === void 0 ? '' : _parsePath$hash;
+
+    var state = globalHistory.state || {};
+    return [state.idx, readOnly({
+      pathname: pathname,
+      search: search,
+      hash: hash,
+      state: state.usr || null,
+      key: state.key || 'default'
+    })];
+  }
+
+  var blockedPopTx = null;
+
+  function handlePop() {
+    if (blockedPopTx) {
+      blockers.call(blockedPopTx);
+      blockedPopTx = null;
+    } else {
+      var nextAction = Action.Pop;
+
+      var _getIndexAndLocation4 = getIndexAndLocation(),
+          nextIndex = _getIndexAndLocation4[0],
+          nextLocation = _getIndexAndLocation4[1];
+
+      if (blockers.length) {
+        if (nextIndex != null) {
+          var delta = index - nextIndex;
+
+          if (delta) {
+            // Revert the POP
+            blockedPopTx = {
+              action: nextAction,
+              location: nextLocation,
+              retry: function retry() {
+                go(delta * -1);
+              }
+            };
+            go(delta);
+          }
+        } else {
+          // Trying to POP to a location with no index. We did not create
+          // this location, so we can't effectively block the navigation.
+           false ? 0 : void 0;
+        }
+      } else {
+        applyTx(nextAction);
+      }
+    }
+  }
+
+  window.addEventListener(PopStateEventType, handlePop); // popstate does not fire on hashchange in IE 11 and old (trident) Edge
+  // https://developer.mozilla.org/de/docs/Web/API/Window/popstate_event
+
+  window.addEventListener(HashChangeEventType, function () {
+    var _getIndexAndLocation5 = getIndexAndLocation(),
+        nextLocation = _getIndexAndLocation5[1]; // Ignore extraneous hashchange events.
+
+
+    if (createPath(nextLocation) !== createPath(location)) {
+      handlePop();
+    }
+  });
+  var action = Action.Pop;
+
+  var _getIndexAndLocation6 = getIndexAndLocation(),
+      index = _getIndexAndLocation6[0],
+      location = _getIndexAndLocation6[1];
+
+  var listeners = createEvents();
+  var blockers = createEvents();
+
+  if (index == null) {
+    index = 0;
+    globalHistory.replaceState(_extends({}, globalHistory.state, {
+      idx: index
+    }), '');
+  }
+
+  function getBaseHref() {
+    var base = document.querySelector('base');
+    var href = '';
+
+    if (base && base.getAttribute('href')) {
+      var url = window.location.href;
+      var hashIndex = url.indexOf('#');
+      href = hashIndex === -1 ? url : url.slice(0, hashIndex);
+    }
+
+    return href;
+  }
+
+  function createHref(to) {
+    return getBaseHref() + '#' + (typeof to === 'string' ? to : createPath(to));
+  }
+
+  function getNextLocation(to, state) {
+    if (state === void 0) {
+      state = null;
+    }
+
+    return readOnly(_extends({
+      pathname: location.pathname,
+      hash: '',
+      search: ''
+    }, typeof to === 'string' ? parsePath(to) : to, {
+      state: state,
+      key: createKey()
+    }));
+  }
+
+  function getHistoryStateAndUrl(nextLocation, index) {
+    return [{
+      usr: nextLocation.state,
+      key: nextLocation.key,
+      idx: index
+    }, createHref(nextLocation)];
+  }
+
+  function allowTx(action, location, retry) {
+    return !blockers.length || (blockers.call({
+      action: action,
+      location: location,
+      retry: retry
+    }), false);
+  }
+
+  function applyTx(nextAction) {
+    action = nextAction;
+
+    var _getIndexAndLocation7 = getIndexAndLocation();
+
+    index = _getIndexAndLocation7[0];
+    location = _getIndexAndLocation7[1];
+    listeners.call({
+      action: action,
+      location: location
+    });
+  }
+
+  function push(to, state) {
+    var nextAction = Action.Push;
+    var nextLocation = getNextLocation(to, state);
+
+    function retry() {
+      push(to, state);
+    }
+
+     false ? 0 : void 0;
+
+    if (allowTx(nextAction, nextLocation, retry)) {
+      var _getHistoryStateAndUr3 = getHistoryStateAndUrl(nextLocation, index + 1),
+          historyState = _getHistoryStateAndUr3[0],
+          url = _getHistoryStateAndUr3[1]; // TODO: Support forced reloading
+      // try...catch because iOS limits us to 100 pushState calls :/
+
+
+      try {
+        globalHistory.pushState(historyState, '', url);
+      } catch (error) {
+        // They are going to lose state here, but there is no real
+        // way to warn them about it since the page will refresh...
+        window.location.assign(url);
+      }
+
+      applyTx(nextAction);
+    }
+  }
+
+  function replace(to, state) {
+    var nextAction = Action.Replace;
+    var nextLocation = getNextLocation(to, state);
+
+    function retry() {
+      replace(to, state);
+    }
+
+     false ? 0 : void 0;
+
+    if (allowTx(nextAction, nextLocation, retry)) {
+      var _getHistoryStateAndUr4 = getHistoryStateAndUrl(nextLocation, index),
+          historyState = _getHistoryStateAndUr4[0],
+          url = _getHistoryStateAndUr4[1]; // TODO: Support forced reloading
+
+
+      globalHistory.replaceState(historyState, '', url);
+      applyTx(nextAction);
+    }
+  }
+
+  function go(delta) {
+    globalHistory.go(delta);
+  }
+
+  var history = {
+    get action() {
+      return action;
+    },
+
+    get location() {
+      return location;
+    },
+
+    createHref: createHref,
+    push: push,
+    replace: replace,
+    go: go,
+    back: function back() {
+      go(-1);
+    },
+    forward: function forward() {
+      go(1);
+    },
+    listen: function listen(listener) {
+      return listeners.push(listener);
+    },
+    block: function block(blocker) {
+      var unblock = blockers.push(blocker);
+
+      if (blockers.length === 1) {
+        window.addEventListener(BeforeUnloadEventType, promptBeforeUnload);
+      }
+
+      return function () {
+        unblock(); // Remove the beforeunload listener so the document may
+        // still be salvageable in the pagehide event.
+        // See https://html.spec.whatwg.org/#unloading-documents
+
+        if (!blockers.length) {
+          window.removeEventListener(BeforeUnloadEventType, promptBeforeUnload);
+        }
+      };
+    }
+  };
+  return history;
+}
+/**
+ * Memory history stores the current location in memory. It is designed for use
+ * in stateful non-browser environments like tests and React Native.
+ *
+ * @see https://github.com/remix-run/history/tree/main/docs/api-reference.md#creatememoryhistory
+ */
+
+function history_createMemoryHistory(options) {
+  if (options === void 0) {
+    options = {};
+  }
+
+  var _options3 = options,
+      _options3$initialEntr = _options3.initialEntries,
+      initialEntries = _options3$initialEntr === void 0 ? ['/'] : _options3$initialEntr,
+      initialIndex = _options3.initialIndex;
+  var entries = initialEntries.map(function (entry) {
+    var location = readOnly(_extends({
+      pathname: '/',
+      search: '',
+      hash: '',
+      state: null,
+      key: createKey()
+    }, typeof entry === 'string' ? parsePath(entry) : entry));
+     false ? 0 : void 0;
+    return location;
+  });
+  var index = history_clamp(initialIndex == null ? entries.length - 1 : initialIndex, 0, entries.length - 1);
+  var action = Action.Pop;
+  var location = entries[index];
+  var listeners = createEvents();
+  var blockers = createEvents();
+
+  function createHref(to) {
+    return typeof to === 'string' ? to : createPath(to);
+  }
+
+  function getNextLocation(to, state) {
+    if (state === void 0) {
+      state = null;
+    }
+
+    return readOnly(_extends({
+      pathname: location.pathname,
+      search: '',
+      hash: ''
+    }, typeof to === 'string' ? parsePath(to) : to, {
+      state: state,
+      key: createKey()
+    }));
+  }
+
+  function allowTx(action, location, retry) {
+    return !blockers.length || (blockers.call({
+      action: action,
+      location: location,
+      retry: retry
+    }), false);
+  }
+
+  function applyTx(nextAction, nextLocation) {
+    action = nextAction;
+    location = nextLocation;
+    listeners.call({
+      action: action,
+      location: location
+    });
+  }
+
+  function push(to, state) {
+    var nextAction = Action.Push;
+    var nextLocation = getNextLocation(to, state);
+
+    function retry() {
+      push(to, state);
+    }
+
+     false ? 0 : void 0;
+
+    if (allowTx(nextAction, nextLocation, retry)) {
+      index += 1;
+      entries.splice(index, entries.length, nextLocation);
+      applyTx(nextAction, nextLocation);
+    }
+  }
+
+  function replace(to, state) {
+    var nextAction = Action.Replace;
+    var nextLocation = getNextLocation(to, state);
+
+    function retry() {
+      replace(to, state);
+    }
+
+     false ? 0 : void 0;
+
+    if (allowTx(nextAction, nextLocation, retry)) {
+      entries[index] = nextLocation;
+      applyTx(nextAction, nextLocation);
+    }
+  }
+
+  function go(delta) {
+    var nextIndex = history_clamp(index + delta, 0, entries.length - 1);
+    var nextAction = Action.Pop;
+    var nextLocation = entries[nextIndex];
+
+    function retry() {
+      go(delta);
+    }
+
+    if (allowTx(nextAction, nextLocation, retry)) {
+      index = nextIndex;
+      applyTx(nextAction, nextLocation);
+    }
+  }
+
+  var history = {
+    get index() {
+      return index;
+    },
+
+    get action() {
+      return action;
+    },
+
+    get location() {
+      return location;
+    },
+
+    createHref: createHref,
+    push: push,
+    replace: replace,
+    go: go,
+    back: function back() {
+      go(-1);
+    },
+    forward: function forward() {
+      go(1);
+    },
+    listen: function listen(listener) {
+      return listeners.push(listener);
+    },
+    block: function block(blocker) {
+      return blockers.push(blocker);
+    }
+  };
+  return history;
+} ////////////////////////////////////////////////////////////////////////////////
+// UTILS
+////////////////////////////////////////////////////////////////////////////////
+
+function history_clamp(n, lowerBound, upperBound) {
+  return Math.min(Math.max(n, lowerBound), upperBound);
+}
+
+function promptBeforeUnload(event) {
+  // Cancel the event.
+  event.preventDefault(); // Chrome (and legacy IE) requires returnValue to be set.
+
+  event.returnValue = '';
+}
+
+function createEvents() {
+  var handlers = [];
+  return {
+    get length() {
+      return handlers.length;
+    },
+
+    push: function push(fn) {
+      handlers.push(fn);
+      return function () {
+        handlers = handlers.filter(function (handler) {
+          return handler !== fn;
+        });
+      };
+    },
+    call: function call(arg) {
+      handlers.forEach(function (fn) {
+        return fn && fn(arg);
+      });
+    }
+  };
+}
+
 function createKey() {
   return Math.random().toString(36).substr(2, 8);
 }
 /**
- * For browser-based histories, we combine the state and key into an object
- */
-
-
-function getHistoryState(location, index) {
-  return {
-    usr: location.state,
-    key: location.key,
-    idx: index
-  };
-}
-/**
- * Creates a Location object with a unique key from the given Path
- */
-
-
-function createLocation(current, to, state, key) {
-  if (state === void 0) {
-    state = null;
-  }
-
-  let location = router_extends({
-    pathname: typeof current === "string" ? current : current.pathname,
-    search: "",
-    hash: ""
-  }, typeof to === "string" ? parsePath(to) : to, {
-    state,
-    // TODO: This could be cleaned up.  push/replace should probably just take
-    // full Locations now and avoid the need to run through this flow at all
-    // But that's a pretty big refactor to the current test suite so going to
-    // keep as is for the time being and just let any incoming keys take precedence
-    key: to && to.key || key || createKey()
-  });
-
-  return location;
-}
-/**
  * Creates a string URL path from the given pathname, search, and hash components.
+ *
+ * @see https://github.com/remix-run/history/tree/main/docs/api-reference.md#createpath
  */
 
-function router_createPath(_ref) {
-  let {
-    pathname = "/",
-    search = "",
-    hash = ""
-  } = _ref;
-  if (search && search !== "?") pathname += search.charAt(0) === "?" ? search : "?" + search;
-  if (hash && hash !== "#") pathname += hash.charAt(0) === "#" ? hash : "#" + hash;
+
+function createPath(_ref) {
+  var _ref$pathname = _ref.pathname,
+      pathname = _ref$pathname === void 0 ? '/' : _ref$pathname,
+      _ref$search = _ref.search,
+      search = _ref$search === void 0 ? '' : _ref$search,
+      _ref$hash = _ref.hash,
+      hash = _ref$hash === void 0 ? '' : _ref$hash;
+  if (search && search !== '?') pathname += search.charAt(0) === '?' ? search : '?' + search;
+  if (hash && hash !== '#') pathname += hash.charAt(0) === '#' ? hash : '#' + hash;
   return pathname;
 }
 /**
  * Parses a string URL path into its separate pathname, search, and hash components.
+ *
+ * @see https://github.com/remix-run/history/tree/main/docs/api-reference.md#parsepath
  */
 
 function parsePath(path) {
-  let parsedPath = {};
+  var parsedPath = {};
 
   if (path) {
-    let hashIndex = path.indexOf("#");
+    var hashIndex = path.indexOf('#');
 
     if (hashIndex >= 0) {
       parsedPath.hash = path.substr(hashIndex);
       path = path.substr(0, hashIndex);
     }
 
-    let searchIndex = path.indexOf("?");
+    var searchIndex = path.indexOf('?');
 
     if (searchIndex >= 0) {
       parsedPath.search = path.substr(searchIndex);
@@ -23170,206 +23468,89 @@ function parsePath(path) {
   return parsedPath;
 }
 
-function getUrlBasedHistory(getLocation, createHref, validateLocation, options) {
-  if (options === void 0) {
-    options = {};
-  }
 
-  let {
-    window = document.defaultView,
-    v5Compat = false
-  } = options;
-  let globalHistory = window.history;
-  let action = Action.Pop;
-  let listener = null;
-  let index = getIndex(); // Index should only be null when we initialize. If not, it's because the
-  // user called history.pushState or history.replaceState directly, in which
-  // case we should log a warning as it will result in bugs.
+//# sourceMappingURL=index.js.map
 
-  if (index == null) {
-    index = 0;
-    globalHistory.replaceState(router_extends({}, globalHistory.state, {
-      idx: index
-    }), "");
-  }
+;// CONCATENATED MODULE: ./node_modules/react-router/index.js
+/**
+ * React Router v6.3.0
+ *
+ * Copyright (c) Remix Software Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE.md file in the root directory of this source tree.
+ *
+ * @license MIT
+ */
 
-  function getIndex() {
-    let state = globalHistory.state || {
-      idx: null
-    };
-    return state.idx;
-  }
 
-  function handlePop() {
-    action = Action.Pop;
-    let nextIndex = getIndex();
-    let delta = nextIndex == null ? null : nextIndex - index;
-    index = nextIndex;
 
-    if (listener) {
-      listener({
-        action,
-        location: history.location,
-        delta
-      });
-    }
-  }
 
-  function push(to, state) {
-    action = Action.Push;
-    let location = createLocation(history.location, to, state);
-    if (validateLocation) validateLocation(location, to);
-    index = getIndex() + 1;
-    let historyState = getHistoryState(location, index);
-    let url = history.createHref(location); // try...catch because iOS limits us to 100 pushState calls :/
+const NavigationContext = /*#__PURE__*/(0,react.createContext)(null);
+
+if (false) {}
+
+const LocationContext = /*#__PURE__*/(0,react.createContext)(null);
+
+if (false) {}
+
+const RouteContext = /*#__PURE__*/(0,react.createContext)({
+  outlet: null,
+  matches: []
+});
+
+if (false) {}
+
+function invariant(cond, message) {
+  if (!cond) throw new Error(message);
+}
+function react_router_warning(cond, message) {
+  if (!cond) {
+    // eslint-disable-next-line no-console
+    if (typeof console !== "undefined") console.warn(message);
 
     try {
-      globalHistory.pushState(historyState, "", url);
-    } catch (error) {
-      // They are going to lose state here, but there is no real
-      // way to warn them about it since the page will refresh...
-      window.location.assign(url);
-    }
-
-    if (v5Compat && listener) {
-      listener({
-        action,
-        location: history.location,
-        delta: 1
-      });
-    }
+      // Welcome to debugging React Router!
+      //
+      // This error is thrown as a convenience so you can more easily
+      // find the source for a warning that appears in the console by
+      // enabling "pause on exceptions" in your JavaScript debugger.
+      throw new Error(message); // eslint-disable-next-line no-empty
+    } catch (e) {}
   }
-
-  function replace(to, state) {
-    action = Action.Replace;
-    let location = createLocation(history.location, to, state);
-    if (validateLocation) validateLocation(location, to);
-    index = getIndex();
-    let historyState = getHistoryState(location, index);
-    let url = history.createHref(location);
-    globalHistory.replaceState(historyState, "", url);
-
-    if (v5Compat && listener) {
-      listener({
-        action,
-        location: history.location,
-        delta: 0
-      });
-    }
-  }
-
-  function createURL(to) {
-    // window.location.origin is "null" (the literal string value) in Firefox
-    // under certain conditions, notably when serving from a local HTML file
-    // See https://bugzilla.mozilla.org/show_bug.cgi?id=878297
-    let base = window.location.origin !== "null" ? window.location.origin : window.location.href;
-    let href = typeof to === "string" ? to : router_createPath(to);
-    router_invariant(base, "No window.location.(origin|href) available to create URL for href: " + href);
-    return new URL(href, base);
-  }
-
-  let history = {
-    get action() {
-      return action;
-    },
-
-    get location() {
-      return getLocation(window, globalHistory);
-    },
-
-    listen(fn) {
-      if (listener) {
-        throw new Error("A history only accepts one active listener");
-      }
-
-      window.addEventListener(PopStateEventType, handlePop);
-      listener = fn;
-      return () => {
-        window.removeEventListener(PopStateEventType, handlePop);
-        listener = null;
-      };
-    },
-
-    createHref(to) {
-      return createHref(window, to);
-    },
-
-    createURL,
-
-    encodeLocation(to) {
-      // Encode a Location the same way window.location would
-      let url = createURL(to);
-      return {
-        pathname: url.pathname,
-        search: url.search,
-        hash: url.hash
-      };
-    },
-
-    push,
-    replace,
-
-    go(n) {
-      return globalHistory.go(n);
-    }
-
-  };
-  return history;
-} //#endregion
-
-var ResultType;
-
-(function (ResultType) {
-  ResultType["data"] = "data";
-  ResultType["deferred"] = "deferred";
-  ResultType["redirect"] = "redirect";
-  ResultType["error"] = "error";
-})(ResultType || (ResultType = {}));
-
-function isIndexRoute(route) {
-  return route.index === true;
-} // Walk the route tree generating unique IDs where necessary so we are working
-// solely with AgnosticDataRouteObject's within the Router
-
-
-function convertRoutesToDataRoutes(routes, parentPath, allIds) {
-  if (parentPath === void 0) {
-    parentPath = [];
-  }
-
-  if (allIds === void 0) {
-    allIds = new Set();
-  }
-
-  return routes.map((route, index) => {
-    let treePath = [...parentPath, index];
-    let id = typeof route.id === "string" ? route.id : treePath.join("-");
-    router_invariant(route.index !== true || !route.children, "Cannot specify children on an index route");
-    router_invariant(!allIds.has(id), "Found a route id collision on id \"" + id + "\".  Route " + "id's must be globally unique within Data Router usages");
-    allIds.add(id);
-
-    if (isIndexRoute(route)) {
-      let indexRoute = router_extends({}, route, {
-        id
-      });
-
-      return indexRoute;
-    } else {
-      let pathOrLayoutRoute = router_extends({}, route, {
-        id,
-        children: route.children ? convertRoutesToDataRoutes(route.children, treePath, allIds) : undefined
-      });
-
-      return pathOrLayoutRoute;
-    }
-  });
 }
+const alreadyWarned = {};
+function warningOnce(key, cond, message) {
+  if (!cond && !alreadyWarned[key]) {
+    alreadyWarned[key] = true;
+     false ? 0 : void 0;
+  }
+}
+
+/**
+ * Returns a path with params interpolated.
+ *
+ * @see https://reactrouter.com/docs/en/v6/api#generatepath
+ */
+function generatePath(path, params) {
+  if (params === void 0) {
+    params = {};
+  }
+
+  return path.replace(/:(\w+)/g, (_, key) => {
+    !(params[key] != null) ?  false ? 0 : invariant(false) : void 0;
+    return params[key];
+  }).replace(/\/*\*$/, _ => params["*"] == null ? "" : params["*"].replace(/^\/*/, "/"));
+}
+/**
+ * A RouteMatch contains info about how a route matched a URL.
+ */
+
 /**
  * Matches the given routes to a location and returns the match data.
  *
- * @see https://reactrouter.com/utils/match-routes
+ * @see https://reactrouter.com/docs/en/v6/api#matchroutes
  */
-
 function matchRoutes(routes, locationArg, basename) {
   if (basename === void 0) {
     basename = "/";
@@ -23387,13 +23568,7 @@ function matchRoutes(routes, locationArg, basename) {
   let matches = null;
 
   for (let i = 0; matches == null && i < branches.length; ++i) {
-    matches = matchRouteBranch(branches[i], // Incoming pathnames are generally encoded from either window.location
-    // or from router.navigate, but we want to match against the unencoded
-    // paths in the route definitions.  Memory router locations won't be
-    // encoded here but there also shouldn't be anything to decode so this
-    // should be a safe operation.  This avoids needing matchRoutes to be
-    // history-aware.
-    safelyDecodeURI(pathname));
+    matches = matchRouteBranch(branches[i], pathname);
   }
 
   return matches;
@@ -23412,28 +23587,26 @@ function flattenRoutes(routes, branches, parentsMeta, parentPath) {
     parentPath = "";
   }
 
-  let flattenRoute = (route, index, relativePath) => {
+  routes.forEach((route, index) => {
     let meta = {
-      relativePath: relativePath === undefined ? route.path || "" : relativePath,
+      relativePath: route.path || "",
       caseSensitive: route.caseSensitive === true,
       childrenIndex: index,
       route
     };
 
     if (meta.relativePath.startsWith("/")) {
-      router_invariant(meta.relativePath.startsWith(parentPath), "Absolute route path \"" + meta.relativePath + "\" nested under path " + ("\"" + parentPath + "\" is not valid. An absolute child route path ") + "must start with the combined path of all its parent routes.");
+      !meta.relativePath.startsWith(parentPath) ?  false ? 0 : invariant(false) : void 0;
       meta.relativePath = meta.relativePath.slice(parentPath.length);
     }
 
-    let path = router_joinPaths([parentPath, meta.relativePath]);
+    let path = joinPaths([parentPath, meta.relativePath]);
     let routesMeta = parentsMeta.concat(meta); // Add the children before adding this route to the array so we traverse the
     // route tree depth-first and child routes appear before their parents in
     // the "flattened" version.
 
     if (route.children && route.children.length > 0) {
-      router_invariant( // Our types know better, but runtime JS may not!
-      // @ts-expect-error
-      route.index !== true, "Index routes must not have child routes. Please remove " + ("all child routes from route path \"" + path + "\"."));
+      !(route.index !== true) ?  false ? 0 : invariant(false) : void 0;
       flattenRoutes(route.children, branches, routesMeta, path);
     } // Routes without a path shouldn't ever match by themselves unless they are
     // index routes, so don't add them to the list of possible branches.
@@ -23448,70 +23621,8 @@ function flattenRoutes(routes, branches, parentsMeta, parentPath) {
       score: computeScore(path, route.index),
       routesMeta
     });
-  };
-
-  routes.forEach((route, index) => {
-    var _route$path;
-
-    // coarse-grain check for optional params
-    if (route.path === "" || !((_route$path = route.path) != null && _route$path.includes("?"))) {
-      flattenRoute(route, index);
-    } else {
-      for (let exploded of explodeOptionalSegments(route.path)) {
-        flattenRoute(route, index, exploded);
-      }
-    }
   });
   return branches;
-}
-/**
- * Computes all combinations of optional path segments for a given path,
- * excluding combinations that are ambiguous and of lower priority.
- *
- * For example, `/one/:two?/three/:four?/:five?` explodes to:
- * - `/one/three`
- * - `/one/:two/three`
- * - `/one/three/:four`
- * - `/one/three/:five`
- * - `/one/:two/three/:four`
- * - `/one/:two/three/:five`
- * - `/one/three/:four/:five`
- * - `/one/:two/three/:four/:five`
- */
-
-
-function explodeOptionalSegments(path) {
-  let segments = path.split("/");
-  if (segments.length === 0) return [];
-  let [first, ...rest] = segments; // Optional path segments are denoted by a trailing `?`
-
-  let isOptional = first.endsWith("?"); // Compute the corresponding required segment: `foo?` -> `foo`
-
-  let required = first.replace(/\?$/, "");
-
-  if (rest.length === 0) {
-    // Intepret empty string as omitting an optional segment
-    // `["one", "", "three"]` corresponds to omitting `:two` from `/one/:two?/three` -> `/one/three`
-    return isOptional ? [required, ""] : [required];
-  }
-
-  let restExploded = explodeOptionalSegments(rest.join("/"));
-  let result = []; // All child paths with the prefix.  Do this for all children before the
-  // optional version for all children so we get consistent ordering where the
-  // parent optional aspect is preferred as required.  Otherwise, we can get
-  // child sections interspersed where deeper optional segments are higher than
-  // parent optional segments, where for example, /:two would explodes _earlier_
-  // then /:one.  By always including the parent as required _for all children_
-  // first, we avoid this issue
-
-  result.push(...restExploded.map(subpath => subpath === "" ? required : [required, subpath].join("/"))); // Then if this is an optional value, add all child versions without
-
-  if (isOptional) {
-    result.push(...restExploded);
-  } // for absolute paths, ensure `/` instead of empty segment
-
-
-  return result.map(exploded => path.startsWith("/") && exploded === "" ? "/" : exploded);
 }
 
 function rankRouteBranches(branches) {
@@ -23566,7 +23677,7 @@ function matchRouteBranch(branch, pathname) {
     let meta = routesMeta[i];
     let end = i === routesMeta.length - 1;
     let remainingPathname = matchedPathname === "/" ? pathname : pathname.slice(matchedPathname.length) || "/";
-    let match = router_matchPath({
+    let match = matchPath({
       path: meta.relativePath,
       caseSensitive: meta.caseSensitive,
       end
@@ -23575,85 +23686,31 @@ function matchRouteBranch(branch, pathname) {
     Object.assign(matchedParams, match.params);
     let route = meta.route;
     matches.push({
-      // TODO: Can this as be avoided?
       params: matchedParams,
-      pathname: router_joinPaths([matchedPathname, match.pathname]),
-      pathnameBase: normalizePathname(router_joinPaths([matchedPathname, match.pathnameBase])),
+      pathname: joinPaths([matchedPathname, match.pathname]),
+      pathnameBase: normalizePathname(joinPaths([matchedPathname, match.pathnameBase])),
       route
     });
 
     if (match.pathnameBase !== "/") {
-      matchedPathname = router_joinPaths([matchedPathname, match.pathnameBase]);
+      matchedPathname = joinPaths([matchedPathname, match.pathnameBase]);
     }
   }
 
   return matches;
 }
 /**
- * Returns a path with params interpolated.
- *
- * @see https://reactrouter.com/utils/generate-path
+ * A PathPattern is used to match on some portion of a URL pathname.
  */
 
 
-function generatePath(originalPath, params) {
-  if (params === void 0) {
-    params = {};
-  }
-
-  let path = originalPath;
-
-  if (path.endsWith("*") && path !== "*" && !path.endsWith("/*")) {
-    router_warning(false, "Route path \"" + path + "\" will be treated as if it were " + ("\"" + path.replace(/\*$/, "/*") + "\" because the `*` character must ") + "always follow a `/` in the pattern. To get rid of this warning, " + ("please change the route path to \"" + path.replace(/\*$/, "/*") + "\"."));
-    path = path.replace(/\*$/, "/*");
-  }
-
-  return path.replace(/^:(\w+)(\??)/g, (_, key, optional) => {
-    let param = params[key];
-
-    if (optional === "?") {
-      return param == null ? "" : param;
-    }
-
-    if (param == null) {
-      router_invariant(false, "Missing \":" + key + "\" param");
-    }
-
-    return param;
-  }).replace(/\/:(\w+)(\??)/g, (_, key, optional) => {
-    let param = params[key];
-
-    if (optional === "?") {
-      return param == null ? "" : "/" + param;
-    }
-
-    if (param == null) {
-      router_invariant(false, "Missing \":" + key + "\" param");
-    }
-
-    return "/" + param;
-  }) // Remove any optional markers from optional static segments
-  .replace(/\?/g, "").replace(/(\/?)\*/, (_, prefix, __, str) => {
-    const star = "*";
-
-    if (params[star] == null) {
-      // If no splat was provided, trim the trailing slash _unless_ it's
-      // the entire path
-      return str === "/*" ? "/" : "";
-    } // Apply the splat
-
-
-    return "" + prefix + params[star];
-  });
-}
 /**
  * Performs pattern matching on a URL pathname and returns information about
  * the match.
  *
- * @see https://reactrouter.com/utils/match-path
+ * @see https://reactrouter.com/docs/en/v6/api#matchpath
  */
-
-function router_matchPath(pattern, pathname) {
+function matchPath(pattern, pathname) {
   if (typeof pattern === "string") {
     pattern = {
       path: pattern,
@@ -23696,103 +23753,49 @@ function compilePath(path, caseSensitive, end) {
     end = true;
   }
 
-  router_warning(path === "*" || !path.endsWith("*") || path.endsWith("/*"), "Route path \"" + path + "\" will be treated as if it were " + ("\"" + path.replace(/\*$/, "/*") + "\" because the `*` character must ") + "always follow a `/` in the pattern. To get rid of this warning, " + ("please change the route path to \"" + path.replace(/\*$/, "/*") + "\"."));
+   false ? 0 : void 0;
   let paramNames = [];
   let regexpSource = "^" + path.replace(/\/*\*?$/, "") // Ignore trailing / and /*, we'll handle it below
   .replace(/^\/*/, "/") // Make sure it has a leading /
   .replace(/[\\.*+^$?{}|()[\]]/g, "\\$&") // Escape special regex chars
-  .replace(/\/:(\w+)/g, (_, paramName) => {
+  .replace(/:(\w+)/g, (_, paramName) => {
     paramNames.push(paramName);
-    return "/([^\\/]+)";
+    return "([^\\/]+)";
   });
 
   if (path.endsWith("*")) {
     paramNames.push("*");
     regexpSource += path === "*" || path === "/*" ? "(.*)$" // Already matched the initial /, just match the rest
     : "(?:\\/(.+)|\\/*)$"; // Don't include the / in params["*"]
-  } else if (end) {
-    // When matching to the end, ignore trailing slashes
-    regexpSource += "\\/*$";
-  } else if (path !== "" && path !== "/") {
-    // If our path is non-empty and contains anything beyond an initial slash,
-    // then we have _some_ form of path in our regex so we should expect to
-    // match only if we find the end of this path segment.  Look for an optional
-    // non-captured trailing slash (to match a portion of the URL) or the end
-    // of the path (if we've matched to the end).  We used to do this with a
-    // word boundary but that gives false positives on routes like
-    // /user-preferences since `-` counts as a word boundary.
-    regexpSource += "(?:(?=\\/|$))";
-  } else ;
+  } else {
+    regexpSource += end ? "\\/*$" // When matching to the end, ignore trailing slashes
+    : // Otherwise, match a word boundary or a proceeding /. The word boundary restricts
+    // parent routes to matching only their own words and nothing more, e.g. parent
+    // route "/home" should not match "/home2".
+    // Additionally, allow paths starting with `.`, `-`, `~`, and url-encoded entities,
+    // but do not consume the character in the matched path so they can match against
+    // nested paths.
+    "(?:(?=[.~-]|%[0-9A-F]{2})|\\b|\\/|$)";
+  }
 
   let matcher = new RegExp(regexpSource, caseSensitive ? undefined : "i");
   return [matcher, paramNames];
-}
-
-function safelyDecodeURI(value) {
-  try {
-    return decodeURI(value);
-  } catch (error) {
-    router_warning(false, "The URL path \"" + value + "\" could not be decoded because it is is a " + "malformed URL segment. This is probably due to a bad percent " + ("encoding (" + error + ")."));
-    return value;
-  }
 }
 
 function safelyDecodeURIComponent(value, paramName) {
   try {
     return decodeURIComponent(value);
   } catch (error) {
-    router_warning(false, "The value for the URL param \"" + paramName + "\" will not be decoded because" + (" the string \"" + value + "\" is a malformed URL segment. This is probably") + (" due to a bad percent encoding (" + error + ")."));
+     false ? 0 : void 0;
     return value;
-  }
-}
-/**
- * @private
- */
-
-
-function stripBasename(pathname, basename) {
-  if (basename === "/") return pathname;
-
-  if (!pathname.toLowerCase().startsWith(basename.toLowerCase())) {
-    return null;
-  } // We want to leave trailing slash behavior in the user's control, so if they
-  // specify a basename with a trailing slash, we should support it
-
-
-  let startIndex = basename.endsWith("/") ? basename.length - 1 : basename.length;
-  let nextChar = pathname.charAt(startIndex);
-
-  if (nextChar && nextChar !== "/") {
-    // pathname does not start with basename/
-    return null;
-  }
-
-  return pathname.slice(startIndex) || "/";
-}
-/**
- * @private
- */
-
-function router_warning(cond, message) {
-  if (!cond) {
-    // eslint-disable-next-line no-console
-    if (typeof console !== "undefined") console.warn(message);
-
-    try {
-      // Welcome to debugging @remix-run/router!
-      //
-      // This error is thrown as a convenience so you can more easily
-      // find the source for a warning that appears in the console by
-      // enabling "pause on exceptions" in your JavaScript debugger.
-      throw new Error(message); // eslint-disable-next-line no-empty
-    } catch (e) {}
   }
 }
 /**
  * Returns a resolved path object relative to the given pathname.
  *
- * @see https://reactrouter.com/utils/resolve-path
+ * @see https://reactrouter.com/docs/en/v6/api#resolvepath
  */
+
 
 function resolvePath(to, fromPathname) {
   if (fromPathname === void 0) {
@@ -23826,62 +23829,9 @@ function resolvePathname(relativePath, fromPathname) {
   return segments.length > 1 ? segments.join("/") : "/";
 }
 
-function getInvalidPathError(char, field, dest, path) {
-  return "Cannot include a '" + char + "' character in a manually specified " + ("`to." + field + "` field [" + JSON.stringify(path) + "].  Please separate it out to the ") + ("`to." + dest + "` field. Alternatively you may provide the full path as ") + "a string in <Link to=\"...\"> and the router will parse it for you.";
-}
-/**
- * @private
- *
- * When processing relative navigation we want to ignore ancestor routes that
- * do not contribute to the path, such that index/pathless layout routes don't
- * interfere.
- *
- * For example, when moving a route element into an index route and/or a
- * pathless layout route, relative link behavior contained within should stay
- * the same.  Both of the following examples should link back to the root:
- *
- *   <Route path="/">
- *     <Route path="accounts" element={<Link to=".."}>
- *   </Route>
- *
- *   <Route path="/">
- *     <Route path="accounts">
- *       <Route element={<AccountsLayout />}>       // <-- Does not contribute
- *         <Route index element={<Link to=".."} />  // <-- Does not contribute
- *       </Route
- *     </Route>
- *   </Route>
- */
-
-
-function getPathContributingMatches(matches) {
-  return matches.filter((match, index) => index === 0 || match.route.path && match.route.path.length > 0);
-}
-/**
- * @private
- */
-
-function resolveTo(toArg, routePathnames, locationPathname, isPathRelative) {
-  if (isPathRelative === void 0) {
-    isPathRelative = false;
-  }
-
-  let to;
-
-  if (typeof toArg === "string") {
-    to = parsePath(toArg);
-  } else {
-    to = router_extends({}, toArg);
-    router_invariant(!to.pathname || !to.pathname.includes("?"), getInvalidPathError("?", "pathname", "search", to));
-    router_invariant(!to.pathname || !to.pathname.includes("#"), getInvalidPathError("#", "pathname", "hash", to));
-    router_invariant(!to.search || !to.search.includes("#"), getInvalidPathError("#", "search", "hash", to));
-  }
-
-  let isEmptyPath = toArg === "" || to.pathname === "";
-  let toPathname = isEmptyPath ? "/" : to.pathname;
-  let from; // Routing is relative to the current pathname if explicitly requested.
-  //
-  // If a pathname is explicitly provided in `to`, it should be relative to the
+function resolveTo(toArg, routePathnames, locationPathname) {
+  let to = typeof toArg === "string" ? parsePath(toArg) : toArg;
+  let toPathname = toArg === "" || to.pathname === "" ? "/" : to.pathname; // If a pathname is explicitly provided in `to`, it should be relative to the
   // route context. This is explained in `Note on `<Link to>` values` in our
   // migration guide from v5 as a means of disambiguation between `to` values
   // that begin with `/` and those that do not. However, this is problematic for
@@ -23889,7 +23839,9 @@ function resolveTo(toArg, routePathnames, locationPathname, isPathRelative) {
   // hash string, in which case we should assume that the navigation is relative
   // to the current location's pathname and *not* the route pathname.
 
-  if (isPathRelative || toPathname == null) {
+  let from;
+
+  if (toPathname == null) {
     from = locationPathname;
   } else {
     let routePathnameIndex = routePathnames.length - 1;
@@ -23912,3138 +23864,65 @@ function resolveTo(toArg, routePathnames, locationPathname, isPathRelative) {
     from = routePathnameIndex >= 0 ? routePathnames[routePathnameIndex] : "/";
   }
 
-  let path = resolvePath(to, from); // Ensure the pathname has a trailing slash if the original "to" had one
+  let path = resolvePath(to, from); // Ensure the pathname has a trailing slash if the original to value had one.
 
-  let hasExplicitTrailingSlash = toPathname && toPathname !== "/" && toPathname.endsWith("/"); // Or if this was a link to the current path which has a trailing slash
-
-  let hasCurrentTrailingSlash = (isEmptyPath || toPathname === ".") && locationPathname.endsWith("/");
-
-  if (!path.pathname.endsWith("/") && (hasExplicitTrailingSlash || hasCurrentTrailingSlash)) {
+  if (toPathname && toPathname !== "/" && toPathname.endsWith("/") && !path.pathname.endsWith("/")) {
     path.pathname += "/";
   }
 
   return path;
 }
-/**
- * @private
- */
-
 function getToPathname(to) {
   // Empty strings should be treated the same as / paths
   return to === "" || to.pathname === "" ? "/" : typeof to === "string" ? parsePath(to).pathname : to.pathname;
 }
-/**
- * @private
- */
+function stripBasename(pathname, basename) {
+  if (basename === "/") return pathname;
 
-const router_joinPaths = paths => paths.join("/").replace(/\/\/+/g, "/");
-/**
- * @private
- */
-
-const normalizePathname = pathname => pathname.replace(/\/+$/, "").replace(/^\/*/, "/");
-/**
- * @private
- */
-
-const normalizeSearch = search => !search || search === "?" ? "" : search.startsWith("?") ? search : "?" + search;
-/**
- * @private
- */
-
-const normalizeHash = hash => !hash || hash === "#" ? "" : hash.startsWith("#") ? hash : "#" + hash;
-/**
- * This is a shortcut for creating `application/json` responses. Converts `data`
- * to JSON and sets the `Content-Type` header.
- */
-
-const json = function json(data, init) {
-  if (init === void 0) {
-    init = {};
-  }
-
-  let responseInit = typeof init === "number" ? {
-    status: init
-  } : init;
-  let headers = new Headers(responseInit.headers);
-
-  if (!headers.has("Content-Type")) {
-    headers.set("Content-Type", "application/json; charset=utf-8");
-  }
-
-  return new Response(JSON.stringify(data), router_extends({}, responseInit, {
-    headers
-  }));
-};
-class router_AbortedDeferredError extends Error {}
-class DeferredData {
-  constructor(data, responseInit) {
-    this.pendingKeysSet = new Set();
-    this.subscribers = new Set();
-    this.deferredKeys = [];
-    router_invariant(data && typeof data === "object" && !Array.isArray(data), "defer() only accepts plain objects"); // Set up an AbortController + Promise we can race against to exit early
-    // cancellation
-
-    let reject;
-    this.abortPromise = new Promise((_, r) => reject = r);
-    this.controller = new AbortController();
-
-    let onAbort = () => reject(new router_AbortedDeferredError("Deferred data aborted"));
-
-    this.unlistenAbortSignal = () => this.controller.signal.removeEventListener("abort", onAbort);
-
-    this.controller.signal.addEventListener("abort", onAbort);
-    this.data = Object.entries(data).reduce((acc, _ref) => {
-      let [key, value] = _ref;
-      return Object.assign(acc, {
-        [key]: this.trackPromise(key, value)
-      });
-    }, {});
-
-    if (this.done) {
-      // All incoming values were resolved
-      this.unlistenAbortSignal();
-    }
-
-    this.init = responseInit;
-  }
-
-  trackPromise(key, value) {
-    if (!(value instanceof Promise)) {
-      return value;
-    }
-
-    this.deferredKeys.push(key);
-    this.pendingKeysSet.add(key); // We store a little wrapper promise that will be extended with
-    // _data/_error props upon resolve/reject
-
-    let promise = Promise.race([value, this.abortPromise]).then(data => this.onSettle(promise, key, null, data), error => this.onSettle(promise, key, error)); // Register rejection listeners to avoid uncaught promise rejections on
-    // errors or aborted deferred values
-
-    promise.catch(() => {});
-    Object.defineProperty(promise, "_tracked", {
-      get: () => true
-    });
-    return promise;
-  }
-
-  onSettle(promise, key, error, data) {
-    if (this.controller.signal.aborted && error instanceof router_AbortedDeferredError) {
-      this.unlistenAbortSignal();
-      Object.defineProperty(promise, "_error", {
-        get: () => error
-      });
-      return Promise.reject(error);
-    }
-
-    this.pendingKeysSet.delete(key);
-
-    if (this.done) {
-      // Nothing left to abort!
-      this.unlistenAbortSignal();
-    }
-
-    if (error) {
-      Object.defineProperty(promise, "_error", {
-        get: () => error
-      });
-      this.emit(false, key);
-      return Promise.reject(error);
-    }
-
-    Object.defineProperty(promise, "_data", {
-      get: () => data
-    });
-    this.emit(false, key);
-    return data;
-  }
-
-  emit(aborted, settledKey) {
-    this.subscribers.forEach(subscriber => subscriber(aborted, settledKey));
-  }
-
-  subscribe(fn) {
-    this.subscribers.add(fn);
-    return () => this.subscribers.delete(fn);
-  }
-
-  cancel() {
-    this.controller.abort();
-    this.pendingKeysSet.forEach((v, k) => this.pendingKeysSet.delete(k));
-    this.emit(true);
-  }
-
-  async resolveData(signal) {
-    let aborted = false;
-
-    if (!this.done) {
-      let onAbort = () => this.cancel();
-
-      signal.addEventListener("abort", onAbort);
-      aborted = await new Promise(resolve => {
-        this.subscribe(aborted => {
-          signal.removeEventListener("abort", onAbort);
-
-          if (aborted || this.done) {
-            resolve(aborted);
-          }
-        });
-      });
-    }
-
-    return aborted;
-  }
-
-  get done() {
-    return this.pendingKeysSet.size === 0;
-  }
-
-  get unwrappedData() {
-    router_invariant(this.data !== null && this.done, "Can only unwrap data on initialized and settled deferreds");
-    return Object.entries(this.data).reduce((acc, _ref2) => {
-      let [key, value] = _ref2;
-      return Object.assign(acc, {
-        [key]: unwrapTrackedPromise(value)
-      });
-    }, {});
-  }
-
-  get pendingKeys() {
-    return Array.from(this.pendingKeysSet);
-  }
-
-}
-
-function isTrackedPromise(value) {
-  return value instanceof Promise && value._tracked === true;
-}
-
-function unwrapTrackedPromise(value) {
-  if (!isTrackedPromise(value)) {
-    return value;
-  }
-
-  if (value._error) {
-    throw value._error;
-  }
-
-  return value._data;
-}
-
-const defer = function defer(data, init) {
-  if (init === void 0) {
-    init = {};
-  }
-
-  let responseInit = typeof init === "number" ? {
-    status: init
-  } : init;
-  return new DeferredData(data, responseInit);
-};
-/**
- * A redirect response. Sets the status code and the `Location` header.
- * Defaults to "302 Found".
- */
-
-const redirect = function redirect(url, init) {
-  if (init === void 0) {
-    init = 302;
-  }
-
-  let responseInit = init;
-
-  if (typeof responseInit === "number") {
-    responseInit = {
-      status: responseInit
-    };
-  } else if (typeof responseInit.status === "undefined") {
-    responseInit.status = 302;
-  }
-
-  let headers = new Headers(responseInit.headers);
-  headers.set("Location", url);
-  return new Response(null, router_extends({}, responseInit, {
-    headers
-  }));
-};
-/**
- * @private
- * Utility class we use to hold auto-unwrapped 4xx/5xx Response bodies
- */
-
-class router_ErrorResponse {
-  constructor(status, statusText, data, internal) {
-    if (internal === void 0) {
-      internal = false;
-    }
-
-    this.status = status;
-    this.statusText = statusText || "";
-    this.internal = internal;
-
-    if (data instanceof Error) {
-      this.data = data.toString();
-      this.error = data;
-    } else {
-      this.data = data;
-    }
-  }
-
-}
-/**
- * Check if the given error is an ErrorResponse generated from a 4xx/5xx
- * Response thrown from an action/loader
- */
-
-function isRouteErrorResponse(error) {
-  return error != null && typeof error.status === "number" && typeof error.statusText === "string" && typeof error.internal === "boolean" && "data" in error;
-}
-
-const validMutationMethodsArr = ["post", "put", "patch", "delete"];
-const validMutationMethods = new Set(validMutationMethodsArr);
-const validRequestMethodsArr = ["get", ...validMutationMethodsArr];
-const validRequestMethods = new Set(validRequestMethodsArr);
-const redirectStatusCodes = new Set([301, 302, 303, 307, 308]);
-const redirectPreserveMethodStatusCodes = new Set([307, 308]);
-const IDLE_NAVIGATION = {
-  state: "idle",
-  location: undefined,
-  formMethod: undefined,
-  formAction: undefined,
-  formEncType: undefined,
-  formData: undefined
-};
-const IDLE_FETCHER = {
-  state: "idle",
-  data: undefined,
-  formMethod: undefined,
-  formAction: undefined,
-  formEncType: undefined,
-  formData: undefined
-};
-const IDLE_BLOCKER = {
-  state: "unblocked",
-  proceed: undefined,
-  reset: undefined,
-  location: undefined
-};
-const router_isBrowser = typeof window !== "undefined" && typeof window.document !== "undefined" && typeof window.document.createElement !== "undefined";
-const isServer = !router_isBrowser; //#endregion
-////////////////////////////////////////////////////////////////////////////////
-//#region createRouter
-////////////////////////////////////////////////////////////////////////////////
-
-/**
- * Create a router and listen to history POP navigations
- */
-
-function router_createRouter(init) {
-  router_invariant(init.routes.length > 0, "You must provide a non-empty routes array to createRouter");
-  let dataRoutes = convertRoutesToDataRoutes(init.routes); // Cleanup function for history
-
-  let unlistenHistory = null; // Externally-provided functions to call on all state changes
-
-  let subscribers = new Set(); // Externally-provided object to hold scroll restoration locations during routing
-
-  let savedScrollPositions = null; // Externally-provided function to get scroll restoration keys
-
-  let getScrollRestorationKey = null; // Externally-provided function to get current scroll position
-
-  let getScrollPosition = null; // One-time flag to control the initial hydration scroll restoration.  Because
-  // we don't get the saved positions from <ScrollRestoration /> until _after_
-  // the initial render, we need to manually trigger a separate updateState to
-  // send along the restoreScrollPosition
-  // Set to true if we have `hydrationData` since we assume we were SSR'd and that
-  // SSR did the initial scroll restoration.
-
-  let initialScrollRestored = init.hydrationData != null;
-  let initialMatches = matchRoutes(dataRoutes, init.history.location, init.basename);
-  let initialErrors = null;
-
-  if (initialMatches == null) {
-    // If we do not match a user-provided-route, fall back to the root
-    // to allow the error boundary to take over
-    let error = getInternalRouterError(404, {
-      pathname: init.history.location.pathname
-    });
-    let {
-      matches,
-      route
-    } = getShortCircuitMatches(dataRoutes);
-    initialMatches = matches;
-    initialErrors = {
-      [route.id]: error
-    };
-  }
-
-  let initialized = !initialMatches.some(m => m.route.loader) || init.hydrationData != null;
-  let router;
-  let state = {
-    historyAction: init.history.action,
-    location: init.history.location,
-    matches: initialMatches,
-    initialized,
-    navigation: IDLE_NAVIGATION,
-    // Don't restore on initial updateState() if we were SSR'd
-    restoreScrollPosition: init.hydrationData != null ? false : null,
-    preventScrollReset: false,
-    revalidation: "idle",
-    loaderData: init.hydrationData && init.hydrationData.loaderData || {},
-    actionData: init.hydrationData && init.hydrationData.actionData || null,
-    errors: init.hydrationData && init.hydrationData.errors || initialErrors,
-    fetchers: new Map(),
-    blockers: new Map()
-  }; // -- Stateful internal variables to manage navigations --
-  // Current navigation in progress (to be committed in completeNavigation)
-
-  let pendingAction = Action.Pop; // Should the current navigation prevent the scroll reset if scroll cannot
-  // be restored?
-
-  let pendingPreventScrollReset = false; // AbortController for the active navigation
-
-  let pendingNavigationController; // We use this to avoid touching history in completeNavigation if a
-  // revalidation is entirely uninterrupted
-
-  let isUninterruptedRevalidation = false; // Use this internal flag to force revalidation of all loaders:
-  //  - submissions (completed or interrupted)
-  //  - useRevalidate()
-  //  - X-Remix-Revalidate (from redirect)
-
-  let isRevalidationRequired = false; // Use this internal array to capture routes that require revalidation due
-  // to a cancelled deferred on action submission
-
-  let cancelledDeferredRoutes = []; // Use this internal array to capture fetcher loads that were cancelled by an
-  // action navigation and require revalidation
-
-  let cancelledFetcherLoads = []; // AbortControllers for any in-flight fetchers
-
-  let fetchControllers = new Map(); // Track loads based on the order in which they started
-
-  let incrementingLoadId = 0; // Track the outstanding pending navigation data load to be compared against
-  // the globally incrementing load when a fetcher load lands after a completed
-  // navigation
-
-  let pendingNavigationLoadId = -1; // Fetchers that triggered data reloads as a result of their actions
-
-  let fetchReloadIds = new Map(); // Fetchers that triggered redirect navigations from their actions
-
-  let fetchRedirectIds = new Set(); // Most recent href/match for fetcher.load calls for fetchers
-
-  let fetchLoadMatches = new Map(); // Store DeferredData instances for active route matches.  When a
-  // route loader returns defer() we stick one in here.  Then, when a nested
-  // promise resolves we update loaderData.  If a new navigation starts we
-  // cancel active deferreds for eliminated routes.
-
-  let activeDeferreds = new Map(); // We ony support a single active blocker at the moment since we don't have
-  // any compelling use cases for multi-blocker yet
-
-  let activeBlocker = null; // Store blocker functions in a separate Map outside of router state since
-  // we don't need to update UI state if they change
-
-  let blockerFunctions = new Map(); // Flag to ignore the next history update, so we can revert the URL change on
-  // a POP navigation that was blocked by the user without touching router state
-
-  let ignoreNextHistoryUpdate = false; // Initialize the router, all side effects should be kicked off from here.
-  // Implemented as a Fluent API for ease of:
-  //   let router = createRouter(init).initialize();
-
-  function initialize() {
-    // If history informs us of a POP navigation, start the navigation but do not update
-    // state.  We'll update our own state once the navigation completes
-    unlistenHistory = init.history.listen(_ref => {
-      let {
-        action: historyAction,
-        location,
-        delta
-      } = _ref;
-
-      // Ignore this event if it was just us resetting the URL from a
-      // blocked POP navigation
-      if (ignoreNextHistoryUpdate) {
-        ignoreNextHistoryUpdate = false;
-        return;
-      }
-
-      router_warning(activeBlocker != null && delta === null, "You are trying to use a blocker on a POP navigation to a location " + "that was not created by @remix-run/router. This will fail silently in " + "production. This can happen if you are navigating outside the router " + "via `window.history.pushState`/`window.location.hash` instead of using " + "router navigation APIs.  This can also happen if you are using " + "createHashRouter and the user manually changes the URL.");
-      let blockerKey = shouldBlockNavigation({
-        currentLocation: state.location,
-        nextLocation: location,
-        historyAction
-      });
-
-      if (blockerKey && delta != null) {
-        // Restore the URL to match the current UI, but don't update router state
-        ignoreNextHistoryUpdate = true;
-        init.history.go(delta * -1); // Put the blocker into a blocked state
-
-        updateBlocker(blockerKey, {
-          state: "blocked",
-          location,
-
-          proceed() {
-            updateBlocker(blockerKey, {
-              state: "proceeding",
-              proceed: undefined,
-              reset: undefined,
-              location
-            }); // Re-do the same POP navigation we just blocked
-
-            init.history.go(delta);
-          },
-
-          reset() {
-            deleteBlocker(blockerKey);
-            updateState({
-              blockers: new Map(router.state.blockers)
-            });
-          }
-
-        });
-        return;
-      }
-
-      return startNavigation(historyAction, location);
-    }); // Kick off initial data load if needed.  Use Pop to avoid modifying history
-
-    if (!state.initialized) {
-      startNavigation(Action.Pop, state.location);
-    }
-
-    return router;
-  } // Clean up a router and it's side effects
-
-
-  function dispose() {
-    if (unlistenHistory) {
-      unlistenHistory();
-    }
-
-    subscribers.clear();
-    pendingNavigationController && pendingNavigationController.abort();
-    state.fetchers.forEach((_, key) => deleteFetcher(key));
-    state.blockers.forEach((_, key) => deleteBlocker(key));
-  } // Subscribe to state updates for the router
-
-
-  function subscribe(fn) {
-    subscribers.add(fn);
-    return () => subscribers.delete(fn);
-  } // Update our state and notify the calling context of the change
-
-
-  function updateState(newState) {
-    state = router_extends({}, state, newState);
-    subscribers.forEach(subscriber => subscriber(state));
-  } // Complete a navigation returning the state.navigation back to the IDLE_NAVIGATION
-  // and setting state.[historyAction/location/matches] to the new route.
-  // - Location is a required param
-  // - Navigation will always be set to IDLE_NAVIGATION
-  // - Can pass any other state in newState
-
-
-  function completeNavigation(location, newState) {
-    var _location$state, _location$state2;
-
-    // Deduce if we're in a loading/actionReload state:
-    // - We have committed actionData in the store
-    // - The current navigation was a mutation submission
-    // - We're past the submitting state and into the loading state
-    // - The location being loaded is not the result of a redirect
-    let isActionReload = state.actionData != null && state.navigation.formMethod != null && isMutationMethod(state.navigation.formMethod) && state.navigation.state === "loading" && ((_location$state = location.state) == null ? void 0 : _location$state._isRedirect) !== true;
-    let actionData;
-
-    if (newState.actionData) {
-      if (Object.keys(newState.actionData).length > 0) {
-        actionData = newState.actionData;
-      } else {
-        // Empty actionData -> clear prior actionData due to an action error
-        actionData = null;
-      }
-    } else if (isActionReload) {
-      // Keep the current data if we're wrapping up the action reload
-      actionData = state.actionData;
-    } else {
-      // Clear actionData on any other completed navigations
-      actionData = null;
-    } // Always preserve any existing loaderData from re-used routes
-
-
-    let loaderData = newState.loaderData ? mergeLoaderData(state.loaderData, newState.loaderData, newState.matches || [], newState.errors) : state.loaderData; // On a successful navigation we can assume we got through all blockers
-    // so we can start fresh
-
-    for (let [key] of blockerFunctions) {
-      deleteBlocker(key);
-    } // Always respect the user flag.  Otherwise don't reset on mutation
-    // submission navigations unless they redirect
-
-
-    let preventScrollReset = pendingPreventScrollReset === true || state.navigation.formMethod != null && isMutationMethod(state.navigation.formMethod) && ((_location$state2 = location.state) == null ? void 0 : _location$state2._isRedirect) !== true;
-    updateState(router_extends({}, newState, {
-      actionData,
-      loaderData,
-      historyAction: pendingAction,
-      location,
-      initialized: true,
-      navigation: IDLE_NAVIGATION,
-      revalidation: "idle",
-      restoreScrollPosition: getSavedScrollPosition(location, newState.matches || state.matches),
-      preventScrollReset,
-      blockers: new Map(state.blockers)
-    }));
-
-    if (isUninterruptedRevalidation) ; else if (pendingAction === Action.Pop) ; else if (pendingAction === Action.Push) {
-      init.history.push(location, location.state);
-    } else if (pendingAction === Action.Replace) {
-      init.history.replace(location, location.state);
-    } // Reset stateful navigation vars
-
-
-    pendingAction = Action.Pop;
-    pendingPreventScrollReset = false;
-    isUninterruptedRevalidation = false;
-    isRevalidationRequired = false;
-    cancelledDeferredRoutes = [];
-    cancelledFetcherLoads = [];
-  } // Trigger a navigation event, which can either be a numerical POP or a PUSH
-  // replace with an optional submission
-
-
-  async function navigate(to, opts) {
-    if (typeof to === "number") {
-      init.history.go(to);
-      return;
-    }
-
-    let {
-      path,
-      submission,
-      error
-    } = normalizeNavigateOptions(to, opts);
-    let currentLocation = state.location;
-    let nextLocation = createLocation(state.location, path, opts && opts.state); // When using navigate as a PUSH/REPLACE we aren't reading an already-encoded
-    // URL from window.location, so we need to encode it here so the behavior
-    // remains the same as POP and non-data-router usages.  new URL() does all
-    // the same encoding we'd get from a history.pushState/window.location read
-    // without having to touch history
-
-    nextLocation = router_extends({}, nextLocation, init.history.encodeLocation(nextLocation));
-    let userReplace = opts && opts.replace != null ? opts.replace : undefined;
-    let historyAction = Action.Push;
-
-    if (userReplace === true) {
-      historyAction = Action.Replace;
-    } else if (userReplace === false) ; else if (submission != null && isMutationMethod(submission.formMethod) && submission.formAction === state.location.pathname + state.location.search) {
-      // By default on submissions to the current location we REPLACE so that
-      // users don't have to double-click the back button to get to the prior
-      // location.  If the user redirects to a different location from the
-      // action/loader this will be ignored and the redirect will be a PUSH
-      historyAction = Action.Replace;
-    }
-
-    let preventScrollReset = opts && "preventScrollReset" in opts ? opts.preventScrollReset === true : undefined;
-    let blockerKey = shouldBlockNavigation({
-      currentLocation,
-      nextLocation,
-      historyAction
-    });
-
-    if (blockerKey) {
-      // Put the blocker into a blocked state
-      updateBlocker(blockerKey, {
-        state: "blocked",
-        location: nextLocation,
-
-        proceed() {
-          updateBlocker(blockerKey, {
-            state: "proceeding",
-            proceed: undefined,
-            reset: undefined,
-            location: nextLocation
-          }); // Send the same navigation through
-
-          navigate(to, opts);
-        },
-
-        reset() {
-          deleteBlocker(blockerKey);
-          updateState({
-            blockers: new Map(state.blockers)
-          });
-        }
-
-      });
-      return;
-    }
-
-    return await startNavigation(historyAction, nextLocation, {
-      submission,
-      // Send through the formData serialization error if we have one so we can
-      // render at the right error boundary after we match routes
-      pendingError: error,
-      preventScrollReset,
-      replace: opts && opts.replace
-    });
-  } // Revalidate all current loaders.  If a navigation is in progress or if this
-  // is interrupted by a navigation, allow this to "succeed" by calling all
-  // loaders during the next loader round
-
-
-  function revalidate() {
-    interruptActiveLoads();
-    updateState({
-      revalidation: "loading"
-    }); // If we're currently submitting an action, we don't need to start a new
-    // navigation, we'll just let the follow up loader execution call all loaders
-
-    if (state.navigation.state === "submitting") {
-      return;
-    } // If we're currently in an idle state, start a new navigation for the current
-    // action/location and mark it as uninterrupted, which will skip the history
-    // update in completeNavigation
-
-
-    if (state.navigation.state === "idle") {
-      startNavigation(state.historyAction, state.location, {
-        startUninterruptedRevalidation: true
-      });
-      return;
-    } // Otherwise, if we're currently in a loading state, just start a new
-    // navigation to the navigation.location but do not trigger an uninterrupted
-    // revalidation so that history correctly updates once the navigation completes
-
-
-    startNavigation(pendingAction || state.historyAction, state.navigation.location, {
-      overrideNavigation: state.navigation
-    });
-  } // Start a navigation to the given action/location.  Can optionally provide a
-  // overrideNavigation which will override the normalLoad in the case of a redirect
-  // navigation
-
-
-  async function startNavigation(historyAction, location, opts) {
-    // Abort any in-progress navigations and start a new one. Unset any ongoing
-    // uninterrupted revalidations unless told otherwise, since we want this
-    // new navigation to update history normally
-    pendingNavigationController && pendingNavigationController.abort();
-    pendingNavigationController = null;
-    pendingAction = historyAction;
-    isUninterruptedRevalidation = (opts && opts.startUninterruptedRevalidation) === true; // Save the current scroll position every time we start a new navigation,
-    // and track whether we should reset scroll on completion
-
-    saveScrollPosition(state.location, state.matches);
-    pendingPreventScrollReset = (opts && opts.preventScrollReset) === true;
-    let loadingNavigation = opts && opts.overrideNavigation;
-    let matches = matchRoutes(dataRoutes, location, init.basename); // Short circuit with a 404 on the root error boundary if we match nothing
-
-    if (!matches) {
-      let error = getInternalRouterError(404, {
-        pathname: location.pathname
-      });
-      let {
-        matches: notFoundMatches,
-        route
-      } = getShortCircuitMatches(dataRoutes); // Cancel all pending deferred on 404s since we don't keep any routes
-
-      cancelActiveDeferreds();
-      completeNavigation(location, {
-        matches: notFoundMatches,
-        loaderData: {},
-        errors: {
-          [route.id]: error
-        }
-      });
-      return;
-    } // Short circuit if it's only a hash change and not a mutation submission
-    // For example, on /page#hash and submit a <Form method="post"> which will
-    // default to a navigation to /page
-
-
-    if (isHashChangeOnly(state.location, location) && !(opts && opts.submission && isMutationMethod(opts.submission.formMethod))) {
-      completeNavigation(location, {
-        matches
-      });
-      return;
-    } // Create a controller/Request for this navigation
-
-
-    pendingNavigationController = new AbortController();
-    let request = createClientSideRequest(init.history, location, pendingNavigationController.signal, opts && opts.submission);
-    let pendingActionData;
-    let pendingError;
-
-    if (opts && opts.pendingError) {
-      // If we have a pendingError, it means the user attempted a GET submission
-      // with binary FormData so assign here and skip to handleLoaders.  That
-      // way we handle calling loaders above the boundary etc.  It's not really
-      // different from an actionError in that sense.
-      pendingError = {
-        [findNearestBoundary(matches).route.id]: opts.pendingError
-      };
-    } else if (opts && opts.submission && isMutationMethod(opts.submission.formMethod)) {
-      // Call action if we received an action submission
-      let actionOutput = await handleAction(request, location, opts.submission, matches, {
-        replace: opts.replace
-      });
-
-      if (actionOutput.shortCircuited) {
-        return;
-      }
-
-      pendingActionData = actionOutput.pendingActionData;
-      pendingError = actionOutput.pendingActionError;
-
-      let navigation = router_extends({
-        state: "loading",
-        location
-      }, opts.submission);
-
-      loadingNavigation = navigation; // Create a GET request for the loaders
-
-      request = new Request(request.url, {
-        signal: request.signal
-      });
-    } // Call loaders
-
-
-    let {
-      shortCircuited,
-      loaderData,
-      errors
-    } = await handleLoaders(request, location, matches, loadingNavigation, opts && opts.submission, opts && opts.replace, pendingActionData, pendingError);
-
-    if (shortCircuited) {
-      return;
-    } // Clean up now that the action/loaders have completed.  Don't clean up if
-    // we short circuited because pendingNavigationController will have already
-    // been assigned to a new controller for the next navigation
-
-
-    pendingNavigationController = null;
-    completeNavigation(location, router_extends({
-      matches
-    }, pendingActionData ? {
-      actionData: pendingActionData
-    } : {}, {
-      loaderData,
-      errors
-    }));
-  } // Call the action matched by the leaf route for this navigation and handle
-  // redirects/errors
-
-
-  async function handleAction(request, location, submission, matches, opts) {
-    interruptActiveLoads(); // Put us in a submitting state
-
-    let navigation = router_extends({
-      state: "submitting",
-      location
-    }, submission);
-
-    updateState({
-      navigation
-    }); // Call our action and get the result
-
-    let result;
-    let actionMatch = getTargetMatch(matches, location);
-
-    if (!actionMatch.route.action) {
-      result = {
-        type: ResultType.error,
-        error: getInternalRouterError(405, {
-          method: request.method,
-          pathname: location.pathname,
-          routeId: actionMatch.route.id
-        })
-      };
-    } else {
-      result = await callLoaderOrAction("action", request, actionMatch, matches, router.basename);
-
-      if (request.signal.aborted) {
-        return {
-          shortCircuited: true
-        };
-      }
-    }
-
-    if (isRedirectResult(result)) {
-      let replace;
-
-      if (opts && opts.replace != null) {
-        replace = opts.replace;
-      } else {
-        // If the user didn't explicity indicate replace behavior, replace if
-        // we redirected to the exact same location we're currently at to avoid
-        // double back-buttons
-        replace = result.location === state.location.pathname + state.location.search;
-      }
-
-      await startRedirectNavigation(state, result, {
-        submission,
-        replace
-      });
-      return {
-        shortCircuited: true
-      };
-    }
-
-    if (isErrorResult(result)) {
-      // Store off the pending error - we use it to determine which loaders
-      // to call and will commit it when we complete the navigation
-      let boundaryMatch = findNearestBoundary(matches, actionMatch.route.id); // By default, all submissions are REPLACE navigations, but if the
-      // action threw an error that'll be rendered in an errorElement, we fall
-      // back to PUSH so that the user can use the back button to get back to
-      // the pre-submission form location to try again
-
-      if ((opts && opts.replace) !== true) {
-        pendingAction = Action.Push;
-      }
-
-      return {
-        // Send back an empty object we can use to clear out any prior actionData
-        pendingActionData: {},
-        pendingActionError: {
-          [boundaryMatch.route.id]: result.error
-        }
-      };
-    }
-
-    if (isDeferredResult(result)) {
-      throw getInternalRouterError(400, {
-        type: "defer-action"
-      });
-    }
-
-    return {
-      pendingActionData: {
-        [actionMatch.route.id]: result.data
-      }
-    };
-  } // Call all applicable loaders for the given matches, handling redirects,
-  // errors, etc.
-
-
-  async function handleLoaders(request, location, matches, overrideNavigation, submission, replace, pendingActionData, pendingError) {
-    // Figure out the right navigation we want to use for data loading
-    let loadingNavigation = overrideNavigation;
-
-    if (!loadingNavigation) {
-      let navigation = router_extends({
-        state: "loading",
-        location,
-        formMethod: undefined,
-        formAction: undefined,
-        formEncType: undefined,
-        formData: undefined
-      }, submission);
-
-      loadingNavigation = navigation;
-    } // If this was a redirect from an action we don't have a "submission" but
-    // we have it on the loading navigation so use that if available
-
-
-    let activeSubmission = submission ? submission : loadingNavigation.formMethod && loadingNavigation.formAction && loadingNavigation.formData && loadingNavigation.formEncType ? {
-      formMethod: loadingNavigation.formMethod,
-      formAction: loadingNavigation.formAction,
-      formData: loadingNavigation.formData,
-      formEncType: loadingNavigation.formEncType
-    } : undefined;
-    let [matchesToLoad, revalidatingFetchers] = getMatchesToLoad(init.history, state, matches, activeSubmission, location, isRevalidationRequired, cancelledDeferredRoutes, cancelledFetcherLoads, pendingActionData, pendingError, fetchLoadMatches); // Cancel pending deferreds for no-longer-matched routes or routes we're
-    // about to reload.  Note that if this is an action reload we would have
-    // already cancelled all pending deferreds so this would be a no-op
-
-    cancelActiveDeferreds(routeId => !(matches && matches.some(m => m.route.id === routeId)) || matchesToLoad && matchesToLoad.some(m => m.route.id === routeId)); // Short circuit if we have no loaders to run
-
-    if (matchesToLoad.length === 0 && revalidatingFetchers.length === 0) {
-      completeNavigation(location, router_extends({
-        matches,
-        loaderData: {},
-        // Commit pending error if we're short circuiting
-        errors: pendingError || null
-      }, pendingActionData ? {
-        actionData: pendingActionData
-      } : {}));
-      return {
-        shortCircuited: true
-      };
-    } // If this is an uninterrupted revalidation, we remain in our current idle
-    // state.  If not, we need to switch to our loading state and load data,
-    // preserving any new action data or existing action data (in the case of
-    // a revalidation interrupting an actionReload)
-
-
-    if (!isUninterruptedRevalidation) {
-      revalidatingFetchers.forEach(rf => {
-        let fetcher = state.fetchers.get(rf.key);
-        let revalidatingFetcher = {
-          state: "loading",
-          data: fetcher && fetcher.data,
-          formMethod: undefined,
-          formAction: undefined,
-          formEncType: undefined,
-          formData: undefined,
-          " _hasFetcherDoneAnything ": true
-        };
-        state.fetchers.set(rf.key, revalidatingFetcher);
-      });
-      let actionData = pendingActionData || state.actionData;
-      updateState(router_extends({
-        navigation: loadingNavigation
-      }, actionData ? Object.keys(actionData).length === 0 ? {
-        actionData: null
-      } : {
-        actionData
-      } : {}, revalidatingFetchers.length > 0 ? {
-        fetchers: new Map(state.fetchers)
-      } : {}));
-    }
-
-    pendingNavigationLoadId = ++incrementingLoadId;
-    revalidatingFetchers.forEach(rf => fetchControllers.set(rf.key, pendingNavigationController));
-    let {
-      results,
-      loaderResults,
-      fetcherResults
-    } = await callLoadersAndMaybeResolveData(state.matches, matches, matchesToLoad, revalidatingFetchers, request);
-
-    if (request.signal.aborted) {
-      return {
-        shortCircuited: true
-      };
-    } // Clean up _after_ loaders have completed.  Don't clean up if we short
-    // circuited because fetchControllers would have been aborted and
-    // reassigned to new controllers for the next navigation
-
-
-    revalidatingFetchers.forEach(rf => fetchControllers.delete(rf.key)); // If any loaders returned a redirect Response, start a new REPLACE navigation
-
-    let redirect = findRedirect(results);
-
-    if (redirect) {
-      await startRedirectNavigation(state, redirect, {
-        replace
-      });
-      return {
-        shortCircuited: true
-      };
-    } // Process and commit output from loaders
-
-
-    let {
-      loaderData,
-      errors
-    } = processLoaderData(state, matches, matchesToLoad, loaderResults, pendingError, revalidatingFetchers, fetcherResults, activeDeferreds); // Wire up subscribers to update loaderData as promises settle
-
-    activeDeferreds.forEach((deferredData, routeId) => {
-      deferredData.subscribe(aborted => {
-        // Note: No need to updateState here since the TrackedPromise on
-        // loaderData is stable across resolve/reject
-        // Remove this instance if we were aborted or if promises have settled
-        if (aborted || deferredData.done) {
-          activeDeferreds.delete(routeId);
-        }
-      });
-    });
-    markFetchRedirectsDone();
-    let didAbortFetchLoads = abortStaleFetchLoads(pendingNavigationLoadId);
-    return router_extends({
-      loaderData,
-      errors
-    }, didAbortFetchLoads || revalidatingFetchers.length > 0 ? {
-      fetchers: new Map(state.fetchers)
-    } : {});
-  }
-
-  function getFetcher(key) {
-    return state.fetchers.get(key) || IDLE_FETCHER;
-  } // Trigger a fetcher load/submit for the given fetcher key
-
-
-  function fetch(key, routeId, href, opts) {
-    if (isServer) {
-      throw new Error("router.fetch() was called during the server render, but it shouldn't be. " + "You are likely calling a useFetcher() method in the body of your component. " + "Try moving it to a useEffect or a callback.");
-    }
-
-    if (fetchControllers.has(key)) abortFetcher(key);
-    let matches = matchRoutes(dataRoutes, href, init.basename);
-
-    if (!matches) {
-      setFetcherError(key, routeId, getInternalRouterError(404, {
-        pathname: href
-      }));
-      return;
-    }
-
-    let {
-      path,
-      submission
-    } = normalizeNavigateOptions(href, opts, true);
-    let match = getTargetMatch(matches, path);
-    pendingPreventScrollReset = (opts && opts.preventScrollReset) === true;
-
-    if (submission && isMutationMethod(submission.formMethod)) {
-      handleFetcherAction(key, routeId, path, match, matches, submission);
-      return;
-    } // Store off the match so we can call it's shouldRevalidate on subsequent
-    // revalidations
-
-
-    fetchLoadMatches.set(key, {
-      routeId,
-      path,
-      match,
-      matches
-    });
-    handleFetcherLoader(key, routeId, path, match, matches, submission);
-  } // Call the action for the matched fetcher.submit(), and then handle redirects,
-  // errors, and revalidation
-
-
-  async function handleFetcherAction(key, routeId, path, match, requestMatches, submission) {
-    interruptActiveLoads();
-    fetchLoadMatches.delete(key);
-
-    if (!match.route.action) {
-      let error = getInternalRouterError(405, {
-        method: submission.formMethod,
-        pathname: path,
-        routeId: routeId
-      });
-      setFetcherError(key, routeId, error);
-      return;
-    } // Put this fetcher into it's submitting state
-
-
-    let existingFetcher = state.fetchers.get(key);
-
-    let fetcher = router_extends({
-      state: "submitting"
-    }, submission, {
-      data: existingFetcher && existingFetcher.data,
-      " _hasFetcherDoneAnything ": true
-    });
-
-    state.fetchers.set(key, fetcher);
-    updateState({
-      fetchers: new Map(state.fetchers)
-    }); // Call the action for the fetcher
-
-    let abortController = new AbortController();
-    let fetchRequest = createClientSideRequest(init.history, path, abortController.signal, submission);
-    fetchControllers.set(key, abortController);
-    let actionResult = await callLoaderOrAction("action", fetchRequest, match, requestMatches, router.basename);
-
-    if (fetchRequest.signal.aborted) {
-      // We can delete this so long as we weren't aborted by ou our own fetcher
-      // re-submit which would have put _new_ controller is in fetchControllers
-      if (fetchControllers.get(key) === abortController) {
-        fetchControllers.delete(key);
-      }
-
-      return;
-    }
-
-    if (isRedirectResult(actionResult)) {
-      fetchControllers.delete(key);
-      fetchRedirectIds.add(key);
-
-      let loadingFetcher = router_extends({
-        state: "loading"
-      }, submission, {
-        data: undefined,
-        " _hasFetcherDoneAnything ": true
-      });
-
-      state.fetchers.set(key, loadingFetcher);
-      updateState({
-        fetchers: new Map(state.fetchers)
-      });
-      return startRedirectNavigation(state, actionResult, {
-        isFetchActionRedirect: true
-      });
-    } // Process any non-redirect errors thrown
-
-
-    if (isErrorResult(actionResult)) {
-      setFetcherError(key, routeId, actionResult.error);
-      return;
-    }
-
-    if (isDeferredResult(actionResult)) {
-      throw getInternalRouterError(400, {
-        type: "defer-action"
-      });
-    } // Start the data load for current matches, or the next location if we're
-    // in the middle of a navigation
-
-
-    let nextLocation = state.navigation.location || state.location;
-    let revalidationRequest = createClientSideRequest(init.history, nextLocation, abortController.signal);
-    let matches = state.navigation.state !== "idle" ? matchRoutes(dataRoutes, state.navigation.location, init.basename) : state.matches;
-    router_invariant(matches, "Didn't find any matches after fetcher action");
-    let loadId = ++incrementingLoadId;
-    fetchReloadIds.set(key, loadId);
-
-    let loadFetcher = router_extends({
-      state: "loading",
-      data: actionResult.data
-    }, submission, {
-      " _hasFetcherDoneAnything ": true
-    });
-
-    state.fetchers.set(key, loadFetcher);
-    let [matchesToLoad, revalidatingFetchers] = getMatchesToLoad(init.history, state, matches, submission, nextLocation, isRevalidationRequired, cancelledDeferredRoutes, cancelledFetcherLoads, {
-      [match.route.id]: actionResult.data
-    }, undefined, // No need to send through errors since we short circuit above
-    fetchLoadMatches); // Put all revalidating fetchers into the loading state, except for the
-    // current fetcher which we want to keep in it's current loading state which
-    // contains it's action submission info + action data
-
-    revalidatingFetchers.filter(rf => rf.key !== key).forEach(rf => {
-      let staleKey = rf.key;
-      let existingFetcher = state.fetchers.get(staleKey);
-      let revalidatingFetcher = {
-        state: "loading",
-        data: existingFetcher && existingFetcher.data,
-        formMethod: undefined,
-        formAction: undefined,
-        formEncType: undefined,
-        formData: undefined,
-        " _hasFetcherDoneAnything ": true
-      };
-      state.fetchers.set(staleKey, revalidatingFetcher);
-      fetchControllers.set(staleKey, abortController);
-    });
-    updateState({
-      fetchers: new Map(state.fetchers)
-    });
-    let {
-      results,
-      loaderResults,
-      fetcherResults
-    } = await callLoadersAndMaybeResolveData(state.matches, matches, matchesToLoad, revalidatingFetchers, revalidationRequest);
-
-    if (abortController.signal.aborted) {
-      return;
-    }
-
-    fetchReloadIds.delete(key);
-    fetchControllers.delete(key);
-    revalidatingFetchers.forEach(r => fetchControllers.delete(r.key));
-    let redirect = findRedirect(results);
-
-    if (redirect) {
-      return startRedirectNavigation(state, redirect);
-    } // Process and commit output from loaders
-
-
-    let {
-      loaderData,
-      errors
-    } = processLoaderData(state, state.matches, matchesToLoad, loaderResults, undefined, revalidatingFetchers, fetcherResults, activeDeferreds);
-    let doneFetcher = {
-      state: "idle",
-      data: actionResult.data,
-      formMethod: undefined,
-      formAction: undefined,
-      formEncType: undefined,
-      formData: undefined,
-      " _hasFetcherDoneAnything ": true
-    };
-    state.fetchers.set(key, doneFetcher);
-    let didAbortFetchLoads = abortStaleFetchLoads(loadId); // If we are currently in a navigation loading state and this fetcher is
-    // more recent than the navigation, we want the newer data so abort the
-    // navigation and complete it with the fetcher data
-
-    if (state.navigation.state === "loading" && loadId > pendingNavigationLoadId) {
-      router_invariant(pendingAction, "Expected pending action");
-      pendingNavigationController && pendingNavigationController.abort();
-      completeNavigation(state.navigation.location, {
-        matches,
-        loaderData,
-        errors,
-        fetchers: new Map(state.fetchers)
-      });
-    } else {
-      // otherwise just update with the fetcher data, preserving any existing
-      // loaderData for loaders that did not need to reload.  We have to
-      // manually merge here since we aren't going through completeNavigation
-      updateState(router_extends({
-        errors,
-        loaderData: mergeLoaderData(state.loaderData, loaderData, matches, errors)
-      }, didAbortFetchLoads ? {
-        fetchers: new Map(state.fetchers)
-      } : {}));
-      isRevalidationRequired = false;
-    }
-  } // Call the matched loader for fetcher.load(), handling redirects, errors, etc.
-
-
-  async function handleFetcherLoader(key, routeId, path, match, matches, submission) {
-    let existingFetcher = state.fetchers.get(key); // Put this fetcher into it's loading state
-
-    let loadingFetcher = router_extends({
-      state: "loading",
-      formMethod: undefined,
-      formAction: undefined,
-      formEncType: undefined,
-      formData: undefined
-    }, submission, {
-      data: existingFetcher && existingFetcher.data,
-      " _hasFetcherDoneAnything ": true
-    });
-
-    state.fetchers.set(key, loadingFetcher);
-    updateState({
-      fetchers: new Map(state.fetchers)
-    }); // Call the loader for this fetcher route match
-
-    let abortController = new AbortController();
-    let fetchRequest = createClientSideRequest(init.history, path, abortController.signal);
-    fetchControllers.set(key, abortController);
-    let result = await callLoaderOrAction("loader", fetchRequest, match, matches, router.basename); // Deferred isn't supported for fetcher loads, await everything and treat it
-    // as a normal load.  resolveDeferredData will return undefined if this
-    // fetcher gets aborted, so we just leave result untouched and short circuit
-    // below if that happens
-
-    if (isDeferredResult(result)) {
-      result = (await resolveDeferredData(result, fetchRequest.signal, true)) || result;
-    } // We can delete this so long as we weren't aborted by ou our own fetcher
-    // re-load which would have put _new_ controller is in fetchControllers
-
-
-    if (fetchControllers.get(key) === abortController) {
-      fetchControllers.delete(key);
-    }
-
-    if (fetchRequest.signal.aborted) {
-      return;
-    } // If the loader threw a redirect Response, start a new REPLACE navigation
-
-
-    if (isRedirectResult(result)) {
-      await startRedirectNavigation(state, result);
-      return;
-    } // Process any non-redirect errors thrown
-
-
-    if (isErrorResult(result)) {
-      let boundaryMatch = findNearestBoundary(state.matches, routeId);
-      state.fetchers.delete(key); // TODO: In remix, this would reset to IDLE_NAVIGATION if it was a catch -
-      // do we need to behave any differently with our non-redirect errors?
-      // What if it was a non-redirect Response?
-
-      updateState({
-        fetchers: new Map(state.fetchers),
-        errors: {
-          [boundaryMatch.route.id]: result.error
-        }
-      });
-      return;
-    }
-
-    router_invariant(!isDeferredResult(result), "Unhandled fetcher deferred data"); // Put the fetcher back into an idle state
-
-    let doneFetcher = {
-      state: "idle",
-      data: result.data,
-      formMethod: undefined,
-      formAction: undefined,
-      formEncType: undefined,
-      formData: undefined,
-      " _hasFetcherDoneAnything ": true
-    };
-    state.fetchers.set(key, doneFetcher);
-    updateState({
-      fetchers: new Map(state.fetchers)
-    });
-  }
-  /**
-   * Utility function to handle redirects returned from an action or loader.
-   * Normally, a redirect "replaces" the navigation that triggered it.  So, for
-   * example:
-   *
-   *  - user is on /a
-   *  - user clicks a link to /b
-   *  - loader for /b redirects to /c
-   *
-   * In a non-JS app the browser would track the in-flight navigation to /b and
-   * then replace it with /c when it encountered the redirect response.  In
-   * the end it would only ever update the URL bar with /c.
-   *
-   * In client-side routing using pushState/replaceState, we aim to emulate
-   * this behavior and we also do not update history until the end of the
-   * navigation (including processed redirects).  This means that we never
-   * actually touch history until we've processed redirects, so we just use
-   * the history action from the original navigation (PUSH or REPLACE).
-   */
-
-
-  async function startRedirectNavigation(state, redirect, _temp) {
-    var _window;
-
-    let {
-      submission,
-      replace,
-      isFetchActionRedirect
-    } = _temp === void 0 ? {} : _temp;
-
-    if (redirect.revalidate) {
-      isRevalidationRequired = true;
-    }
-
-    let redirectLocation = createLocation(state.location, redirect.location, // TODO: This can be removed once we get rid of useTransition in Remix v2
-    router_extends({
-      _isRedirect: true
-    }, isFetchActionRedirect ? {
-      _isFetchActionRedirect: true
-    } : {}));
-    router_invariant(redirectLocation, "Expected a location on the redirect navigation"); // Check if this an external redirect that goes to a new origin
-
-    if (router_isBrowser && typeof ((_window = window) == null ? void 0 : _window.location) !== "undefined") {
-      let newOrigin = init.history.createURL(redirect.location).origin;
-
-      if (window.location.origin !== newOrigin) {
-        if (replace) {
-          window.location.replace(redirect.location);
-        } else {
-          window.location.assign(redirect.location);
-        }
-
-        return;
-      }
-    } // There's no need to abort on redirects, since we don't detect the
-    // redirect until the action/loaders have settled
-
-
-    pendingNavigationController = null;
-    let redirectHistoryAction = replace === true ? Action.Replace : Action.Push; // Use the incoming submission if provided, fallback on the active one in
-    // state.navigation
-
-    let {
-      formMethod,
-      formAction,
-      formEncType,
-      formData
-    } = state.navigation;
-
-    if (!submission && formMethod && formAction && formData && formEncType) {
-      submission = {
-        formMethod,
-        formAction,
-        formEncType,
-        formData
-      };
-    } // If this was a 307/308 submission we want to preserve the HTTP method and
-    // re-submit the GET/POST/PUT/PATCH/DELETE as a submission navigation to the
-    // redirected location
-
-
-    if (redirectPreserveMethodStatusCodes.has(redirect.status) && submission && isMutationMethod(submission.formMethod)) {
-      await startNavigation(redirectHistoryAction, redirectLocation, {
-        submission: router_extends({}, submission, {
-          formAction: redirect.location
-        }),
-        // Preserve this flag across redirects
-        preventScrollReset: pendingPreventScrollReset
-      });
-    } else {
-      // Otherwise, we kick off a new loading navigation, preserving the
-      // submission info for the duration of this navigation
-      await startNavigation(redirectHistoryAction, redirectLocation, {
-        overrideNavigation: {
-          state: "loading",
-          location: redirectLocation,
-          formMethod: submission ? submission.formMethod : undefined,
-          formAction: submission ? submission.formAction : undefined,
-          formEncType: submission ? submission.formEncType : undefined,
-          formData: submission ? submission.formData : undefined
-        },
-        // Preserve this flag across redirects
-        preventScrollReset: pendingPreventScrollReset
-      });
-    }
-  }
-
-  async function callLoadersAndMaybeResolveData(currentMatches, matches, matchesToLoad, fetchersToLoad, request) {
-    // Call all navigation loaders and revalidating fetcher loaders in parallel,
-    // then slice off the results into separate arrays so we can handle them
-    // accordingly
-    let results = await Promise.all([...matchesToLoad.map(match => callLoaderOrAction("loader", request, match, matches, router.basename)), ...fetchersToLoad.map(f => callLoaderOrAction("loader", createClientSideRequest(init.history, f.path, request.signal), f.match, f.matches, router.basename))]);
-    let loaderResults = results.slice(0, matchesToLoad.length);
-    let fetcherResults = results.slice(matchesToLoad.length);
-    await Promise.all([resolveDeferredResults(currentMatches, matchesToLoad, loaderResults, request.signal, false, state.loaderData), resolveDeferredResults(currentMatches, fetchersToLoad.map(f => f.match), fetcherResults, request.signal, true)]);
-    return {
-      results,
-      loaderResults,
-      fetcherResults
-    };
-  }
-
-  function interruptActiveLoads() {
-    // Every interruption triggers a revalidation
-    isRevalidationRequired = true; // Cancel pending route-level deferreds and mark cancelled routes for
-    // revalidation
-
-    cancelledDeferredRoutes.push(...cancelActiveDeferreds()); // Abort in-flight fetcher loads
-
-    fetchLoadMatches.forEach((_, key) => {
-      if (fetchControllers.has(key)) {
-        cancelledFetcherLoads.push(key);
-        abortFetcher(key);
-      }
-    });
-  }
-
-  function setFetcherError(key, routeId, error) {
-    let boundaryMatch = findNearestBoundary(state.matches, routeId);
-    deleteFetcher(key);
-    updateState({
-      errors: {
-        [boundaryMatch.route.id]: error
-      },
-      fetchers: new Map(state.fetchers)
-    });
-  }
-
-  function deleteFetcher(key) {
-    if (fetchControllers.has(key)) abortFetcher(key);
-    fetchLoadMatches.delete(key);
-    fetchReloadIds.delete(key);
-    fetchRedirectIds.delete(key);
-    state.fetchers.delete(key);
-  }
-
-  function abortFetcher(key) {
-    let controller = fetchControllers.get(key);
-    router_invariant(controller, "Expected fetch controller: " + key);
-    controller.abort();
-    fetchControllers.delete(key);
-  }
-
-  function markFetchersDone(keys) {
-    for (let key of keys) {
-      let fetcher = getFetcher(key);
-      let doneFetcher = {
-        state: "idle",
-        data: fetcher.data,
-        formMethod: undefined,
-        formAction: undefined,
-        formEncType: undefined,
-        formData: undefined,
-        " _hasFetcherDoneAnything ": true
-      };
-      state.fetchers.set(key, doneFetcher);
-    }
-  }
-
-  function markFetchRedirectsDone() {
-    let doneKeys = [];
-
-    for (let key of fetchRedirectIds) {
-      let fetcher = state.fetchers.get(key);
-      router_invariant(fetcher, "Expected fetcher: " + key);
-
-      if (fetcher.state === "loading") {
-        fetchRedirectIds.delete(key);
-        doneKeys.push(key);
-      }
-    }
-
-    markFetchersDone(doneKeys);
-  }
-
-  function abortStaleFetchLoads(landedId) {
-    let yeetedKeys = [];
-
-    for (let [key, id] of fetchReloadIds) {
-      if (id < landedId) {
-        let fetcher = state.fetchers.get(key);
-        router_invariant(fetcher, "Expected fetcher: " + key);
-
-        if (fetcher.state === "loading") {
-          abortFetcher(key);
-          fetchReloadIds.delete(key);
-          yeetedKeys.push(key);
-        }
-      }
-    }
-
-    markFetchersDone(yeetedKeys);
-    return yeetedKeys.length > 0;
-  }
-
-  function getBlocker(key, fn) {
-    let blocker = state.blockers.get(key) || IDLE_BLOCKER;
-
-    if (blockerFunctions.get(key) !== fn) {
-      blockerFunctions.set(key, fn);
-
-      if (activeBlocker == null) {
-        // This is now the active blocker
-        activeBlocker = key;
-      } else if (key !== activeBlocker) {
-        router_warning(false, "A router only supports one blocker at a time");
-      }
-    }
-
-    return blocker;
-  }
-
-  function deleteBlocker(key) {
-    state.blockers.delete(key);
-    blockerFunctions.delete(key);
-
-    if (activeBlocker === key) {
-      activeBlocker = null;
-    }
-  } // Utility function to update blockers, ensuring valid state transitions
-
-
-  function updateBlocker(key, newBlocker) {
-    let blocker = state.blockers.get(key) || IDLE_BLOCKER; // Poor mans state machine :)
-    // https://mermaid.live/edit#pako:eNqVkc9OwzAMxl8l8nnjAYrEtDIOHEBIgwvKJTReGy3_lDpIqO27k6awMG0XcrLlnz87nwdonESogKXXBuE79rq75XZO3-yHds0RJVuv70YrPlUrCEe2HfrORS3rubqZfuhtpg5C9wk5tZ4VKcRUq88q9Z8RS0-48cE1iHJkL0ugbHuFLus9L6spZy8nX9MP2CNdomVaposqu3fGayT8T8-jJQwhepo_UtpgBQaDEUom04dZhAN1aJBDlUKJBxE1ceB2Smj0Mln-IBW5AFU2dwUiktt_2Qaq2dBfaKdEup85UV7Yd-dKjlnkabl2Pvr0DTkTreM
-
-    router_invariant(blocker.state === "unblocked" && newBlocker.state === "blocked" || blocker.state === "blocked" && newBlocker.state === "blocked" || blocker.state === "blocked" && newBlocker.state === "proceeding" || blocker.state === "blocked" && newBlocker.state === "unblocked" || blocker.state === "proceeding" && newBlocker.state === "unblocked", "Invalid blocker state transition: " + blocker.state + " -> " + newBlocker.state);
-    state.blockers.set(key, newBlocker);
-    updateState({
-      blockers: new Map(state.blockers)
-    });
-  }
-
-  function shouldBlockNavigation(_ref2) {
-    let {
-      currentLocation,
-      nextLocation,
-      historyAction
-    } = _ref2;
-
-    if (activeBlocker == null) {
-      return;
-    } // We only allow a single blocker at the moment.  This will need to be
-    // updated if we enhance to support multiple blockers in the future
-
-
-    let blockerFunction = blockerFunctions.get(activeBlocker);
-    router_invariant(blockerFunction, "Could not find a function for the active blocker");
-    let blocker = state.blockers.get(activeBlocker);
-
-    if (blocker && blocker.state === "proceeding") {
-      // If the blocker is currently proceeding, we don't need to re-check
-      // it and can let this navigation continue
-      return;
-    } // At this point, we know we're unblocked/blocked so we need to check the
-    // user-provided blocker function
-
-
-    if (blockerFunction({
-      currentLocation,
-      nextLocation,
-      historyAction
-    })) {
-      return activeBlocker;
-    }
-  }
-
-  function cancelActiveDeferreds(predicate) {
-    let cancelledRouteIds = [];
-    activeDeferreds.forEach((dfd, routeId) => {
-      if (!predicate || predicate(routeId)) {
-        // Cancel the deferred - but do not remove from activeDeferreds here -
-        // we rely on the subscribers to do that so our tests can assert proper
-        // cleanup via _internalActiveDeferreds
-        dfd.cancel();
-        cancelledRouteIds.push(routeId);
-        activeDeferreds.delete(routeId);
-      }
-    });
-    return cancelledRouteIds;
-  } // Opt in to capturing and reporting scroll positions during navigations,
-  // used by the <ScrollRestoration> component
-
-
-  function enableScrollRestoration(positions, getPosition, getKey) {
-    savedScrollPositions = positions;
-    getScrollPosition = getPosition;
-
-    getScrollRestorationKey = getKey || (location => location.key); // Perform initial hydration scroll restoration, since we miss the boat on
-    // the initial updateState() because we've not yet rendered <ScrollRestoration/>
-    // and therefore have no savedScrollPositions available
-
-
-    if (!initialScrollRestored && state.navigation === IDLE_NAVIGATION) {
-      initialScrollRestored = true;
-      let y = getSavedScrollPosition(state.location, state.matches);
-
-      if (y != null) {
-        updateState({
-          restoreScrollPosition: y
-        });
-      }
-    }
-
-    return () => {
-      savedScrollPositions = null;
-      getScrollPosition = null;
-      getScrollRestorationKey = null;
-    };
-  }
-
-  function saveScrollPosition(location, matches) {
-    if (savedScrollPositions && getScrollRestorationKey && getScrollPosition) {
-      let userMatches = matches.map(m => createUseMatchesMatch(m, state.loaderData));
-      let key = getScrollRestorationKey(location, userMatches) || location.key;
-      savedScrollPositions[key] = getScrollPosition();
-    }
-  }
-
-  function getSavedScrollPosition(location, matches) {
-    if (savedScrollPositions && getScrollRestorationKey && getScrollPosition) {
-      let userMatches = matches.map(m => createUseMatchesMatch(m, state.loaderData));
-      let key = getScrollRestorationKey(location, userMatches) || location.key;
-      let y = savedScrollPositions[key];
-
-      if (typeof y === "number") {
-        return y;
-      }
-    }
-
+  if (!pathname.toLowerCase().startsWith(basename.toLowerCase())) {
     return null;
   }
 
-  router = {
-    get basename() {
-      return init.basename;
-    },
+  let nextChar = pathname.charAt(basename.length);
 
-    get state() {
-      return state;
-    },
-
-    get routes() {
-      return dataRoutes;
-    },
-
-    initialize,
-    subscribe,
-    enableScrollRestoration,
-    navigate,
-    fetch,
-    revalidate,
-    // Passthrough to history-aware createHref used by useHref so we get proper
-    // hash-aware URLs in DOM paths
-    createHref: to => init.history.createHref(to),
-    encodeLocation: to => init.history.encodeLocation(to),
-    getFetcher,
-    deleteFetcher,
-    dispose,
-    getBlocker,
-    deleteBlocker,
-    _internalFetchControllers: fetchControllers,
-    _internalActiveDeferreds: activeDeferreds
-  };
-  return router;
-} //#endregion
-////////////////////////////////////////////////////////////////////////////////
-//#region createStaticHandler
-////////////////////////////////////////////////////////////////////////////////
-
-const UNSAFE_DEFERRED_SYMBOL = Symbol("deferred");
-function createStaticHandler(routes, opts) {
-  router_invariant(routes.length > 0, "You must provide a non-empty routes array to createStaticHandler");
-  let dataRoutes = convertRoutesToDataRoutes(routes);
-  let basename = (opts ? opts.basename : null) || "/";
-  /**
-   * The query() method is intended for document requests, in which we want to
-   * call an optional action and potentially multiple loaders for all nested
-   * routes.  It returns a StaticHandlerContext object, which is very similar
-   * to the router state (location, loaderData, actionData, errors, etc.) and
-   * also adds SSR-specific information such as the statusCode and headers
-   * from action/loaders Responses.
-   *
-   * It _should_ never throw and should report all errors through the
-   * returned context.errors object, properly associating errors to their error
-   * boundary.  Additionally, it tracks _deepestRenderedBoundaryId which can be
-   * used to emulate React error boundaries during SSr by performing a second
-   * pass only down to the boundaryId.
-   *
-   * The one exception where we do not return a StaticHandlerContext is when a
-   * redirect response is returned or thrown from any action/loader.  We
-   * propagate that out and return the raw Response so the HTTP server can
-   * return it directly.
-   */
-
-  async function query(request, _temp2) {
-    let {
-      requestContext
-    } = _temp2 === void 0 ? {} : _temp2;
-    let url = new URL(request.url);
-    let method = request.method.toLowerCase();
-    let location = createLocation("", router_createPath(url), null, "default");
-    let matches = matchRoutes(dataRoutes, location, basename); // SSR supports HEAD requests while SPA doesn't
-
-    if (!isValidMethod(method) && method !== "head") {
-      let error = getInternalRouterError(405, {
-        method
-      });
-      let {
-        matches: methodNotAllowedMatches,
-        route
-      } = getShortCircuitMatches(dataRoutes);
-      return {
-        basename,
-        location,
-        matches: methodNotAllowedMatches,
-        loaderData: {},
-        actionData: null,
-        errors: {
-          [route.id]: error
-        },
-        statusCode: error.status,
-        loaderHeaders: {},
-        actionHeaders: {},
-        activeDeferreds: null
-      };
-    } else if (!matches) {
-      let error = getInternalRouterError(404, {
-        pathname: location.pathname
-      });
-      let {
-        matches: notFoundMatches,
-        route
-      } = getShortCircuitMatches(dataRoutes);
-      return {
-        basename,
-        location,
-        matches: notFoundMatches,
-        loaderData: {},
-        actionData: null,
-        errors: {
-          [route.id]: error
-        },
-        statusCode: error.status,
-        loaderHeaders: {},
-        actionHeaders: {},
-        activeDeferreds: null
-      };
-    }
-
-    let result = await queryImpl(request, location, matches, requestContext);
-
-    if (isResponse(result)) {
-      return result;
-    } // When returning StaticHandlerContext, we patch back in the location here
-    // since we need it for React Context.  But this helps keep our submit and
-    // loadRouteData operating on a Request instead of a Location
-
-
-    return router_extends({
-      location,
-      basename
-    }, result);
-  }
-  /**
-   * The queryRoute() method is intended for targeted route requests, either
-   * for fetch ?_data requests or resource route requests.  In this case, we
-   * are only ever calling a single action or loader, and we are returning the
-   * returned value directly.  In most cases, this will be a Response returned
-   * from the action/loader, but it may be a primitive or other value as well -
-   * and in such cases the calling context should handle that accordingly.
-   *
-   * We do respect the throw/return differentiation, so if an action/loader
-   * throws, then this method will throw the value.  This is important so we
-   * can do proper boundary identification in Remix where a thrown Response
-   * must go to the Catch Boundary but a returned Response is happy-path.
-   *
-   * One thing to note is that any Router-initiated Errors that make sense
-   * to associate with a status code will be thrown as an ErrorResponse
-   * instance which include the raw Error, such that the calling context can
-   * serialize the error as they see fit while including the proper response
-   * code.  Examples here are 404 and 405 errors that occur prior to reaching
-   * any user-defined loaders.
-   */
-
-
-  async function queryRoute(request, _temp3) {
-    let {
-      routeId,
-      requestContext
-    } = _temp3 === void 0 ? {} : _temp3;
-    let url = new URL(request.url);
-    let method = request.method.toLowerCase();
-    let location = createLocation("", router_createPath(url), null, "default");
-    let matches = matchRoutes(dataRoutes, location, basename); // SSR supports HEAD requests while SPA doesn't
-
-    if (!isValidMethod(method) && method !== "head" && method !== "options") {
-      throw getInternalRouterError(405, {
-        method
-      });
-    } else if (!matches) {
-      throw getInternalRouterError(404, {
-        pathname: location.pathname
-      });
-    }
-
-    let match = routeId ? matches.find(m => m.route.id === routeId) : getTargetMatch(matches, location);
-
-    if (routeId && !match) {
-      throw getInternalRouterError(403, {
-        pathname: location.pathname,
-        routeId
-      });
-    } else if (!match) {
-      // This should never hit I don't think?
-      throw getInternalRouterError(404, {
-        pathname: location.pathname
-      });
-    }
-
-    let result = await queryImpl(request, location, matches, requestContext, match);
-
-    if (isResponse(result)) {
-      return result;
-    }
-
-    let error = result.errors ? Object.values(result.errors)[0] : undefined;
-
-    if (error !== undefined) {
-      // If we got back result.errors, that means the loader/action threw
-      // _something_ that wasn't a Response, but it's not guaranteed/required
-      // to be an `instanceof Error` either, so we have to use throw here to
-      // preserve the "error" state outside of queryImpl.
-      throw error;
-    } // Pick off the right state value to return
-
-
-    if (result.actionData) {
-      return Object.values(result.actionData)[0];
-    }
-
-    if (result.loaderData) {
-      var _result$activeDeferre;
-
-      let data = Object.values(result.loaderData)[0];
-
-      if ((_result$activeDeferre = result.activeDeferreds) != null && _result$activeDeferre[match.route.id]) {
-        data[UNSAFE_DEFERRED_SYMBOL] = result.activeDeferreds[match.route.id];
-      }
-
-      return data;
-    }
-
-    return undefined;
+  if (nextChar && nextChar !== "/") {
+    // pathname does not start with basename/
+    return null;
   }
 
-  async function queryImpl(request, location, matches, requestContext, routeMatch) {
-    router_invariant(request.signal, "query()/queryRoute() requests must contain an AbortController signal");
-
-    try {
-      if (isMutationMethod(request.method.toLowerCase())) {
-        let result = await submit(request, matches, routeMatch || getTargetMatch(matches, location), requestContext, routeMatch != null);
-        return result;
-      }
-
-      let result = await loadRouteData(request, matches, requestContext, routeMatch);
-      return isResponse(result) ? result : router_extends({}, result, {
-        actionData: null,
-        actionHeaders: {}
-      });
-    } catch (e) {
-      // If the user threw/returned a Response in callLoaderOrAction, we throw
-      // it to bail out and then return or throw here based on whether the user
-      // returned or threw
-      if (isQueryRouteResponse(e)) {
-        if (e.type === ResultType.error && !isRedirectResponse(e.response)) {
-          throw e.response;
-        }
-
-        return e.response;
-      } // Redirects are always returned since they don't propagate to catch
-      // boundaries
-
-
-      if (isRedirectResponse(e)) {
-        return e;
-      }
-
-      throw e;
-    }
-  }
-
-  async function submit(request, matches, actionMatch, requestContext, isRouteRequest) {
-    let result;
-
-    if (!actionMatch.route.action) {
-      let error = getInternalRouterError(405, {
-        method: request.method,
-        pathname: new URL(request.url).pathname,
-        routeId: actionMatch.route.id
-      });
-
-      if (isRouteRequest) {
-        throw error;
-      }
-
-      result = {
-        type: ResultType.error,
-        error
-      };
-    } else {
-      result = await callLoaderOrAction("action", request, actionMatch, matches, basename, true, isRouteRequest, requestContext);
-
-      if (request.signal.aborted) {
-        let method = isRouteRequest ? "queryRoute" : "query";
-        throw new Error(method + "() call aborted");
-      }
-    }
-
-    if (isRedirectResult(result)) {
-      // Uhhhh - this should never happen, we should always throw these from
-      // callLoaderOrAction, but the type narrowing here keeps TS happy and we
-      // can get back on the "throw all redirect responses" train here should
-      // this ever happen :/
-      throw new Response(null, {
-        status: result.status,
-        headers: {
-          Location: result.location
-        }
-      });
-    }
-
-    if (isDeferredResult(result)) {
-      let error = getInternalRouterError(400, {
-        type: "defer-action"
-      });
-
-      if (isRouteRequest) {
-        throw error;
-      }
-
-      result = {
-        type: ResultType.error,
-        error
-      };
-    }
-
-    if (isRouteRequest) {
-      // Note: This should only be non-Response values if we get here, since
-      // isRouteRequest should throw any Response received in callLoaderOrAction
-      if (isErrorResult(result)) {
-        throw result.error;
-      }
-
-      return {
-        matches: [actionMatch],
-        loaderData: {},
-        actionData: {
-          [actionMatch.route.id]: result.data
-        },
-        errors: null,
-        // Note: statusCode + headers are unused here since queryRoute will
-        // return the raw Response or value
-        statusCode: 200,
-        loaderHeaders: {},
-        actionHeaders: {},
-        activeDeferreds: null
-      };
-    }
-
-    if (isErrorResult(result)) {
-      // Store off the pending error - we use it to determine which loaders
-      // to call and will commit it when we complete the navigation
-      let boundaryMatch = findNearestBoundary(matches, actionMatch.route.id);
-      let context = await loadRouteData(request, matches, requestContext, undefined, {
-        [boundaryMatch.route.id]: result.error
-      }); // action status codes take precedence over loader status codes
-
-      return router_extends({}, context, {
-        statusCode: isRouteErrorResponse(result.error) ? result.error.status : 500,
-        actionData: null,
-        actionHeaders: router_extends({}, result.headers ? {
-          [actionMatch.route.id]: result.headers
-        } : {})
-      });
-    } // Create a GET request for the loaders
-
-
-    let loaderRequest = new Request(request.url, {
-      headers: request.headers,
-      redirect: request.redirect,
-      signal: request.signal
-    });
-    let context = await loadRouteData(loaderRequest, matches, requestContext);
-    return router_extends({}, context, result.statusCode ? {
-      statusCode: result.statusCode
-    } : {}, {
-      actionData: {
-        [actionMatch.route.id]: result.data
-      },
-      actionHeaders: router_extends({}, result.headers ? {
-        [actionMatch.route.id]: result.headers
-      } : {})
-    });
-  }
-
-  async function loadRouteData(request, matches, requestContext, routeMatch, pendingActionError) {
-    let isRouteRequest = routeMatch != null; // Short circuit if we have no loaders to run (queryRoute())
-
-    if (isRouteRequest && !(routeMatch != null && routeMatch.route.loader)) {
-      throw getInternalRouterError(400, {
-        method: request.method,
-        pathname: new URL(request.url).pathname,
-        routeId: routeMatch == null ? void 0 : routeMatch.route.id
-      });
-    }
-
-    let requestMatches = routeMatch ? [routeMatch] : getLoaderMatchesUntilBoundary(matches, Object.keys(pendingActionError || {})[0]);
-    let matchesToLoad = requestMatches.filter(m => m.route.loader); // Short circuit if we have no loaders to run (query())
-
-    if (matchesToLoad.length === 0) {
-      return {
-        matches,
-        // Add a null for all matched routes for proper revalidation on the client
-        loaderData: matches.reduce((acc, m) => Object.assign(acc, {
-          [m.route.id]: null
-        }), {}),
-        errors: pendingActionError || null,
-        statusCode: 200,
-        loaderHeaders: {},
-        activeDeferreds: null
-      };
-    }
-
-    let results = await Promise.all([...matchesToLoad.map(match => callLoaderOrAction("loader", request, match, matches, basename, true, isRouteRequest, requestContext))]);
-
-    if (request.signal.aborted) {
-      let method = isRouteRequest ? "queryRoute" : "query";
-      throw new Error(method + "() call aborted");
-    } // Process and commit output from loaders
-
-
-    let activeDeferreds = new Map();
-    let context = processRouteLoaderData(matches, matchesToLoad, results, pendingActionError, activeDeferreds); // Add a null for any non-loader matches for proper revalidation on the client
-
-    let executedLoaders = new Set(matchesToLoad.map(match => match.route.id));
-    matches.forEach(match => {
-      if (!executedLoaders.has(match.route.id)) {
-        context.loaderData[match.route.id] = null;
-      }
-    });
-    return router_extends({}, context, {
-      matches,
-      activeDeferreds: activeDeferreds.size > 0 ? Object.fromEntries(activeDeferreds.entries()) : null
-    });
-  }
-
-  return {
-    dataRoutes,
-    query,
-    queryRoute
-  };
-} //#endregion
-////////////////////////////////////////////////////////////////////////////////
-//#region Helpers
-////////////////////////////////////////////////////////////////////////////////
-
-/**
- * Given an existing StaticHandlerContext and an error thrown at render time,
- * provide an updated StaticHandlerContext suitable for a second SSR render
- */
-
-function getStaticContextFromError(routes, context, error) {
-  let newContext = router_extends({}, context, {
-    statusCode: 500,
-    errors: {
-      [context._deepestRenderedBoundaryId || routes[0].id]: error
-    }
-  });
-
-  return newContext;
+  return pathname.slice(basename.length) || "/";
 }
+const joinPaths = paths => paths.join("/").replace(/\/\/+/g, "/");
+const normalizePathname = pathname => pathname.replace(/\/+$/, "").replace(/^\/*/, "/");
 
-function isSubmissionNavigation(opts) {
-  return opts != null && "formData" in opts;
-} // Normalize navigation options by converting formMethod=GET formData objects to
-// URLSearchParams so they behave identically to links with query params
+const normalizeSearch = search => !search || search === "?" ? "" : search.startsWith("?") ? search : "?" + search;
 
-
-function normalizeNavigateOptions(to, opts, isFetcher) {
-  if (isFetcher === void 0) {
-    isFetcher = false;
-  }
-
-  let path = typeof to === "string" ? to : router_createPath(to); // Return location verbatim on non-submission navigations
-
-  if (!opts || !isSubmissionNavigation(opts)) {
-    return {
-      path
-    };
-  }
-
-  if (opts.formMethod && !isValidMethod(opts.formMethod)) {
-    return {
-      path,
-      error: getInternalRouterError(405, {
-        method: opts.formMethod
-      })
-    };
-  } // Create a Submission on non-GET navigations
-
-
-  let submission;
-
-  if (opts.formData) {
-    submission = {
-      formMethod: opts.formMethod || "get",
-      formAction: stripHashFromPath(path),
-      formEncType: opts && opts.formEncType || "application/x-www-form-urlencoded",
-      formData: opts.formData
-    };
-
-    if (isMutationMethod(submission.formMethod)) {
-      return {
-        path,
-        submission
-      };
-    }
-  } // Flatten submission onto URLSearchParams for GET submissions
-
-
-  let parsedPath = parsePath(path);
-  let searchParams = convertFormDataToSearchParams(opts.formData); // Since fetcher GET submissions only run a single loader (as opposed to
-  // navigation GET submissions which run all loaders), we need to preserve
-  // any incoming ?index params
-
-  if (isFetcher && parsedPath.search && hasNakedIndexQuery(parsedPath.search)) {
-    searchParams.append("index", "");
-  }
-
-  parsedPath.search = "?" + searchParams;
-  return {
-    path: router_createPath(parsedPath),
-    submission
-  };
-} // Filter out all routes below any caught error as they aren't going to
-// render so we don't need to load them
-
-
-function getLoaderMatchesUntilBoundary(matches, boundaryId) {
-  let boundaryMatches = matches;
-
-  if (boundaryId) {
-    let index = matches.findIndex(m => m.route.id === boundaryId);
-
-    if (index >= 0) {
-      boundaryMatches = matches.slice(0, index);
-    }
-  }
-
-  return boundaryMatches;
-}
-
-function getMatchesToLoad(history, state, matches, submission, location, isRevalidationRequired, cancelledDeferredRoutes, cancelledFetcherLoads, pendingActionData, pendingError, fetchLoadMatches) {
-  let actionResult = pendingError ? Object.values(pendingError)[0] : pendingActionData ? Object.values(pendingActionData)[0] : undefined;
-  let currentUrl = history.createURL(state.location);
-  let nextUrl = history.createURL(location);
-  let defaultShouldRevalidate = // Forced revalidation due to submission, useRevalidate, or X-Remix-Revalidate
-  isRevalidationRequired || // Clicked the same link, resubmitted a GET form
-  currentUrl.toString() === nextUrl.toString() || // Search params affect all loaders
-  currentUrl.search !== nextUrl.search; // Pick navigation matches that are net-new or qualify for revalidation
-
-  let boundaryId = pendingError ? Object.keys(pendingError)[0] : undefined;
-  let boundaryMatches = getLoaderMatchesUntilBoundary(matches, boundaryId);
-  let navigationMatches = boundaryMatches.filter((match, index) => {
-    if (match.route.loader == null) {
-      return false;
-    } // Always call the loader on new route instances and pending defer cancellations
-
-
-    if (isNewLoader(state.loaderData, state.matches[index], match) || cancelledDeferredRoutes.some(id => id === match.route.id)) {
-      return true;
-    } // This is the default implementation for when we revalidate.  If the route
-    // provides it's own implementation, then we give them full control but
-    // provide this value so they can leverage it if needed after they check
-    // their own specific use cases
-
-
-    let currentRouteMatch = state.matches[index];
-    let nextRouteMatch = match;
-    return shouldRevalidateLoader(match, router_extends({
-      currentUrl,
-      currentParams: currentRouteMatch.params,
-      nextUrl,
-      nextParams: nextRouteMatch.params
-    }, submission, {
-      actionResult,
-      defaultShouldRevalidate: defaultShouldRevalidate || isNewRouteInstance(currentRouteMatch, nextRouteMatch)
-    }));
-  }); // Pick fetcher.loads that need to be revalidated
-
-  let revalidatingFetchers = [];
-  fetchLoadMatches && fetchLoadMatches.forEach((f, key) => {
-    if (!matches.some(m => m.route.id === f.routeId)) {
-      // This fetcher is not going to be present in the subsequent render so
-      // there's no need to revalidate it
-      return;
-    } else if (cancelledFetcherLoads.includes(key)) {
-      // This fetcher was cancelled from a prior action submission - force reload
-      revalidatingFetchers.push(router_extends({
-        key
-      }, f));
-    } else {
-      // Revalidating fetchers are decoupled from the route matches since they
-      // hit a static href, so they _always_ check shouldRevalidate and the
-      // default is strictly if a revalidation is explicitly required (action
-      // submissions, useRevalidator, X-Remix-Revalidate).
-      let shouldRevalidate = shouldRevalidateLoader(f.match, router_extends({
-        currentUrl,
-        currentParams: state.matches[state.matches.length - 1].params,
-        nextUrl,
-        nextParams: matches[matches.length - 1].params
-      }, submission, {
-        actionResult,
-        defaultShouldRevalidate
-      }));
-
-      if (shouldRevalidate) {
-        revalidatingFetchers.push(router_extends({
-          key
-        }, f));
-      }
-    }
-  });
-  return [navigationMatches, revalidatingFetchers];
-}
-
-function isNewLoader(currentLoaderData, currentMatch, match) {
-  let isNew = // [a] -> [a, b]
-  !currentMatch || // [a, b] -> [a, c]
-  match.route.id !== currentMatch.route.id; // Handle the case that we don't have data for a re-used route, potentially
-  // from a prior error or from a cancelled pending deferred
-
-  let isMissingData = currentLoaderData[match.route.id] === undefined; // Always load if this is a net-new route or we don't yet have data
-
-  return isNew || isMissingData;
-}
-
-function isNewRouteInstance(currentMatch, match) {
-  let currentPath = currentMatch.route.path;
-  return (// param change for this match, /users/123 -> /users/456
-    currentMatch.pathname !== match.pathname || // splat param changed, which is not present in match.path
-    // e.g. /files/images/avatar.jpg -> files/finances.xls
-    currentPath != null && currentPath.endsWith("*") && currentMatch.params["*"] !== match.params["*"]
-  );
-}
-
-function shouldRevalidateLoader(loaderMatch, arg) {
-  if (loaderMatch.route.shouldRevalidate) {
-    let routeChoice = loaderMatch.route.shouldRevalidate(arg);
-
-    if (typeof routeChoice === "boolean") {
-      return routeChoice;
-    }
-  }
-
-  return arg.defaultShouldRevalidate;
-}
-
-async function callLoaderOrAction(type, request, match, matches, basename, isStaticRequest, isRouteRequest, requestContext) {
-  if (basename === void 0) {
-    basename = "/";
-  }
-
-  if (isStaticRequest === void 0) {
-    isStaticRequest = false;
-  }
-
-  if (isRouteRequest === void 0) {
-    isRouteRequest = false;
-  }
-
-  let resultType;
-  let result; // Setup a promise we can race against so that abort signals short circuit
-
-  let reject;
-  let abortPromise = new Promise((_, r) => reject = r);
-
-  let onReject = () => reject();
-
-  request.signal.addEventListener("abort", onReject);
-
-  try {
-    let handler = match.route[type];
-    router_invariant(handler, "Could not find the " + type + " to run on the \"" + match.route.id + "\" route");
-    result = await Promise.race([handler({
-      request,
-      params: match.params,
-      context: requestContext
-    }), abortPromise]);
-    router_invariant(result !== undefined, "You defined " + (type === "action" ? "an action" : "a loader") + " for route " + ("\"" + match.route.id + "\" but didn't return anything from your `" + type + "` ") + "function. Please return a value or `null`.");
-  } catch (e) {
-    resultType = ResultType.error;
-    result = e;
-  } finally {
-    request.signal.removeEventListener("abort", onReject);
-  }
-
-  if (isResponse(result)) {
-    let status = result.status; // Process redirects
-
-    if (redirectStatusCodes.has(status)) {
-      let location = result.headers.get("Location");
-      router_invariant(location, "Redirects returned/thrown from loaders/actions must have a Location header");
-      let isAbsolute = /^(?:[a-z][a-z0-9+.-]*:|\/\/)/i.test(location); // Support relative routing in internal redirects
-
-      if (!isAbsolute) {
-        let activeMatches = matches.slice(0, matches.indexOf(match) + 1);
-        let routePathnames = getPathContributingMatches(activeMatches).map(match => match.pathnameBase);
-        let resolvedLocation = resolveTo(location, routePathnames, new URL(request.url).pathname);
-        router_invariant(router_createPath(resolvedLocation), "Unable to resolve redirect location: " + location); // Prepend the basename to the redirect location if we have one
-
-        if (basename) {
-          let path = resolvedLocation.pathname;
-          resolvedLocation.pathname = path === "/" ? basename : router_joinPaths([basename, path]);
-        }
-
-        location = router_createPath(resolvedLocation);
-      } else if (!isStaticRequest) {
-        // Strip off the protocol+origin for same-origin absolute redirects.
-        // If this is a static reques, we can let it go back to the browser
-        // as-is
-        let currentUrl = new URL(request.url);
-        let url = location.startsWith("//") ? new URL(currentUrl.protocol + location) : new URL(location);
-
-        if (url.origin === currentUrl.origin) {
-          location = url.pathname + url.search + url.hash;
-        }
-      } // Don't process redirects in the router during static requests requests.
-      // Instead, throw the Response and let the server handle it with an HTTP
-      // redirect.  We also update the Location header in place in this flow so
-      // basename and relative routing is taken into account
-
-
-      if (isStaticRequest) {
-        result.headers.set("Location", location);
-        throw result;
-      }
-
-      return {
-        type: ResultType.redirect,
-        status,
-        location,
-        revalidate: result.headers.get("X-Remix-Revalidate") !== null
-      };
-    } // For SSR single-route requests, we want to hand Responses back directly
-    // without unwrapping.  We do this with the QueryRouteResponse wrapper
-    // interface so we can know whether it was returned or thrown
-
-
-    if (isRouteRequest) {
-      // eslint-disable-next-line no-throw-literal
-      throw {
-        type: resultType || ResultType.data,
-        response: result
-      };
-    }
-
-    let data;
-    let contentType = result.headers.get("Content-Type"); // Check between word boundaries instead of startsWith() due to the last
-    // paragraph of https://httpwg.org/specs/rfc9110.html#field.content-type
-
-    if (contentType && /\bapplication\/json\b/.test(contentType)) {
-      data = await result.json();
-    } else {
-      data = await result.text();
-    }
-
-    if (resultType === ResultType.error) {
-      return {
-        type: resultType,
-        error: new router_ErrorResponse(status, result.statusText, data),
-        headers: result.headers
-      };
-    }
-
-    return {
-      type: ResultType.data,
-      data,
-      statusCode: result.status,
-      headers: result.headers
-    };
-  }
-
-  if (resultType === ResultType.error) {
-    return {
-      type: resultType,
-      error: result
-    };
-  }
-
-  if (result instanceof DeferredData) {
-    return {
-      type: ResultType.deferred,
-      deferredData: result
-    };
-  }
-
-  return {
-    type: ResultType.data,
-    data: result
-  };
-} // Utility method for creating the Request instances for loaders/actions during
-// client-side navigations and fetches.  During SSR we will always have a
-// Request instance from the static handler (query/queryRoute)
-
-
-function createClientSideRequest(history, location, signal, submission) {
-  let url = history.createURL(stripHashFromPath(location)).toString();
-  let init = {
-    signal
-  };
-
-  if (submission && isMutationMethod(submission.formMethod)) {
-    let {
-      formMethod,
-      formEncType,
-      formData
-    } = submission;
-    init.method = formMethod.toUpperCase();
-    init.body = formEncType === "application/x-www-form-urlencoded" ? convertFormDataToSearchParams(formData) : formData;
-  } // Content-Type is inferred (https://fetch.spec.whatwg.org/#dom-request)
-
-
-  return new Request(url, init);
-}
-
-function convertFormDataToSearchParams(formData) {
-  let searchParams = new URLSearchParams();
-
-  for (let [key, value] of formData.entries()) {
-    // https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#converting-an-entry-list-to-a-list-of-name-value-pairs
-    searchParams.append(key, value instanceof File ? value.name : value);
-  }
-
-  return searchParams;
-}
-
-function processRouteLoaderData(matches, matchesToLoad, results, pendingError, activeDeferreds) {
-  // Fill in loaderData/errors from our loaders
-  let loaderData = {};
-  let errors = null;
-  let statusCode;
-  let foundError = false;
-  let loaderHeaders = {}; // Process loader results into state.loaderData/state.errors
-
-  results.forEach((result, index) => {
-    let id = matchesToLoad[index].route.id;
-    router_invariant(!isRedirectResult(result), "Cannot handle redirect results in processLoaderData");
-
-    if (isErrorResult(result)) {
-      // Look upwards from the matched route for the closest ancestor
-      // error boundary, defaulting to the root match
-      let boundaryMatch = findNearestBoundary(matches, id);
-      let error = result.error; // If we have a pending action error, we report it at the highest-route
-      // that throws a loader error, and then clear it out to indicate that
-      // it was consumed
-
-      if (pendingError) {
-        error = Object.values(pendingError)[0];
-        pendingError = undefined;
-      }
-
-      errors = errors || {}; // Prefer higher error values if lower errors bubble to the same boundary
-
-      if (errors[boundaryMatch.route.id] == null) {
-        errors[boundaryMatch.route.id] = error;
-      } // Clear our any prior loaderData for the throwing route
-
-
-      loaderData[id] = undefined; // Once we find our first (highest) error, we set the status code and
-      // prevent deeper status codes from overriding
-
-      if (!foundError) {
-        foundError = true;
-        statusCode = isRouteErrorResponse(result.error) ? result.error.status : 500;
-      }
-
-      if (result.headers) {
-        loaderHeaders[id] = result.headers;
-      }
-    } else {
-      if (isDeferredResult(result)) {
-        activeDeferreds.set(id, result.deferredData);
-        loaderData[id] = result.deferredData.data;
-      } else {
-        loaderData[id] = result.data;
-      } // Error status codes always override success status codes, but if all
-      // loaders are successful we take the deepest status code.
-
-
-      if (result.statusCode != null && result.statusCode !== 200 && !foundError) {
-        statusCode = result.statusCode;
-      }
-
-      if (result.headers) {
-        loaderHeaders[id] = result.headers;
-      }
-    }
-  }); // If we didn't consume the pending action error (i.e., all loaders
-  // resolved), then consume it here.  Also clear out any loaderData for the
-  // throwing route
-
-  if (pendingError) {
-    errors = pendingError;
-    loaderData[Object.keys(pendingError)[0]] = undefined;
-  }
-
-  return {
-    loaderData,
-    errors,
-    statusCode: statusCode || 200,
-    loaderHeaders
-  };
-}
-
-function processLoaderData(state, matches, matchesToLoad, results, pendingError, revalidatingFetchers, fetcherResults, activeDeferreds) {
-  let {
-    loaderData,
-    errors
-  } = processRouteLoaderData(matches, matchesToLoad, results, pendingError, activeDeferreds); // Process results from our revalidating fetchers
-
-  for (let index = 0; index < revalidatingFetchers.length; index++) {
-    let {
-      key,
-      match
-    } = revalidatingFetchers[index];
-    router_invariant(fetcherResults !== undefined && fetcherResults[index] !== undefined, "Did not find corresponding fetcher result");
-    let result = fetcherResults[index]; // Process fetcher non-redirect errors
-
-    if (isErrorResult(result)) {
-      let boundaryMatch = findNearestBoundary(state.matches, match.route.id);
-
-      if (!(errors && errors[boundaryMatch.route.id])) {
-        errors = router_extends({}, errors, {
-          [boundaryMatch.route.id]: result.error
-        });
-      }
-
-      state.fetchers.delete(key);
-    } else if (isRedirectResult(result)) {
-      // Should never get here, redirects should get processed above, but we
-      // keep this to type narrow to a success result in the else
-      router_invariant(false, "Unhandled fetcher revalidation redirect");
-    } else if (isDeferredResult(result)) {
-      // Should never get here, deferred data should be awaited for fetchers
-      // in resolveDeferredResults
-      router_invariant(false, "Unhandled fetcher deferred data");
-    } else {
-      let doneFetcher = {
-        state: "idle",
-        data: result.data,
-        formMethod: undefined,
-        formAction: undefined,
-        formEncType: undefined,
-        formData: undefined,
-        " _hasFetcherDoneAnything ": true
-      };
-      state.fetchers.set(key, doneFetcher);
-    }
-  }
-
-  return {
-    loaderData,
-    errors
-  };
-}
-
-function mergeLoaderData(loaderData, newLoaderData, matches, errors) {
-  let mergedLoaderData = router_extends({}, newLoaderData);
-
-  for (let match of matches) {
-    let id = match.route.id;
-
-    if (newLoaderData.hasOwnProperty(id)) {
-      if (newLoaderData[id] !== undefined) {
-        mergedLoaderData[id] = newLoaderData[id];
-      }
-    } else if (loaderData[id] !== undefined) {
-      mergedLoaderData[id] = loaderData[id];
-    }
-
-    if (errors && errors.hasOwnProperty(id)) {
-      // Don't keep any loader data below the boundary
-      break;
-    }
-  }
-
-  return mergedLoaderData;
-} // Find the nearest error boundary, looking upwards from the leaf route (or the
-// route specified by routeId) for the closest ancestor error boundary,
-// defaulting to the root match
-
-
-function findNearestBoundary(matches, routeId) {
-  let eligibleMatches = routeId ? matches.slice(0, matches.findIndex(m => m.route.id === routeId) + 1) : [...matches];
-  return eligibleMatches.reverse().find(m => m.route.hasErrorBoundary === true) || matches[0];
-}
-
-function getShortCircuitMatches(routes) {
-  // Prefer a root layout route if present, otherwise shim in a route object
-  let route = routes.find(r => r.index || !r.path || r.path === "/") || {
-    id: "__shim-error-route__"
-  };
-  return {
-    matches: [{
-      params: {},
-      pathname: "",
-      pathnameBase: "",
-      route
-    }],
-    route
-  };
-}
-
-function getInternalRouterError(status, _temp4) {
-  let {
-    pathname,
-    routeId,
-    method,
-    type
-  } = _temp4 === void 0 ? {} : _temp4;
-  let statusText = "Unknown Server Error";
-  let errorMessage = "Unknown @remix-run/router error";
-
-  if (status === 400) {
-    statusText = "Bad Request";
-
-    if (method && pathname && routeId) {
-      errorMessage = "You made a " + method + " request to \"" + pathname + "\" but " + ("did not provide a `loader` for route \"" + routeId + "\", ") + "so there is no way to handle the request.";
-    } else if (type === "defer-action") {
-      errorMessage = "defer() is not supported in actions";
-    }
-  } else if (status === 403) {
-    statusText = "Forbidden";
-    errorMessage = "Route \"" + routeId + "\" does not match URL \"" + pathname + "\"";
-  } else if (status === 404) {
-    statusText = "Not Found";
-    errorMessage = "No route matches URL \"" + pathname + "\"";
-  } else if (status === 405) {
-    statusText = "Method Not Allowed";
-
-    if (method && pathname && routeId) {
-      errorMessage = "You made a " + method.toUpperCase() + " request to \"" + pathname + "\" but " + ("did not provide an `action` for route \"" + routeId + "\", ") + "so there is no way to handle the request.";
-    } else if (method) {
-      errorMessage = "Invalid request method \"" + method.toUpperCase() + "\"";
-    }
-  }
-
-  return new router_ErrorResponse(status || 500, statusText, new Error(errorMessage), true);
-} // Find any returned redirect errors, starting from the lowest match
-
-
-function findRedirect(results) {
-  for (let i = results.length - 1; i >= 0; i--) {
-    let result = results[i];
-
-    if (isRedirectResult(result)) {
-      return result;
-    }
-  }
-}
-
-function stripHashFromPath(path) {
-  let parsedPath = typeof path === "string" ? parsePath(path) : path;
-  return router_createPath(router_extends({}, parsedPath, {
-    hash: ""
-  }));
-}
-
-function isHashChangeOnly(a, b) {
-  return a.pathname === b.pathname && a.search === b.search && a.hash !== b.hash;
-}
-
-function isDeferredResult(result) {
-  return result.type === ResultType.deferred;
-}
-
-function isErrorResult(result) {
-  return result.type === ResultType.error;
-}
-
-function isRedirectResult(result) {
-  return (result && result.type) === ResultType.redirect;
-}
-
-function isResponse(value) {
-  return value != null && typeof value.status === "number" && typeof value.statusText === "string" && typeof value.headers === "object" && typeof value.body !== "undefined";
-}
-
-function isRedirectResponse(result) {
-  if (!isResponse(result)) {
-    return false;
-  }
-
-  let status = result.status;
-  let location = result.headers.get("Location");
-  return status >= 300 && status <= 399 && location != null;
-}
-
-function isQueryRouteResponse(obj) {
-  return obj && isResponse(obj.response) && (obj.type === ResultType.data || ResultType.error);
-}
-
-function isValidMethod(method) {
-  return validRequestMethods.has(method);
-}
-
-function isMutationMethod(method) {
-  return validMutationMethods.has(method);
-}
-
-async function resolveDeferredResults(currentMatches, matchesToLoad, results, signal, isFetcher, currentLoaderData) {
-  for (let index = 0; index < results.length; index++) {
-    let result = results[index];
-    let match = matchesToLoad[index];
-    let currentMatch = currentMatches.find(m => m.route.id === match.route.id);
-    let isRevalidatingLoader = currentMatch != null && !isNewRouteInstance(currentMatch, match) && (currentLoaderData && currentLoaderData[match.route.id]) !== undefined;
-
-    if (isDeferredResult(result) && (isFetcher || isRevalidatingLoader)) {
-      // Note: we do not have to touch activeDeferreds here since we race them
-      // against the signal in resolveDeferredData and they'll get aborted
-      // there if needed
-      await resolveDeferredData(result, signal, isFetcher).then(result => {
-        if (result) {
-          results[index] = result || results[index];
-        }
-      });
-    }
-  }
-}
-
-async function resolveDeferredData(result, signal, unwrap) {
-  if (unwrap === void 0) {
-    unwrap = false;
-  }
-
-  let aborted = await result.deferredData.resolveData(signal);
-
-  if (aborted) {
-    return;
-  }
-
-  if (unwrap) {
-    try {
-      return {
-        type: ResultType.data,
-        data: result.deferredData.unwrappedData
-      };
-    } catch (e) {
-      // Handle any TrackedPromise._error values encountered while unwrapping
-      return {
-        type: ResultType.error,
-        error: e
-      };
-    }
-  }
-
-  return {
-    type: ResultType.data,
-    data: result.deferredData.data
-  };
-}
-
-function hasNakedIndexQuery(search) {
-  return new URLSearchParams(search).getAll("index").some(v => v === "");
-} // Note: This should match the format exported by useMatches, so if you change
-// this please also change that :)  Eventually we'll DRY this up
-
-
-function createUseMatchesMatch(match, loaderData) {
-  let {
-    route,
-    pathname,
-    params
-  } = match;
-  return {
-    id: route.id,
-    pathname,
-    params,
-    data: loaderData[route.id],
-    handle: route.handle
-  };
-}
-
-function getTargetMatch(matches, location) {
-  let search = typeof location === "string" ? parsePath(location).search : location.search;
-
-  if (matches[matches.length - 1].route.index && hasNakedIndexQuery(search || "")) {
-    // Return the leaf index route when index is present
-    return matches[matches.length - 1];
-  } // Otherwise grab the deepest "path contributing" match (ignoring index and
-  // pathless layout routes)
-
-
-  let pathMatches = getPathContributingMatches(matches);
-  return pathMatches[pathMatches.length - 1];
-} //#endregion
-
-
-//# sourceMappingURL=router.js.map
-
-;// CONCATENATED MODULE: ./node_modules/react-router/dist/index.js
-/**
- * React Router v6.8.0
- *
- * Copyright (c) Remix Software Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.md file in the root directory of this source tree.
- *
- * @license MIT
- */
-
-
-
-
-function dist_extends() {
-  dist_extends = Object.assign ? Object.assign.bind() : function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
-
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-
-    return target;
-  };
-  return dist_extends.apply(this, arguments);
-}
-
-/**
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-/**
- * inlined Object.is polyfill to avoid requiring consumers ship their own
- * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is
- */
-
-function isPolyfill(x, y) {
-  return x === y && (x !== 0 || 1 / x === 1 / y) || x !== x && y !== y // eslint-disable-line no-self-compare
-  ;
-}
-
-const is = typeof Object.is === "function" ? Object.is : isPolyfill; // Intentionally not using named imports because Rollup uses dynamic
-// dispatch for CommonJS interop named imports.
-
-const {
-  useState,
-  useEffect,
-  useLayoutEffect,
-  useDebugValue
-} = react_namespaceObject;
-let didWarnOld18Alpha = false;
-let didWarnUncachedGetSnapshot = false; // Disclaimer: This shim breaks many of the rules of React, and only works
-// because of a very particular set of implementation details and assumptions
-// -- change any one of them and it will break. The most important assumption
-// is that updates are always synchronous, because concurrent rendering is
-// only available in versions of React that also have a built-in
-// useSyncExternalStore API. And we only use this shim when the built-in API
-// does not exist.
-//
-// Do not assume that the clever hacks used by this hook also work in general.
-// The point of this shim is to replace the need for hacks by other libraries.
-
-function useSyncExternalStore$2(subscribe, getSnapshot, // Note: The shim does not use getServerSnapshot, because pre-18 versions of
-// React do not expose a way to check if we're hydrating. So users of the shim
-// will need to track that themselves and return the correct value
-// from `getSnapshot`.
-getServerSnapshot) {
-  if (false) {} // Read the current snapshot from the store on every render. Again, this
-  // breaks the rules of React, and only works here because of specific
-  // implementation details, most importantly that updates are
-  // always synchronous.
-
-
-  const value = getSnapshot();
-
-  if (false) {} // Because updates are synchronous, we don't queue them. Instead we force a
-  // re-render whenever the subscribed state changes by updating an some
-  // arbitrary useState hook. Then, during render, we call getSnapshot to read
-  // the current value.
-  //
-  // Because we don't actually use the state returned by the useState hook, we
-  // can save a bit of memory by storing other stuff in that slot.
-  //
-  // To implement the early bailout, we need to track some things on a mutable
-  // object. Usually, we would put that in a useRef hook, but we can stash it in
-  // our useState hook instead.
-  //
-  // To force a re-render, we call forceUpdate({inst}). That works because the
-  // new object always fails an equality check.
-
-
-  const [{
-    inst
-  }, forceUpdate] = useState({
-    inst: {
-      value,
-      getSnapshot
-    }
-  }); // Track the latest getSnapshot function with a ref. This needs to be updated
-  // in the layout phase so we can access it during the tearing check that
-  // happens on subscribe.
-
-  useLayoutEffect(() => {
-    inst.value = value;
-    inst.getSnapshot = getSnapshot; // Whenever getSnapshot or subscribe changes, we need to check in the
-    // commit phase if there was an interleaved mutation. In concurrent mode
-    // this can happen all the time, but even in synchronous mode, an earlier
-    // effect may have mutated the store.
-
-    if (checkIfSnapshotChanged(inst)) {
-      // Force a re-render.
-      forceUpdate({
-        inst
-      });
-    } // eslint-disable-next-line react-hooks/exhaustive-deps
-
-  }, [subscribe, value, getSnapshot]);
-  useEffect(() => {
-    // Check for changes right before subscribing. Subsequent changes will be
-    // detected in the subscription handler.
-    if (checkIfSnapshotChanged(inst)) {
-      // Force a re-render.
-      forceUpdate({
-        inst
-      });
-    }
-
-    const handleStoreChange = () => {
-      // TODO: Because there is no cross-renderer API for batching updates, it's
-      // up to the consumer of this library to wrap their subscription event
-      // with unstable_batchedUpdates. Should we try to detect when this isn't
-      // the case and print a warning in development?
-      // The store changed. Check if the snapshot changed since the last time we
-      // read from the store.
-      if (checkIfSnapshotChanged(inst)) {
-        // Force a re-render.
-        forceUpdate({
-          inst
-        });
-      }
-    }; // Subscribe to the store and return a clean-up function.
-
-
-    return subscribe(handleStoreChange); // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [subscribe]);
-  useDebugValue(value);
-  return value;
-}
-
-function checkIfSnapshotChanged(inst) {
-  const latestGetSnapshot = inst.getSnapshot;
-  const prevValue = inst.value;
-
-  try {
-    const nextValue = latestGetSnapshot();
-    return !is(prevValue, nextValue);
-  } catch (error) {
-    return true;
-  }
-}
-
-/**
- * Copyright (c) Facebook, Inc. and its affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- * @flow
- */
-function useSyncExternalStore$1(subscribe, getSnapshot, getServerSnapshot) {
-  // Note: The shim does not use getServerSnapshot, because pre-18 versions of
-  // React do not expose a way to check if we're hydrating. So users of the shim
-  // will need to track that themselves and return the correct value
-  // from `getSnapshot`.
-  return getSnapshot();
-}
-
-/**
- * Inlined into the react-router repo since use-sync-external-store does not
- * provide a UMD-compatible package, so we need this to be able to distribute
- * UMD react-router bundles
- */
-const canUseDOM = !!(typeof window !== "undefined" && typeof window.document !== "undefined" && typeof window.document.createElement !== "undefined");
-const isServerEnvironment = !canUseDOM;
-const shim = isServerEnvironment ? useSyncExternalStore$1 : useSyncExternalStore$2;
-const useSyncExternalStore =  false ? (module => module.useSyncExternalStore)(react_namespaceObject) : shim;
-
-const DataRouterContext = /*#__PURE__*/react.createContext(null);
-
-if (false) {}
-
-const DataRouterStateContext = /*#__PURE__*/react.createContext(null);
-
-if (false) {}
-
-const AwaitContext = /*#__PURE__*/(/* unused pure expression or super */ null && (React.createContext(null)));
-
-if (false) {}
-
-const NavigationContext = /*#__PURE__*/react.createContext(null);
-
-if (false) {}
-
-const LocationContext = /*#__PURE__*/react.createContext(null);
-
-if (false) {}
-
-const RouteContext = /*#__PURE__*/react.createContext({
-  outlet: null,
-  matches: []
-});
-
-if (false) {}
-
-const RouteErrorContext = /*#__PURE__*/react.createContext(null);
-
-if (false) {}
+const normalizeHash = hash => !hash || hash === "#" ? "" : hash.startsWith("#") ? hash : "#" + hash;
 
 /**
  * Returns the full href for the given "to" value. This is useful for building
  * custom links that are also accessible and preserve right-click behavior.
  *
- * @see https://reactrouter.com/hooks/use-href
+ * @see https://reactrouter.com/docs/en/v6/api#usehref
  */
 
-function useHref(to, _temp) {
-  let {
-    relative
-  } = _temp === void 0 ? {} : _temp;
-  !useInRouterContext() ?  false ? 0 : router_invariant(false) : void 0;
+function useHref(to) {
+  !useInRouterContext() ?  false ? 0 : invariant(false) : void 0;
   let {
     basename,
     navigator
-  } = react.useContext(NavigationContext);
+  } = (0,react.useContext)(NavigationContext);
   let {
     hash,
     pathname,
     search
-  } = dist_useResolvedPath(to, {
-    relative
-  });
-  let joinedPathname = pathname; // If we're operating within a basename, prepend it to the pathname prior
-  // to creating the href.  If this is a root navigation, then just use the raw
-  // basename which allows the basename to have full control over the presence
-  // of a trailing slash on root links
+  } = react_router_useResolvedPath(to);
+  let joinedPathname = pathname;
 
   if (basename !== "/") {
-    joinedPathname = pathname === "/" ? basename : router_joinPaths([basename, pathname]);
+    let toPathname = getToPathname(to);
+    let endsWithSlash = toPathname != null && toPathname.endsWith("/");
+    joinedPathname = pathname === "/" ? basename + (endsWithSlash ? "/" : "") : joinPaths([basename, pathname]);
   }
 
   return navigator.createHref({
@@ -27055,11 +23934,11 @@ function useHref(to, _temp) {
 /**
  * Returns true if this component is a descendant of a <Router>.
  *
- * @see https://reactrouter.com/hooks/use-in-router-context
+ * @see https://reactrouter.com/docs/en/v6/api#useinroutercontext
  */
 
 function useInRouterContext() {
-  return react.useContext(LocationContext) != null;
+  return (0,react.useContext)(LocationContext) != null;
 }
 /**
  * Returns the current location object, which represents the current URL in web
@@ -27069,37 +23948,37 @@ function useInRouterContext() {
  * "routing" in your app, and we'd like to know what your use case is. We may
  * be able to provide something higher-level to better suit your needs.
  *
- * @see https://reactrouter.com/hooks/use-location
+ * @see https://reactrouter.com/docs/en/v6/api#uselocation
  */
 
-function dist_useLocation() {
-  !useInRouterContext() ?  false ? 0 : router_invariant(false) : void 0;
-  return react.useContext(LocationContext).location;
+function react_router_useLocation() {
+  !useInRouterContext() ?  false ? 0 : invariant(false) : void 0;
+  return (0,react.useContext)(LocationContext).location;
 }
 /**
  * Returns the current navigation action which describes how the router came to
  * the current location, either by a pop, push, or replace on the history stack.
  *
- * @see https://reactrouter.com/hooks/use-navigation-type
+ * @see https://reactrouter.com/docs/en/v6/api#usenavigationtype
  */
 
 function useNavigationType() {
-  return React.useContext(LocationContext).navigationType;
+  return useContext(LocationContext).navigationType;
 }
 /**
- * Returns a PathMatch object if the given pattern matches the current URL.
+ * Returns true if the URL for the given "to" value matches the current URL.
  * This is useful for components that need to know "active" state, e.g.
  * <NavLink>.
  *
- * @see https://reactrouter.com/hooks/use-match
+ * @see https://reactrouter.com/docs/en/v6/api#usematch
  */
 
 function useMatch(pattern) {
   !useInRouterContext() ?  false ? 0 : invariant(false) : void 0;
   let {
     pathname
-  } = dist_useLocation();
-  return React.useMemo(() => matchPath(pattern, pathname), [pathname, pattern]);
+  } = react_router_useLocation();
+  return useMemo(() => matchPath(pattern, pathname), [pathname, pattern]);
 }
 /**
  * The interface for the navigate() function returned from useNavigate().
@@ -27109,26 +23988,26 @@ function useMatch(pattern) {
  * Returns an imperative method for changing the location. Used by <Link>s, but
  * may also be used by other elements to change the location.
  *
- * @see https://reactrouter.com/hooks/use-navigate
+ * @see https://reactrouter.com/docs/en/v6/api#usenavigate
  */
-function dist_useNavigate() {
-  !useInRouterContext() ?  false ? 0 : router_invariant(false) : void 0;
+function react_router_useNavigate() {
+  !useInRouterContext() ?  false ? 0 : invariant(false) : void 0;
   let {
     basename,
     navigator
-  } = react.useContext(NavigationContext);
+  } = (0,react.useContext)(NavigationContext);
   let {
     matches
-  } = react.useContext(RouteContext);
+  } = (0,react.useContext)(RouteContext);
   let {
     pathname: locationPathname
-  } = dist_useLocation();
-  let routePathnamesJson = JSON.stringify(getPathContributingMatches(matches).map(match => match.pathnameBase));
-  let activeRef = react.useRef(false);
-  react.useEffect(() => {
+  } = react_router_useLocation();
+  let routePathnamesJson = JSON.stringify(matches.map(match => match.pathnameBase));
+  let activeRef = (0,react.useRef)(false);
+  (0,react.useEffect)(() => {
     activeRef.current = true;
   });
-  let navigate = react.useCallback(function (to, options) {
+  let navigate = (0,react.useCallback)(function (to, options) {
     if (options === void 0) {
       options = {};
     }
@@ -27141,41 +24020,38 @@ function dist_useNavigate() {
       return;
     }
 
-    let path = resolveTo(to, JSON.parse(routePathnamesJson), locationPathname, options.relative === "path"); // If we're operating within a basename, prepend it to the pathname prior
-    // to handing off to history.  If this is a root navigation, then we
-    // navigate to the raw basename which allows the basename to have full
-    // control over the presence of a trailing slash on root links
+    let path = resolveTo(to, JSON.parse(routePathnamesJson), locationPathname);
 
     if (basename !== "/") {
-      path.pathname = path.pathname === "/" ? basename : router_joinPaths([basename, path.pathname]);
+      path.pathname = joinPaths([basename, path.pathname]);
     }
 
-    (!!options.replace ? navigator.replace : navigator.push)(path, options.state, options);
+    (!!options.replace ? navigator.replace : navigator.push)(path, options.state);
   }, [basename, navigator, routePathnamesJson, locationPathname]);
   return navigate;
 }
-const OutletContext = /*#__PURE__*/(/* unused pure expression or super */ null && (React.createContext(null)));
+const OutletContext = /*#__PURE__*/(/* unused pure expression or super */ null && (createContext(null)));
 /**
  * Returns the context (if provided) for the child route at this level of the route
  * hierarchy.
- * @see https://reactrouter.com/hooks/use-outlet-context
+ * @see https://reactrouter.com/docs/en/v6/api#useoutletcontext
  */
 
 function useOutletContext() {
-  return React.useContext(OutletContext);
+  return useContext(OutletContext);
 }
 /**
  * Returns the element for the child route at this level of the route
  * hierarchy. Used internally by <Outlet> to render child routes.
  *
- * @see https://reactrouter.com/hooks/use-outlet
+ * @see https://reactrouter.com/docs/en/v6/api#useoutlet
  */
 
 function useOutlet(context) {
-  let outlet = React.useContext(RouteContext).outlet;
+  let outlet = useContext(RouteContext).outlet;
 
   if (outlet) {
-    return /*#__PURE__*/React.createElement(OutletContext.Provider, {
+    return /*#__PURE__*/createElement(OutletContext.Provider, {
       value: context
     }, outlet);
   }
@@ -27186,34 +24062,31 @@ function useOutlet(context) {
  * Returns an object of key/value pairs of the dynamic params from the current
  * URL that were matched by the route path.
  *
- * @see https://reactrouter.com/hooks/use-params
+ * @see https://reactrouter.com/docs/en/v6/api#useparams
  */
 
 function useParams() {
   let {
     matches
-  } = React.useContext(RouteContext);
+  } = useContext(RouteContext);
   let routeMatch = matches[matches.length - 1];
   return routeMatch ? routeMatch.params : {};
 }
 /**
  * Resolves the pathname of the given `to` value against the current location.
  *
- * @see https://reactrouter.com/hooks/use-resolved-path
+ * @see https://reactrouter.com/docs/en/v6/api#useresolvedpath
  */
 
-function dist_useResolvedPath(to, _temp2) {
-  let {
-    relative
-  } = _temp2 === void 0 ? {} : _temp2;
+function react_router_useResolvedPath(to) {
   let {
     matches
-  } = react.useContext(RouteContext);
+  } = (0,react.useContext)(RouteContext);
   let {
     pathname: locationPathname
-  } = dist_useLocation();
-  let routePathnamesJson = JSON.stringify(getPathContributingMatches(matches).map(match => match.pathnameBase));
-  return react.useMemo(() => resolveTo(to, JSON.parse(routePathnamesJson), locationPathname, relative === "path"), [to, routePathnamesJson, locationPathname, relative]);
+  } = react_router_useLocation();
+  let routePathnamesJson = JSON.stringify(matches.map(match => match.pathnameBase));
+  return (0,react.useMemo)(() => resolveTo(to, JSON.parse(routePathnamesJson), locationPathname), [to, routePathnamesJson, locationPathname]);
 }
 /**
  * Returns the element of the route that matched the current location, prepared
@@ -27221,18 +24094,14 @@ function dist_useResolvedPath(to, _temp2) {
  * elements in the tree must render an <Outlet> to render their child route's
  * element.
  *
- * @see https://reactrouter.com/hooks/use-routes
+ * @see https://reactrouter.com/docs/en/v6/api#useroutes
  */
 
 function useRoutes(routes, locationArg) {
-  !useInRouterContext() ?  false ? 0 : router_invariant(false) : void 0;
-  let {
-    navigator
-  } = react.useContext(NavigationContext);
-  let dataRouterStateContext = react.useContext(DataRouterStateContext);
+  !useInRouterContext() ?  false ? 0 : invariant(false) : void 0;
   let {
     matches: parentMatches
-  } = react.useContext(RouteContext);
+  } = (0,react.useContext)(RouteContext);
   let routeMatch = parentMatches[parentMatches.length - 1];
   let parentParams = routeMatch ? routeMatch.params : {};
   let parentPathname = routeMatch ? routeMatch.pathname : "/";
@@ -27241,14 +24110,14 @@ function useRoutes(routes, locationArg) {
 
   if (false) {}
 
-  let locationFromContext = dist_useLocation();
+  let locationFromContext = react_router_useLocation();
   let location;
 
   if (locationArg) {
     var _parsedLocationArg$pa;
 
     let parsedLocationArg = typeof locationArg === "string" ? parsePath(locationArg) : locationArg;
-    !(parentPathnameBase === "/" || ((_parsedLocationArg$pa = parsedLocationArg.pathname) == null ? void 0 : _parsedLocationArg$pa.startsWith(parentPathnameBase))) ?  false ? 0 : router_invariant(false) : void 0;
+    !(parentPathnameBase === "/" || ((_parsedLocationArg$pa = parsedLocationArg.pathname) == null ? void 0 : _parsedLocationArg$pa.startsWith(parentPathnameBase))) ?  false ? 0 : invariant(false) : void 0;
     location = parsedLocationArg;
   } else {
     location = locationFromContext;
@@ -27262,470 +24131,57 @@ function useRoutes(routes, locationArg) {
 
   if (false) {}
 
-  let renderedMatches = _renderMatches(matches && matches.map(match => Object.assign({}, match, {
+  return _renderMatches(matches && matches.map(match => Object.assign({}, match, {
     params: Object.assign({}, parentParams, match.params),
-    pathname: router_joinPaths([parentPathnameBase, // Re-encode pathnames that were decoded inside matchRoutes
-    navigator.encodeLocation ? navigator.encodeLocation(match.pathname).pathname : match.pathname]),
-    pathnameBase: match.pathnameBase === "/" ? parentPathnameBase : router_joinPaths([parentPathnameBase, // Re-encode pathnames that were decoded inside matchRoutes
-    navigator.encodeLocation ? navigator.encodeLocation(match.pathnameBase).pathname : match.pathnameBase])
-  })), parentMatches, dataRouterStateContext || undefined); // When a user passes in a `locationArg`, the associated routes need to
-  // be wrapped in a new `LocationContext.Provider` in order for `useLocation`
-  // to use the scoped location instead of the global location.
-
-
-  if (locationArg && renderedMatches) {
-    return /*#__PURE__*/react.createElement(LocationContext.Provider, {
-      value: {
-        location: dist_extends({
-          pathname: "/",
-          search: "",
-          hash: "",
-          state: null,
-          key: "default"
-        }, location),
-        navigationType: Action.Pop
-      }
-    }, renderedMatches);
-  }
-
-  return renderedMatches;
+    pathname: joinPaths([parentPathnameBase, match.pathname]),
+    pathnameBase: match.pathnameBase === "/" ? parentPathnameBase : joinPaths([parentPathnameBase, match.pathnameBase])
+  })), parentMatches);
 }
-
-function DefaultErrorElement() {
-  let error = useRouteError();
-  let message = isRouteErrorResponse(error) ? error.status + " " + error.statusText : error instanceof Error ? error.message : JSON.stringify(error);
-  let stack = error instanceof Error ? error.stack : null;
-  let lightgrey = "rgba(200,200,200, 0.5)";
-  let preStyles = {
-    padding: "0.5rem",
-    backgroundColor: lightgrey
-  };
-  let codeStyles = {
-    padding: "2px 4px",
-    backgroundColor: lightgrey
-  };
-  let devInfo = null;
-
-  if (false) {}
-
-  return /*#__PURE__*/react.createElement(react.Fragment, null, /*#__PURE__*/react.createElement("h2", null, "Unexpected Application Error!"), /*#__PURE__*/react.createElement("h3", {
-    style: {
-      fontStyle: "italic"
-    }
-  }, message), stack ? /*#__PURE__*/react.createElement("pre", {
-    style: preStyles
-  }, stack) : null, devInfo);
-}
-
-class RenderErrorBoundary extends react.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      location: props.location,
-      error: props.error
-    };
-  }
-
-  static getDerivedStateFromError(error) {
-    return {
-      error: error
-    };
-  }
-
-  static getDerivedStateFromProps(props, state) {
-    // When we get into an error state, the user will likely click "back" to the
-    // previous page that didn't have an error. Because this wraps the entire
-    // application, that will have no effect--the error page continues to display.
-    // This gives us a mechanism to recover from the error when the location changes.
-    //
-    // Whether we're in an error state or not, we update the location in state
-    // so that when we are in an error state, it gets reset when a new location
-    // comes in and the user recovers from the error.
-    if (state.location !== props.location) {
-      return {
-        error: props.error,
-        location: props.location
-      };
-    } // If we're not changing locations, preserve the location but still surface
-    // any new errors that may come through. We retain the existing error, we do
-    // this because the error provided from the app state may be cleared without
-    // the location changing.
-
-
-    return {
-      error: props.error || state.error,
-      location: state.location
-    };
-  }
-
-  componentDidCatch(error, errorInfo) {
-    console.error("React Router caught the following error during render", error, errorInfo);
-  }
-
-  render() {
-    return this.state.error ? /*#__PURE__*/react.createElement(RouteContext.Provider, {
-      value: this.props.routeContext
-    }, /*#__PURE__*/react.createElement(RouteErrorContext.Provider, {
-      value: this.state.error,
-      children: this.props.component
-    })) : this.props.children;
-  }
-
-}
-
-function RenderedRoute(_ref) {
-  let {
-    routeContext,
-    match,
-    children
-  } = _ref;
-  let dataRouterContext = react.useContext(DataRouterContext); // Track how deep we got in our render pass to emulate SSR componentDidCatch
-  // in a DataStaticRouter
-
-  if (dataRouterContext && dataRouterContext.static && dataRouterContext.staticContext && match.route.errorElement) {
-    dataRouterContext.staticContext._deepestRenderedBoundaryId = match.route.id;
-  }
-
-  return /*#__PURE__*/react.createElement(RouteContext.Provider, {
-    value: routeContext
-  }, children);
-}
-
-function _renderMatches(matches, parentMatches, dataRouterState) {
+function _renderMatches(matches, parentMatches) {
   if (parentMatches === void 0) {
     parentMatches = [];
   }
 
-  if (matches == null) {
-    if (dataRouterState != null && dataRouterState.errors) {
-      // Don't bail if we have data router errors so we can render them in the
-      // boundary.  Use the pre-matched (or shimmed) matches
-      matches = dataRouterState.matches;
-    } else {
-      return null;
-    }
-  }
-
-  let renderedMatches = matches; // If we have data errors, trim matches to the highest error boundary
-
-  let errors = dataRouterState == null ? void 0 : dataRouterState.errors;
-
-  if (errors != null) {
-    let errorIndex = renderedMatches.findIndex(m => m.route.id && (errors == null ? void 0 : errors[m.route.id]));
-    !(errorIndex >= 0) ?  false ? 0 : router_invariant(false) : void 0;
-    renderedMatches = renderedMatches.slice(0, Math.min(renderedMatches.length, errorIndex + 1));
-  }
-
-  return renderedMatches.reduceRight((outlet, match, index) => {
-    let error = match.route.id ? errors == null ? void 0 : errors[match.route.id] : null; // Only data routers handle errors
-
-    let errorElement = dataRouterState ? match.route.errorElement || /*#__PURE__*/react.createElement(DefaultErrorElement, null) : null;
-    let matches = parentMatches.concat(renderedMatches.slice(0, index + 1));
-
-    let getChildren = () => /*#__PURE__*/react.createElement(RenderedRoute, {
-      match: match,
-      routeContext: {
+  if (matches == null) return null;
+  return matches.reduceRight((outlet, match, index) => {
+    return /*#__PURE__*/(0,react.createElement)(RouteContext.Provider, {
+      children: match.route.element !== undefined ? match.route.element : outlet,
+      value: {
         outlet,
-        matches
+        matches: parentMatches.concat(matches.slice(0, index + 1))
       }
-    }, error ? errorElement : match.route.element !== undefined ? match.route.element : outlet); // Only wrap in an error boundary within data router usages when we have an
-    // errorElement on this route.  Otherwise let it bubble up to an ancestor
-    // errorElement
-
-
-    return dataRouterState && (match.route.errorElement || index === 0) ? /*#__PURE__*/react.createElement(RenderErrorBoundary, {
-      location: dataRouterState.location,
-      component: errorElement,
-      error: error,
-      children: getChildren(),
-      routeContext: {
-        outlet: null,
-        matches
-      }
-    }) : getChildren();
+    });
   }, null);
-}
-var DataRouterHook;
-
-(function (DataRouterHook) {
-  DataRouterHook["UseBlocker"] = "useBlocker";
-  DataRouterHook["UseRevalidator"] = "useRevalidator";
-})(DataRouterHook || (DataRouterHook = {}));
-
-var DataRouterStateHook;
-
-(function (DataRouterStateHook) {
-  DataRouterStateHook["UseLoaderData"] = "useLoaderData";
-  DataRouterStateHook["UseActionData"] = "useActionData";
-  DataRouterStateHook["UseRouteError"] = "useRouteError";
-  DataRouterStateHook["UseNavigation"] = "useNavigation";
-  DataRouterStateHook["UseRouteLoaderData"] = "useRouteLoaderData";
-  DataRouterStateHook["UseMatches"] = "useMatches";
-  DataRouterStateHook["UseRevalidator"] = "useRevalidator";
-})(DataRouterStateHook || (DataRouterStateHook = {}));
-
-function getDataRouterConsoleError(hookName) {
-  return hookName + " must be used within a data router.  See https://reactrouter.com/routers/picking-a-router.";
-}
-
-function useDataRouterContext(hookName) {
-  let ctx = React.useContext(DataRouterContext);
-  !ctx ?  false ? 0 : invariant(false) : void 0;
-  return ctx;
-}
-
-function useDataRouterState(hookName) {
-  let state = react.useContext(DataRouterStateContext);
-  !state ?  false ? 0 : router_invariant(false) : void 0;
-  return state;
-}
-
-function useRouteContext(hookName) {
-  let route = react.useContext(RouteContext);
-  !route ?  false ? 0 : router_invariant(false) : void 0;
-  return route;
-}
-
-function useCurrentRouteId(hookName) {
-  let route = useRouteContext(hookName);
-  let thisRoute = route.matches[route.matches.length - 1];
-  !thisRoute.route.id ?  false ? 0 : router_invariant(false) : void 0;
-  return thisRoute.route.id;
-}
-/**
- * Returns the current navigation, defaulting to an "idle" navigation when
- * no navigation is in progress
- */
-
-
-function dist_useNavigation() {
-  let state = useDataRouterState(DataRouterStateHook.UseNavigation);
-  return state.navigation;
-}
-/**
- * Returns a revalidate function for manually triggering revalidation, as well
- * as the current state of any manual revalidations
- */
-
-function useRevalidator() {
-  let dataRouterContext = useDataRouterContext(DataRouterHook.UseRevalidator);
-  let state = useDataRouterState(DataRouterStateHook.UseRevalidator);
-  return {
-    revalidate: dataRouterContext.router.revalidate,
-    state: state.revalidation
-  };
-}
-/**
- * Returns the active route matches, useful for accessing loaderData for
- * parent/child routes or the route "handle" property
- */
-
-function dist_useMatches() {
-  let {
-    matches,
-    loaderData
-  } = useDataRouterState(DataRouterStateHook.UseMatches);
-  return React.useMemo(() => matches.map(match => {
-    let {
-      pathname,
-      params
-    } = match; // Note: This structure matches that created by createUseMatchesMatch
-    // in the @remix-run/router , so if you change this please also change
-    // that :)  Eventually we'll DRY this up
-
-    return {
-      id: match.route.id,
-      pathname,
-      params,
-      data: loaderData[match.route.id],
-      handle: match.route.handle
-    };
-  }), [matches, loaderData]);
-}
-/**
- * Returns the loader data for the nearest ancestor Route loader
- */
-
-function useLoaderData() {
-  let state = useDataRouterState(DataRouterStateHook.UseLoaderData);
-  let routeId = useCurrentRouteId(DataRouterStateHook.UseLoaderData);
-
-  if (state.errors && state.errors[routeId] != null) {
-    console.error("You cannot `useLoaderData` in an errorElement (routeId: " + routeId + ")");
-    return undefined;
-  }
-
-  return state.loaderData[routeId];
-}
-/**
- * Returns the loaderData for the given routeId
- */
-
-function useRouteLoaderData(routeId) {
-  let state = useDataRouterState(DataRouterStateHook.UseRouteLoaderData);
-  return state.loaderData[routeId];
-}
-/**
- * Returns the action data for the nearest ancestor Route action
- */
-
-function useActionData() {
-  let state = useDataRouterState(DataRouterStateHook.UseActionData);
-  let route = React.useContext(RouteContext);
-  !route ?  false ? 0 : invariant(false) : void 0;
-  return Object.values((state == null ? void 0 : state.actionData) || {})[0];
-}
-/**
- * Returns the nearest ancestor Route error, which could be a loader/action
- * error or a render error.  This is intended to be called from your
- * errorElement to display a proper error message.
- */
-
-function useRouteError() {
-  var _state$errors;
-
-  let error = react.useContext(RouteErrorContext);
-  let state = useDataRouterState(DataRouterStateHook.UseRouteError);
-  let routeId = useCurrentRouteId(DataRouterStateHook.UseRouteError); // If this was a render error, we put it in a RouteError context inside
-  // of RenderErrorBoundary
-
-  if (error) {
-    return error;
-  } // Otherwise look for errors from our data router state
-
-
-  return (_state$errors = state.errors) == null ? void 0 : _state$errors[routeId];
-}
-/**
- * Returns the happy-path data from the nearest ancestor <Await /> value
- */
-
-function useAsyncValue() {
-  let value = React.useContext(AwaitContext);
-  return value == null ? void 0 : value._data;
-}
-/**
- * Returns the error from the nearest ancestor <Await /> value
- */
-
-function useAsyncError() {
-  let value = React.useContext(AwaitContext);
-  return value == null ? void 0 : value._error;
-} // useBlocker() is a singleton for now since we don't have any compelling use
-// cases for multi-blocker yet
-
-let blockerKey = "blocker-singleton";
-/**
- * Allow the application to block navigations within the SPA and present the
- * user a confirmation dialog to confirm the navigation.  Mostly used to avoid
- * using half-filled form data.  This does not handle hard-reloads or
- * cross-origin navigations.
- */
-
-function useBlocker(shouldBlock) {
-  let {
-    router
-  } = useDataRouterContext(DataRouterHook.UseBlocker);
-  let blockerFunction = React.useCallback(args => {
-    return typeof shouldBlock === "function" ? !!shouldBlock(args) : !!shouldBlock;
-  }, [shouldBlock]);
-  let blocker = router.getBlocker(blockerKey, blockerFunction); // Cleanup on unmount
-
-  React.useEffect(() => () => router.deleteBlocker(blockerKey), [router]);
-  return blocker;
-}
-const alreadyWarned = {};
-
-function warningOnce(key, cond, message) {
-  if (!cond && !alreadyWarned[key]) {
-    alreadyWarned[key] = true;
-     false ? 0 : void 0;
-  }
-}
-
-/**
- * Given a Remix Router instance, render the appropriate UI
- */
-function RouterProvider(_ref) {
-  let {
-    fallbackElement,
-    router
-  } = _ref;
-  // Sync router state to our component state to force re-renders
-  let state = useSyncExternalStore(router.subscribe, () => router.state, // We have to provide this so React@18 doesn't complain during hydration,
-  // but we pass our serialized hydration data into the router so state here
-  // is already synced with what the server saw
-  () => router.state);
-  let navigator = React.useMemo(() => {
-    return {
-      createHref: router.createHref,
-      encodeLocation: router.encodeLocation,
-      go: n => router.navigate(n),
-      push: (to, state, opts) => router.navigate(to, {
-        state,
-        preventScrollReset: opts == null ? void 0 : opts.preventScrollReset
-      }),
-      replace: (to, state, opts) => router.navigate(to, {
-        replace: true,
-        state,
-        preventScrollReset: opts == null ? void 0 : opts.preventScrollReset
-      })
-    };
-  }, [router]);
-  let basename = router.basename || "/"; // The fragment and {null} here are important!  We need them to keep React 18's
-  // useId happy when we are server-rendering since we may have a <script> here
-  // containing the hydrated server-side staticContext (from StaticRouterProvider).
-  // useId relies on the component tree structure to generate deterministic id's
-  // so we need to ensure it remains the same on the client even though
-  // we don't need the <script> tag
-
-  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(DataRouterContext.Provider, {
-    value: {
-      router,
-      navigator,
-      static: false,
-      // Do we need this?
-      basename
-    }
-  }, /*#__PURE__*/React.createElement(DataRouterStateContext.Provider, {
-    value: state
-  }, /*#__PURE__*/React.createElement(dist_Router, {
-    basename: router.basename,
-    location: router.state.location,
-    navigationType: router.state.historyAction,
-    navigator: navigator
-  }, router.state.initialized ? /*#__PURE__*/React.createElement(Routes, null) : fallbackElement))), null);
 }
 
 /**
  * A <Router> that stores all entries in memory.
  *
- * @see https://reactrouter.com/router-components/memory-router
+ * @see https://reactrouter.com/docs/en/v6/api#memoryrouter
  */
-function MemoryRouter(_ref2) {
+function MemoryRouter(_ref) {
   let {
     basename,
     children,
     initialEntries,
     initialIndex
-  } = _ref2;
-  let historyRef = React.useRef();
+  } = _ref;
+  let historyRef = useRef();
 
   if (historyRef.current == null) {
     historyRef.current = createMemoryHistory({
       initialEntries,
-      initialIndex,
-      v5Compat: true
+      initialIndex
     });
   }
 
   let history = historyRef.current;
-  let [state, setState] = React.useState({
+  let [state, setState] = useState({
     action: history.action,
     location: history.location
   });
-  React.useLayoutEffect(() => history.listen(setState), [history]);
-  return /*#__PURE__*/React.createElement(dist_Router, {
+  useLayoutEffect(() => history.listen(setState), [history]);
+  return /*#__PURE__*/createElement(react_router_Router, {
     basename: basename,
     children: children,
     location: state.location,
@@ -27741,31 +24197,21 @@ function MemoryRouter(_ref2) {
  * able to use hooks. In functional components, we recommend you use the
  * `useNavigate` hook instead.
  *
- * @see https://reactrouter.com/components/navigate
+ * @see https://reactrouter.com/docs/en/v6/api#navigate
  */
-function Navigate(_ref3) {
+function Navigate(_ref2) {
   let {
     to,
     replace,
-    state,
-    relative
-  } = _ref3;
+    state
+  } = _ref2;
   !useInRouterContext() ?  false ? 0 : invariant(false) : void 0;
    false ? 0 : void 0;
-  let dataRouterState = React.useContext(DataRouterStateContext);
-  let navigate = dist_useNavigate();
-  React.useEffect(() => {
-    // Avoid kicking off multiple navigations if we're in the middle of a
-    // data-router navigation, since components get re-rendered when we enter
-    // a submitting/loading state
-    if (dataRouterState && dataRouterState.navigation.state !== "idle") {
-      return;
-    }
-
+  let navigate = react_router_useNavigate();
+  useEffect(() => {
     navigate(to, {
       replace,
-      state,
-      relative
+      state
     });
   });
   return null;
@@ -27774,7 +24220,7 @@ function Navigate(_ref3) {
 /**
  * Renders the child route's element, if there is one.
  *
- * @see https://reactrouter.com/components/outlet
+ * @see https://reactrouter.com/docs/en/v6/api#outlet
  */
 function Outlet(props) {
   return useOutlet(props.context);
@@ -27783,10 +24229,10 @@ function Outlet(props) {
 /**
  * Declares an element that should be rendered at a certain URL path.
  *
- * @see https://reactrouter.com/components/route
+ * @see https://reactrouter.com/docs/en/v6/api#route
  */
 function Route(_props) {
-   false ? 0 : router_invariant(false) ;
+    false ? 0 : invariant(false) ;
 }
 
 /**
@@ -27796,9 +24242,9 @@ function Route(_props) {
  * router that is more specific to your environment such as a <BrowserRouter>
  * in web browsers or a <StaticRouter> for server rendering.
  *
- * @see https://reactrouter.com/router-components/router
+ * @see https://reactrouter.com/docs/en/v6/api#router
  */
-function dist_Router(_ref4) {
+function react_router_Router(_ref3) {
   let {
     basename: basenameProp = "/",
     children = null,
@@ -27806,12 +24252,10 @@ function dist_Router(_ref4) {
     navigationType = Action.Pop,
     navigator,
     static: staticProp = false
-  } = _ref4;
-  !!useInRouterContext() ?  false ? 0 : router_invariant(false) : void 0; // Preserve trailing slashes on basename, so we can let the user control
-  // the enforcement of trailing slashes throughout the app
-
-  let basename = basenameProp.replace(/^\/*/, "/");
-  let navigationContext = react.useMemo(() => ({
+  } = _ref3;
+  !!useInRouterContext() ?  false ? 0 : invariant(false) : void 0;
+  let basename = normalizePathname(basenameProp);
+  let navigationContext = (0,react.useMemo)(() => ({
     basename,
     navigator,
     static: staticProp
@@ -27828,7 +24272,7 @@ function dist_Router(_ref4) {
     state = null,
     key = "default"
   } = locationProp;
-  let location = react.useMemo(() => {
+  let location = (0,react.useMemo)(() => {
     let trailingPathname = stripBasename(pathname, basename);
 
     if (trailingPathname == null) {
@@ -27849,9 +24293,9 @@ function dist_Router(_ref4) {
     return null;
   }
 
-  return /*#__PURE__*/react.createElement(NavigationContext.Provider, {
+  return /*#__PURE__*/(0,react.createElement)(NavigationContext.Provider, {
     value: navigationContext
-  }, /*#__PURE__*/react.createElement(LocationContext.Provider, {
+  }, /*#__PURE__*/(0,react.createElement)(LocationContext.Provider, {
     children: children,
     value: {
       location,
@@ -27864,156 +24308,14 @@ function dist_Router(_ref4) {
  * A container for a nested tree of <Route> elements that renders the branch
  * that best matches the current location.
  *
- * @see https://reactrouter.com/components/routes
+ * @see https://reactrouter.com/docs/en/v6/api#routes
  */
-function Routes(_ref5) {
+function Routes(_ref4) {
   let {
     children,
     location
-  } = _ref5;
-  let dataRouterContext = react.useContext(DataRouterContext); // When in a DataRouterContext _without_ children, we use the router routes
-  // directly.  If we have children, then we're in a descendant tree and we
-  // need to use child routes.
-
-  let routes = dataRouterContext && !children ? dataRouterContext.router.routes : createRoutesFromChildren(children);
-  return useRoutes(routes, location);
-}
-
-/**
- * Component to use for rendering lazily loaded data from returning defer()
- * in a loader function
- */
-function Await(_ref6) {
-  let {
-    children,
-    errorElement,
-    resolve
-  } = _ref6;
-  return /*#__PURE__*/React.createElement(AwaitErrorBoundary, {
-    resolve: resolve,
-    errorElement: errorElement
-  }, /*#__PURE__*/React.createElement(ResolveAwait, null, children));
-}
-var AwaitRenderStatus;
-
-(function (AwaitRenderStatus) {
-  AwaitRenderStatus[AwaitRenderStatus["pending"] = 0] = "pending";
-  AwaitRenderStatus[AwaitRenderStatus["success"] = 1] = "success";
-  AwaitRenderStatus[AwaitRenderStatus["error"] = 2] = "error";
-})(AwaitRenderStatus || (AwaitRenderStatus = {}));
-
-const neverSettledPromise = new Promise(() => {});
-
-class AwaitErrorBoundary extends react.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      error: null
-    };
-  }
-
-  static getDerivedStateFromError(error) {
-    return {
-      error
-    };
-  }
-
-  componentDidCatch(error, errorInfo) {
-    console.error("<Await> caught the following error during render", error, errorInfo);
-  }
-
-  render() {
-    let {
-      children,
-      errorElement,
-      resolve
-    } = this.props;
-    let promise = null;
-    let status = AwaitRenderStatus.pending;
-
-    if (!(resolve instanceof Promise)) {
-      // Didn't get a promise - provide as a resolved promise
-      status = AwaitRenderStatus.success;
-      promise = Promise.resolve();
-      Object.defineProperty(promise, "_tracked", {
-        get: () => true
-      });
-      Object.defineProperty(promise, "_data", {
-        get: () => resolve
-      });
-    } else if (this.state.error) {
-      // Caught a render error, provide it as a rejected promise
-      status = AwaitRenderStatus.error;
-      let renderError = this.state.error;
-      promise = Promise.reject().catch(() => {}); // Avoid unhandled rejection warnings
-
-      Object.defineProperty(promise, "_tracked", {
-        get: () => true
-      });
-      Object.defineProperty(promise, "_error", {
-        get: () => renderError
-      });
-    } else if (resolve._tracked) {
-      // Already tracked promise - check contents
-      promise = resolve;
-      status = promise._error !== undefined ? AwaitRenderStatus.error : promise._data !== undefined ? AwaitRenderStatus.success : AwaitRenderStatus.pending;
-    } else {
-      // Raw (untracked) promise - track it
-      status = AwaitRenderStatus.pending;
-      Object.defineProperty(resolve, "_tracked", {
-        get: () => true
-      });
-      promise = resolve.then(data => Object.defineProperty(resolve, "_data", {
-        get: () => data
-      }), error => Object.defineProperty(resolve, "_error", {
-        get: () => error
-      }));
-    }
-
-    if (status === AwaitRenderStatus.error && promise._error instanceof AbortedDeferredError) {
-      // Freeze the UI by throwing a never resolved promise
-      throw neverSettledPromise;
-    }
-
-    if (status === AwaitRenderStatus.error && !errorElement) {
-      // No errorElement, throw to the nearest route-level error boundary
-      throw promise._error;
-    }
-
-    if (status === AwaitRenderStatus.error) {
-      // Render via our errorElement
-      return /*#__PURE__*/React.createElement(AwaitContext.Provider, {
-        value: promise,
-        children: errorElement
-      });
-    }
-
-    if (status === AwaitRenderStatus.success) {
-      // Render children with resolved value
-      return /*#__PURE__*/React.createElement(AwaitContext.Provider, {
-        value: promise,
-        children: children
-      });
-    } // Throw to the suspense boundary
-
-
-    throw promise;
-  }
-
-}
-/**
- * @private
- * Indirection to leverage useAsyncValue for a render-prop API on <Await>
- */
-
-
-function ResolveAwait(_ref7) {
-  let {
-    children
-  } = _ref7;
-  let data = useAsyncValue();
-  let toRender = typeof children === "function" ? children(data) : children;
-  return /*#__PURE__*/React.createElement(React.Fragment, null, toRender);
+  } = _ref4;
+  return useRoutes(createRoutesFromChildren(children), location);
 } ///////////////////////////////////////////////////////////////////////////////
 // UTILS
 ///////////////////////////////////////////////////////////////////////////////
@@ -28023,18 +24325,13 @@ function ResolveAwait(_ref7) {
  * either a `<Route>` element or an array of them. Used internally by
  * `<Routes>` to create a route config from its children.
  *
- * @see https://reactrouter.com/utils/create-routes-from-children
+ * @see https://reactrouter.com/docs/en/v6/api#createroutesfromchildren
  */
 
-
-function createRoutesFromChildren(children, parentPath) {
-  if (parentPath === void 0) {
-    parentPath = [];
-  }
-
+function createRoutesFromChildren(children) {
   let routes = [];
-  react.Children.forEach(children, (element, index) => {
-    if (! /*#__PURE__*/react.isValidElement(element)) {
+  react.Children.forEach(children, element => {
+    if (! /*#__PURE__*/(0,react.isValidElement)(element)) {
       // Ignore non-elements. This allows people to more easily inline
       // conditionals in their route config.
       return;
@@ -28042,29 +24339,20 @@ function createRoutesFromChildren(children, parentPath) {
 
     if (element.type === react.Fragment) {
       // Transparently support React.Fragment and its children.
-      routes.push.apply(routes, createRoutesFromChildren(element.props.children, parentPath));
+      routes.push.apply(routes, createRoutesFromChildren(element.props.children));
       return;
     }
 
-    !(element.type === Route) ?  false ? 0 : router_invariant(false) : void 0;
-    !(!element.props.index || !element.props.children) ?  false ? 0 : router_invariant(false) : void 0;
-    let treePath = [...parentPath, index];
+    !(element.type === Route) ?  false ? 0 : invariant(false) : void 0;
     let route = {
-      id: element.props.id || treePath.join("-"),
       caseSensitive: element.props.caseSensitive,
       element: element.props.element,
       index: element.props.index,
-      path: element.props.path,
-      loader: element.props.loader,
-      action: element.props.action,
-      errorElement: element.props.errorElement,
-      hasErrorBoundary: element.props.errorElement != null,
-      shouldRevalidate: element.props.shouldRevalidate,
-      handle: element.props.handle
+      path: element.props.path
     };
 
     if (element.props.children) {
-      route.children = createRoutesFromChildren(element.props.children, treePath);
+      route.children = createRoutesFromChildren(element.props.children);
     }
 
     routes.push(route);
@@ -28078,39 +24366,6 @@ function createRoutesFromChildren(children, parentPath) {
 function renderMatches(matches) {
   return _renderMatches(matches);
 }
-/**
- * @private
- * Walk the route tree and add hasErrorBoundary if it's not provided, so that
- * users providing manual route arrays can just specify errorElement
- */
-
-function enhanceManualRouteObjects(routes) {
-  return routes.map(route => {
-    let routeClone = dist_extends({}, route);
-
-    if (routeClone.hasErrorBoundary == null) {
-      routeClone.hasErrorBoundary = routeClone.errorElement != null;
-    }
-
-    if (routeClone.children) {
-      routeClone.children = enhanceManualRouteObjects(routeClone.children);
-    }
-
-    return routeClone;
-  });
-}
-
-function createMemoryRouter(routes, opts) {
-  return createRouter({
-    basename: opts == null ? void 0 : opts.basename,
-    history: createMemoryHistory({
-      initialEntries: opts == null ? void 0 : opts.initialEntries,
-      initialIndex: opts == null ? void 0 : opts.initialIndex
-    }),
-    hydrationData: opts == null ? void 0 : opts.hydrationData,
-    routes: enhanceManualRouteObjects(routes)
-  }).initialize();
-} ///////////////////////////////////////////////////////////////////////////////
 
 
 //# sourceMappingURL=index.js.map
@@ -28127,6 +24382,7 @@ class HomePage extends react.Component {
   constructor(props) {
     super(props);
   }
+
   render() {
     return /*#__PURE__*/react.createElement("div", null, /*#__PURE__*/react.createElement("div", {
       className: "stars"
@@ -28247,6 +24503,7 @@ class HomePage extends react.Component {
       element: /*#__PURE__*/react.createElement(SkillsPage_ProjectsPage, null)
     })));
   }
+
 }
 // EXTERNAL MODULE: ./node_modules/@mui/material/styles/defaultTheme.js
 var material_styles_defaultTheme = __webpack_require__(247);
@@ -28256,11 +24513,13 @@ var material_styles_defaultTheme = __webpack_require__(247);
 
 function styles_useTheme_useTheme() {
   const theme = (0,esm_useTheme/* default */.Z)(material_styles_defaultTheme/* default */.Z);
+
   if (false) {}
+
   return theme;
 }
-// EXTERNAL MODULE: ./node_modules/@mui/utils/esm/ClassNameGenerator/ClassNameGenerator.js
-var ClassNameGenerator = __webpack_require__(7078);
+// EXTERNAL MODULE: ./node_modules/@mui/base/className/ClassNameGenerator.js
+var ClassNameGenerator = __webpack_require__(8076);
 // EXTERNAL MODULE: ./node_modules/@mui/material/styles/createTheme.js + 14 modules
 var material_styles_createTheme = __webpack_require__(9617);
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/Box/Box.js
@@ -28276,34 +24535,15 @@ const material_Box_Box_Box = createBox({
 });
  false ? 0 : void 0;
 /* harmony default export */ const material_Box_Box = (material_Box_Box_Box);
-;// CONCATENATED MODULE: ./node_modules/@mui/base/node_modules/@babel/runtime/helpers/esm/extends.js
-function esm_extends_extends() {
-  esm_extends_extends = Object.assign ? Object.assign.bind() : function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-    return target;
-  };
-  return esm_extends_extends.apply(this, arguments);
+;// CONCATENATED MODULE: ./node_modules/@mui/base/utils/isHostComponent.js
+/**
+ * Determines if a given element is a DOM element name (i.e. not a React component).
+ */
+function isHostComponent(element) {
+  return typeof element === 'string';
 }
-;// CONCATENATED MODULE: ./node_modules/@mui/base/node_modules/@babel/runtime/helpers/esm/objectWithoutPropertiesLoose.js
-function objectWithoutPropertiesLoose_objectWithoutPropertiesLoose(source, excluded) {
-  if (source == null) return {};
-  var target = {};
-  var sourceKeys = Object.keys(source);
-  var key, i;
-  for (i = 0; i < sourceKeys.length; i++) {
-    key = sourceKeys[i];
-    if (excluded.indexOf(key) >= 0) continue;
-    target[key] = source[key];
-  }
-  return target;
-}
+
+/* harmony default export */ const utils_isHostComponent = (isHostComponent);
 // EXTERNAL MODULE: ./node_modules/@mui/utils/esm/useForkRef.js
 var esm_useForkRef = __webpack_require__(67);
 // EXTERNAL MODULE: ./node_modules/@mui/utils/esm/ownerDocument.js
@@ -28325,19 +24565,12 @@ var esm_setRef = __webpack_require__(7960);
 function Portal_getContainer(container) {
   return typeof container === 'function' ? container() : container;
 }
-
 /**
  * Portals provide a first-class way to render children into a DOM node
  * that exists outside the DOM hierarchy of the parent component.
- *
- * Demos:
- *
- * - [Portal](https://mui.com/base/react-portal/)
- *
- * API:
- *
- * - [Portal API](https://mui.com/base/api/portal/)
  */
+
+
 const Portal_Portal_Portal = /*#__PURE__*/react.forwardRef(function Portal(props, ref) {
   const {
     children,
@@ -28345,7 +24578,6 @@ const Portal_Portal_Portal = /*#__PURE__*/react.forwardRef(function Portal(props
     disablePortal = false
   } = props;
   const [mountNode, setMountNode] = react.useState(null);
-  // @ts-expect-error TODO upstream fix
   const handleRef = (0,esm_useForkRef/* default */.Z)( /*#__PURE__*/react.isValidElement(children) ? children.ref : null, ref);
   (0,esm_useEnhancedEffect/* default */.Z)(() => {
     if (!disablePortal) {
@@ -28359,25 +24591,26 @@ const Portal_Portal_Portal = /*#__PURE__*/react.forwardRef(function Portal(props
         (0,esm_setRef/* default */.Z)(ref, null);
       };
     }
+
     return undefined;
   }, [ref, mountNode, disablePortal]);
+
   if (disablePortal) {
     if ( /*#__PURE__*/react.isValidElement(children)) {
-      const newProps = {
+      return /*#__PURE__*/react.cloneElement(children, {
         ref: handleRef
-      };
-      return /*#__PURE__*/react.cloneElement(children, newProps);
+      });
     }
-    return /*#__PURE__*/(0,jsx_runtime.jsx)(react.Fragment, {
-      children: children
-    });
+
+    return children;
   }
-  return /*#__PURE__*/(0,jsx_runtime.jsx)(react.Fragment, {
-    children: mountNode ? /*#__PURE__*/react_dom.createPortal(children, mountNode) : mountNode
-  });
+
+  return mountNode ? /*#__PURE__*/react_dom.createPortal(children, mountNode) : mountNode;
 });
  false ? 0 : void 0;
+
 if (false) {}
+
 /* harmony default export */ const base_Portal_Portal = (Portal_Portal_Portal);
 // EXTERNAL MODULE: ./node_modules/@mui/utils/esm/ownerWindow.js
 var esm_ownerWindow = __webpack_require__(8290);
@@ -28391,14 +24624,18 @@ function getScrollbarSize_getScrollbarSize(doc) {
 }
 ;// CONCATENATED MODULE: ./node_modules/@mui/base/ModalUnstyled/ModalManager.js
 
+
 // Is a vertical scrollbar displayed?
 function ModalManager_isOverflowing(container) {
   const doc = (0,esm_ownerDocument/* default */.Z)(container);
+
   if (doc.body === container) {
     return (0,esm_ownerWindow/* default */.Z)(container).innerWidth > doc.documentElement.clientWidth;
   }
+
   return container.scrollHeight > container.clientHeight;
 }
+
 function ModalManager_ariaHidden(element, show) {
   if (show) {
     element.setAttribute('aria-hidden', 'true');
@@ -28406,28 +24643,21 @@ function ModalManager_ariaHidden(element, show) {
     element.removeAttribute('aria-hidden');
   }
 }
+
 function ModalManager_getPaddingRight(element) {
   return parseInt((0,esm_ownerWindow/* default */.Z)(element).getComputedStyle(element).paddingRight, 10) || 0;
 }
-function isAriaHiddenForbiddenOnElement(element) {
-  // The forbidden HTML tags are the ones from ARIA specification that
-  // can be children of body and can't have aria-hidden attribute.
-  // cf. https://www.w3.org/TR/html-aria/#docconformance
-  const forbiddenTagNames = ['TEMPLATE', 'SCRIPT', 'STYLE', 'LINK', 'MAP', 'META', 'NOSCRIPT', 'PICTURE', 'COL', 'COLGROUP', 'PARAM', 'SLOT', 'SOURCE', 'TRACK'];
-  const isForbiddenTagName = forbiddenTagNames.indexOf(element.tagName) !== -1;
-  const isInputHidden = element.tagName === 'INPUT' && element.getAttribute('type') === 'hidden';
-  return isForbiddenTagName || isInputHidden;
-}
-function ModalManager_ariaHiddenSiblings(container, mountElement, currentElement, elementsToExclude, show) {
+
+function ModalManager_ariaHiddenSiblings(container, mountElement, currentElement, elementsToExclude = [], show) {
   const blacklist = [mountElement, currentElement, ...elementsToExclude];
+  const blacklistTagNames = ['TEMPLATE', 'SCRIPT', 'STYLE'];
   [].forEach.call(container.children, element => {
-    const isNotExcludedElement = blacklist.indexOf(element) === -1;
-    const isNotForbiddenElement = !isAriaHiddenForbiddenOnElement(element);
-    if (isNotExcludedElement && isNotForbiddenElement) {
+    if (blacklist.indexOf(element) === -1 && blacklistTagNames.indexOf(element.tagName) === -1) {
       ModalManager_ariaHidden(element, show);
     }
   });
 }
+
 function ModalManager_findIndexOf(items, callback) {
   let idx = -1;
   items.some((item, index) => {
@@ -28435,13 +24665,16 @@ function ModalManager_findIndexOf(items, callback) {
       idx = index;
       return true;
     }
+
     return false;
   });
   return idx;
 }
+
 function ModalManager_handleContainer(containerInfo, props) {
   const restoreStyle = [];
   const container = containerInfo.container;
+
   if (!props.disableScrollLock) {
     if (ModalManager_isOverflowing(container)) {
       // Compute the size before applying overflow hidden to avoid any scroll jumps.
@@ -28450,11 +24683,10 @@ function ModalManager_handleContainer(containerInfo, props) {
         value: container.style.paddingRight,
         property: 'padding-right',
         el: container
-      });
-      // Use computed style, here to get the real padding to add our scrollbar width.
-      container.style.paddingRight = `${ModalManager_getPaddingRight(container) + scrollbarSize}px`;
+      }); // Use computed style, here to get the real padding to add our scrollbar width.
 
-      // .mui-fixed is a global helper.
+      container.style.paddingRight = `${ModalManager_getPaddingRight(container) + scrollbarSize}px`; // .mui-fixed is a global helper.
+
       const fixedElements = (0,esm_ownerDocument/* default */.Z)(container).querySelectorAll('.mui-fixed');
       [].forEach.call(fixedElements, element => {
         restoreStyle.push({
@@ -28464,20 +24696,15 @@ function ModalManager_handleContainer(containerInfo, props) {
         });
         element.style.paddingRight = `${ModalManager_getPaddingRight(element) + scrollbarSize}px`;
       });
-    }
-    let scrollContainer;
-    if (container.parentNode instanceof DocumentFragment) {
-      scrollContainer = (0,esm_ownerDocument/* default */.Z)(container).body;
-    } else {
-      // Improve Gatsby support
-      // https://css-tricks.com/snippets/css/force-vertical-scrollbar/
-      const parent = container.parentElement;
-      const containerWindow = (0,esm_ownerWindow/* default */.Z)(container);
-      scrollContainer = (parent == null ? void 0 : parent.nodeName) === 'HTML' && containerWindow.getComputedStyle(parent).overflowY === 'scroll' ? parent : container;
-    }
+    } // Improve Gatsby support
+    // https://css-tricks.com/snippets/css/force-vertical-scrollbar/
 
-    // Block the scroll even if no scrollbar is visible to account for mobile keyboard
+
+    const parent = container.parentElement;
+    const containerWindow = (0,esm_ownerWindow/* default */.Z)(container);
+    const scrollContainer = (parent == null ? void 0 : parent.nodeName) === 'HTML' && containerWindow.getComputedStyle(parent).overflowY === 'scroll' ? parent : container; // Block the scroll even if no scrollbar is visible to account for mobile keyboard
     // screensize shrink.
+
     restoreStyle.push({
       value: scrollContainer.style.overflow,
       property: 'overflow',
@@ -28493,6 +24720,7 @@ function ModalManager_handleContainer(containerInfo, props) {
     });
     scrollContainer.style.overflow = 'hidden';
   }
+
   const restore = () => {
     restoreStyle.forEach(({
       value,
@@ -28506,8 +24734,10 @@ function ModalManager_handleContainer(containerInfo, props) {
       }
     });
   };
+
   return restore;
 }
+
 function ModalManager_getHiddenSiblings(container) {
   const hiddenSiblings = [];
   [].forEach.call(container.children, element => {
@@ -28517,6 +24747,7 @@ function ModalManager_getHiddenSiblings(container) {
   });
   return hiddenSiblings;
 }
+
 /**
  * @ignore - do not document.
  *
@@ -28531,25 +24762,30 @@ class ModalManager_ModalManager {
     this.modals = [];
     this.containers = [];
   }
+
   add(modal, container) {
     let modalIndex = this.modals.indexOf(modal);
+
     if (modalIndex !== -1) {
       return modalIndex;
     }
-    modalIndex = this.modals.length;
-    this.modals.push(modal);
 
-    // If the modal we are adding is already in the DOM.
+    modalIndex = this.modals.length;
+    this.modals.push(modal); // If the modal we are adding is already in the DOM.
+
     if (modal.modalRef) {
       ModalManager_ariaHidden(modal.modalRef, false);
     }
+
     const hiddenSiblings = ModalManager_getHiddenSiblings(container);
     ModalManager_ariaHiddenSiblings(container, modal.mount, modal.modalRef, hiddenSiblings, true);
     const containerIndex = ModalManager_findIndexOf(this.containers, item => item.container === container);
+
     if (containerIndex !== -1) {
       this.containers[containerIndex].modals.push(modal);
       return modalIndex;
     }
+
     this.containers.push({
       modals: [modal],
       container,
@@ -28558,67 +24794,76 @@ class ModalManager_ModalManager {
     });
     return modalIndex;
   }
+
   mount(modal, props) {
     const containerIndex = ModalManager_findIndexOf(this.containers, item => item.modals.indexOf(modal) !== -1);
     const containerInfo = this.containers[containerIndex];
+
     if (!containerInfo.restore) {
       containerInfo.restore = ModalManager_handleContainer(containerInfo, props);
     }
   }
-  remove(modal, ariaHiddenState = true) {
+
+  remove(modal) {
     const modalIndex = this.modals.indexOf(modal);
+
     if (modalIndex === -1) {
       return modalIndex;
     }
+
     const containerIndex = ModalManager_findIndexOf(this.containers, item => item.modals.indexOf(modal) !== -1);
     const containerInfo = this.containers[containerIndex];
     containerInfo.modals.splice(containerInfo.modals.indexOf(modal), 1);
-    this.modals.splice(modalIndex, 1);
+    this.modals.splice(modalIndex, 1); // If that was the last modal in a container, clean up the container.
 
-    // If that was the last modal in a container, clean up the container.
     if (containerInfo.modals.length === 0) {
       // The modal might be closed before it had the chance to be mounted in the DOM.
       if (containerInfo.restore) {
         containerInfo.restore();
       }
+
       if (modal.modalRef) {
         // In case the modal wasn't in the DOM yet.
-        ModalManager_ariaHidden(modal.modalRef, ariaHiddenState);
+        ModalManager_ariaHidden(modal.modalRef, true);
       }
+
       ModalManager_ariaHiddenSiblings(containerInfo.container, modal.mount, modal.modalRef, containerInfo.hiddenSiblings, false);
       this.containers.splice(containerIndex, 1);
     } else {
       // Otherwise make sure the next top modal is visible to a screen reader.
-      const nextTop = containerInfo.modals[containerInfo.modals.length - 1];
-      // as soon as a modal is adding its modalRef is undefined. it can't set
+      const nextTop = containerInfo.modals[containerInfo.modals.length - 1]; // as soon as a modal is adding its modalRef is undefined. it can't set
       // aria-hidden because the dom element doesn't exist either
       // when modal was unmounted before modalRef gets null
+
       if (nextTop.modalRef) {
         ModalManager_ariaHidden(nextTop.modalRef, false);
       }
     }
+
     return modalIndex;
   }
+
   isTopModal(modal) {
     return this.modals.length > 0 && this.modals[this.modals.length - 1] === modal;
   }
+
 }
-;// CONCATENATED MODULE: ./node_modules/@mui/base/FocusTrap/FocusTrap.js
+;// CONCATENATED MODULE: ./node_modules/@mui/base/TrapFocus/TrapFocus.js
 /* eslint-disable consistent-return, jsx-a11y/no-noninteractive-tabindex */
 
 
+ // Inspired by https://github.com/focus-trap/tabbable
 
 
 
-// Inspired by https://github.com/focus-trap/tabbable
 const candidatesSelector = ['input', 'select', 'textarea', 'a[href]', 'button', '[tabindex]', 'audio[controls]', 'video[controls]', '[contenteditable]:not([contenteditable="false"])'].join(',');
+
 function getTabIndex(node) {
-  const tabindexAttr = parseInt(node.getAttribute('tabindex') || '', 10);
+  const tabindexAttr = parseInt(node.getAttribute('tabindex'), 10);
+
   if (!Number.isNaN(tabindexAttr)) {
     return tabindexAttr;
-  }
-
-  // Browsers do not return `tabIndex` correctly for contentEditable nodes;
+  } // Browsers do not return `tabIndex` correctly for contentEditable nodes;
   // https://bugs.chromium.org/p/chromium/issues/detail?id=661108&q=contenteditable%20tabindex&can=2
   // so if they don't have a tabindex attribute specifically set, assume it's 0.
   // in Chrome, <details/>, <audio controls/> and <video controls/> elements get a default
@@ -28626,67 +24871,75 @@ function getTabIndex(node) {
   //  yet they are still part of the regular tab order; in FF, they get a default
   //  `tabIndex` of 0; since Chrome still puts those elements in the regular tab
   //  order, consider their tab index to be 0.
+
+
   if (node.contentEditable === 'true' || (node.nodeName === 'AUDIO' || node.nodeName === 'VIDEO' || node.nodeName === 'DETAILS') && node.getAttribute('tabindex') === null) {
     return 0;
   }
+
   return node.tabIndex;
 }
+
 function isNonTabbableRadio(node) {
   if (node.tagName !== 'INPUT' || node.type !== 'radio') {
     return false;
   }
+
   if (!node.name) {
     return false;
   }
+
   const getRadio = selector => node.ownerDocument.querySelector(`input[type="radio"]${selector}`);
+
   let roving = getRadio(`[name="${node.name}"]:checked`);
+
   if (!roving) {
     roving = getRadio(`[name="${node.name}"]`);
   }
+
   return roving !== node;
 }
+
 function isNodeMatchingSelectorFocusable(node) {
   if (node.disabled || node.tagName === 'INPUT' && node.type === 'hidden' || isNonTabbableRadio(node)) {
     return false;
   }
+
   return true;
 }
+
 function defaultGetTabbable(root) {
   const regularTabNodes = [];
   const orderedTabNodes = [];
   Array.from(root.querySelectorAll(candidatesSelector)).forEach((node, i) => {
     const nodeTabIndex = getTabIndex(node);
+
     if (nodeTabIndex === -1 || !isNodeMatchingSelectorFocusable(node)) {
       return;
     }
+
     if (nodeTabIndex === 0) {
       regularTabNodes.push(node);
     } else {
       orderedTabNodes.push({
         documentOrder: i,
         tabIndex: nodeTabIndex,
-        node: node
+        node
       });
     }
   });
   return orderedTabNodes.sort((a, b) => a.tabIndex === b.tabIndex ? a.documentOrder - b.documentOrder : a.tabIndex - b.tabIndex).map(a => a.node).concat(regularTabNodes);
 }
+
 function defaultIsEnabled() {
   return true;
 }
-
 /**
  * Utility component that locks focus inside the component.
- *
- * Demos:
- *
- * - [Focus Trap](https://mui.com/base/react-focus-trap/)
- *
- * API:
- *
- * - [FocusTrap API](https://mui.com/base/api/focus-trap/)
  */
-function FocusTrap(props) {
+
+
+function TrapFocus(props) {
   const {
     children,
     disableAutoFocus = false,
@@ -28696,16 +24949,15 @@ function FocusTrap(props) {
     isEnabled = defaultIsEnabled,
     open
   } = props;
-  const ignoreNextEnforceFocus = react.useRef(false);
+  const ignoreNextEnforceFocus = react.useRef();
   const sentinelStart = react.useRef(null);
   const sentinelEnd = react.useRef(null);
   const nodeToRestore = react.useRef(null);
-  const reactFocusEventTarget = react.useRef(null);
-  // This variable is useful when disableAutoFocus is true.
+  const reactFocusEventTarget = react.useRef(null); // This variable is useful when disableAutoFocus is true.
   // It waits for the active element to move into the component to activate.
+
   const activated = react.useRef(false);
   const rootRef = react.useRef(null);
-  // @ts-expect-error TODO upstream fix
   const handleRef = (0,esm_useForkRef/* default */.Z)(children.ref, rootRef);
   const lastKeydown = react.useRef(null);
   react.useEffect(() => {
@@ -28713,6 +24965,7 @@ function FocusTrap(props) {
     if (!open || !rootRef.current) {
       return;
     }
+
     activated.current = !disableAutoFocus;
   }, [disableAutoFocus, open]);
   react.useEffect(() => {
@@ -28720,16 +24973,21 @@ function FocusTrap(props) {
     if (!open || !rootRef.current) {
       return;
     }
+
     const doc = (0,esm_ownerDocument/* default */.Z)(rootRef.current);
+
     if (!rootRef.current.contains(doc.activeElement)) {
       if (!rootRef.current.hasAttribute('tabIndex')) {
         if (false) {}
-        rootRef.current.setAttribute('tabIndex', '-1');
+
+        rootRef.current.setAttribute('tabIndex', -1);
       }
+
       if (activated.current) {
         rootRef.current.focus();
       }
     }
+
     return () => {
       // restoreLastFocus()
       if (!disableRestoreFocus) {
@@ -28741,11 +24999,11 @@ function FocusTrap(props) {
           ignoreNextEnforceFocus.current = true;
           nodeToRestore.current.focus();
         }
+
         nodeToRestore.current = null;
       }
-    };
-    // Missing `disableRestoreFocus` which is fine.
-    // We don't support changing that prop on an open FocusTrap
+    }; // Missing `disableRestoreFocus` which is fine.
+    // We don't support changing that prop on an open TrapFocus
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
   react.useEffect(() => {
@@ -28753,21 +25011,24 @@ function FocusTrap(props) {
     if (!open || !rootRef.current) {
       return;
     }
+
     const doc = (0,esm_ownerDocument/* default */.Z)(rootRef.current);
+
     const contain = nativeEvent => {
       const {
         current: rootElement
-      } = rootRef;
-
-      // Cleanup functions are executed lazily in React 17.
+      } = rootRef; // Cleanup functions are executed lazily in React 17.
       // Contain can be called between the component being unmounted and its cleanup function being run.
+
       if (rootElement === null) {
         return;
       }
+
       if (!doc.hasFocus() || disableEnforceFocus || !isEnabled() || ignoreNextEnforceFocus.current) {
         ignoreNextEnforceFocus.current = false;
         return;
       }
+
       if (!rootElement.contains(doc.activeElement)) {
         // if the focus event is not coming from inside the children's react tree, reset the refs
         if (nativeEvent && reactFocusEventTarget.current !== nativeEvent.target || doc.activeElement !== reactFocusEventTarget.current) {
@@ -28775,59 +25036,63 @@ function FocusTrap(props) {
         } else if (reactFocusEventTarget.current !== null) {
           return;
         }
+
         if (!activated.current) {
           return;
         }
+
         let tabbable = [];
+
         if (doc.activeElement === sentinelStart.current || doc.activeElement === sentinelEnd.current) {
           tabbable = getTabbable(rootRef.current);
         }
+
         if (tabbable.length > 0) {
           var _lastKeydown$current, _lastKeydown$current2;
+
           const isShiftTab = Boolean(((_lastKeydown$current = lastKeydown.current) == null ? void 0 : _lastKeydown$current.shiftKey) && ((_lastKeydown$current2 = lastKeydown.current) == null ? void 0 : _lastKeydown$current2.key) === 'Tab');
           const focusNext = tabbable[0];
           const focusPrevious = tabbable[tabbable.length - 1];
-          if (typeof focusNext !== 'string' && typeof focusPrevious !== 'string') {
-            if (isShiftTab) {
-              focusPrevious.focus();
-            } else {
-              focusNext.focus();
-            }
+
+          if (isShiftTab) {
+            focusPrevious.focus();
+          } else {
+            focusNext.focus();
           }
         } else {
           rootElement.focus();
         }
       }
     };
+
     const loopFocus = nativeEvent => {
       lastKeydown.current = nativeEvent;
+
       if (disableEnforceFocus || !isEnabled() || nativeEvent.key !== 'Tab') {
         return;
-      }
+      } // Make sure the next tab starts from the right place.
+      // doc.activeElement referes to the origin.
 
-      // Make sure the next tab starts from the right place.
-      // doc.activeElement refers to the origin.
+
       if (doc.activeElement === rootRef.current && nativeEvent.shiftKey) {
         // We need to ignore the next contain as
         // it will try to move the focus back to the rootRef element.
         ignoreNextEnforceFocus.current = true;
-        if (sentinelEnd.current) {
-          sentinelEnd.current.focus();
-        }
+        sentinelEnd.current.focus();
       }
     };
-    doc.addEventListener('focusin', contain);
-    doc.addEventListener('keydown', loopFocus, true);
 
-    // With Edge, Safari and Firefox, no focus related events are fired when the focused area stops being a focused area.
+    doc.addEventListener('focusin', contain);
+    doc.addEventListener('keydown', loopFocus, true); // With Edge, Safari and Firefox, no focus related events are fired when the focused area stops being a focused area.
     // e.g. https://bugzilla.mozilla.org/show_bug.cgi?id=559561.
     // Instead, we can look if the active element was restored on the BODY element.
     //
     // The whatwg spec defines how the browser should behave but does not explicitly mention any events:
     // https://html.spec.whatwg.org/multipage/interaction.html#focus-fixup-rule.
+
     const interval = setInterval(() => {
-      if (doc.activeElement && doc.activeElement.tagName === 'BODY') {
-        contain(null);
+      if (doc.activeElement.tagName === 'BODY') {
+        contain();
       }
     }, 50);
     return () => {
@@ -28836,43 +25101,52 @@ function FocusTrap(props) {
       doc.removeEventListener('keydown', loopFocus, true);
     };
   }, [disableAutoFocus, disableEnforceFocus, disableRestoreFocus, isEnabled, open, getTabbable]);
+
   const onFocus = event => {
     if (nodeToRestore.current === null) {
       nodeToRestore.current = event.relatedTarget;
     }
+
     activated.current = true;
     reactFocusEventTarget.current = event.target;
     const childrenPropsHandler = children.props.onFocus;
+
     if (childrenPropsHandler) {
       childrenPropsHandler(event);
     }
   };
+
   const handleFocusSentinel = event => {
     if (nodeToRestore.current === null) {
       nodeToRestore.current = event.relatedTarget;
     }
+
     activated.current = true;
   };
+
   return /*#__PURE__*/(0,jsx_runtime.jsxs)(react.Fragment, {
     children: [/*#__PURE__*/(0,jsx_runtime.jsx)("div", {
-      tabIndex: open ? 0 : -1,
+      tabIndex: 0,
       onFocus: handleFocusSentinel,
       ref: sentinelStart,
-      "data-testid": "sentinelStart"
+      "data-test": "sentinelStart"
     }), /*#__PURE__*/react.cloneElement(children, {
       ref: handleRef,
       onFocus
     }), /*#__PURE__*/(0,jsx_runtime.jsx)("div", {
-      tabIndex: open ? 0 : -1,
+      tabIndex: 0,
       onFocus: handleFocusSentinel,
       ref: sentinelEnd,
-      "data-testid": "sentinelEnd"
+      "data-test": "sentinelEnd"
     })]
   });
 }
+
  false ? 0 : void 0;
+
 if (false) {}
-/* harmony default export */ const FocusTrap_FocusTrap = (FocusTrap);
+
+/* harmony default export */ const TrapFocus_TrapFocus = (TrapFocus);
 ;// CONCATENATED MODULE: ./node_modules/@mui/base/ModalUnstyled/modalUnstyledClasses.js
 
 
@@ -28881,198 +25155,12 @@ function getModalUtilityClass(slot) {
 }
 const modalUnstyledClasses_modalUnstyledClasses = (0,generateUtilityClasses/* default */.Z)('MuiModal', ['root', 'hidden']);
 /* harmony default export */ const ModalUnstyled_modalUnstyledClasses = ((/* unused pure expression or super */ null && (modalUnstyledClasses_modalUnstyledClasses)));
-;// CONCATENATED MODULE: ./node_modules/@mui/base/utils/isHostComponent.js
-/**
- * Determines if a given element is a DOM element name (i.e. not a React component).
- */
-function isHostComponent(element) {
-  return typeof element === 'string';
-}
-/* harmony default export */ const utils_isHostComponent = (isHostComponent);
-;// CONCATENATED MODULE: ./node_modules/@mui/base/utils/appendOwnerState.js
-
-
-
-/**
- * Type of the ownerState based on the type of an element it applies to.
- * This resolves to the provided OwnerState for React components and `undefined` for host components.
- * Falls back to `OwnerState | undefined` when the exact type can't be determined in development time.
- */
-
-/**
- * Appends the ownerState object to the props, merging with the existing one if necessary.
- *
- * @param elementType Type of the element that owns the `existingProps`. If the element is a DOM node or undefined, `ownerState` is not applied.
- * @param otherProps Props of the element.
- * @param ownerState
- */
-function appendOwnerState(elementType, otherProps, ownerState) {
-  if (elementType === undefined || utils_isHostComponent(elementType)) {
-    return otherProps;
-  }
-  return esm_extends_extends({}, otherProps, {
-    ownerState: esm_extends_extends({}, otherProps.ownerState, ownerState)
-  });
-}
-;// CONCATENATED MODULE: ./node_modules/@mui/base/node_modules/clsx/dist/clsx.m.js
-function clsx_m_r(e){var t,f,n="";if("string"==typeof e||"number"==typeof e)n+=e;else if("object"==typeof e)if(Array.isArray(e))for(t=0;t<e.length;t++)e[t]&&(f=clsx_m_r(e[t]))&&(n&&(n+=" "),n+=f);else for(t in e)e[t]&&(n&&(n+=" "),n+=t);return n}function clsx_m_clsx(){for(var e,t,f=0,n="";f<arguments.length;)(e=arguments[f++])&&(t=clsx_m_r(e))&&(n&&(n+=" "),n+=t);return n}/* harmony default export */ const node_modules_clsx_dist_clsx_m = (clsx_m_clsx);
-;// CONCATENATED MODULE: ./node_modules/@mui/base/utils/extractEventHandlers.js
-/**
- * Extracts event handlers from a given object.
- * A prop is considered an event handler if it is a function and its name starts with `on`.
- *
- * @param object An object to extract event handlers from.
- * @param excludeKeys An array of keys to exclude from the returned object.
- */
-function extractEventHandlers(object, excludeKeys = []) {
-  if (object === undefined) {
-    return {};
-  }
-  const result = {};
-  Object.keys(object).filter(prop => prop.match(/^on[A-Z]/) && typeof object[prop] === 'function' && !excludeKeys.includes(prop)).forEach(prop => {
-    result[prop] = object[prop];
-  });
-  return result;
-}
-;// CONCATENATED MODULE: ./node_modules/@mui/base/utils/omitEventHandlers.js
-/**
- * Removes event handlers from the given object.
- * A field is considered an event handler if it is a function with a name beginning with `on`.
- *
- * @param object Object to remove event handlers from.
- * @returns Object with event handlers removed.
- */
-function omitEventHandlers(object) {
-  if (object === undefined) {
-    return {};
-  }
-  const result = {};
-  Object.keys(object).filter(prop => !(prop.match(/^on[A-Z]/) && typeof object[prop] === 'function')).forEach(prop => {
-    result[prop] = object[prop];
-  });
-  return result;
-}
-;// CONCATENATED MODULE: ./node_modules/@mui/base/utils/mergeSlotProps.js
-
-
-
-
-/**
- * Merges the slot component internal props (usually coming from a hook)
- * with the externally provided ones.
- *
- * The merge order is (the latter overrides the former):
- * 1. The internal props (specified as a getter function to work with get*Props hook result)
- * 2. Additional props (specified internally on an unstyled component)
- * 3. External props specified on the owner component. These should only be used on a root slot.
- * 4. External props specified in the `slotProps.*` prop.
- * 5. The `className` prop - combined from all the above.
- * @param parameters
- * @returns
- */
-function mergeSlotProps(parameters) {
-  const {
-    getSlotProps,
-    additionalProps,
-    externalSlotProps,
-    externalForwardedProps,
-    className
-  } = parameters;
-  if (!getSlotProps) {
-    // The simpler case - getSlotProps is not defined, so no internal event handlers are defined,
-    // so we can simply merge all the props without having to worry about extracting event handlers.
-    const joinedClasses = node_modules_clsx_dist_clsx_m(externalForwardedProps == null ? void 0 : externalForwardedProps.className, externalSlotProps == null ? void 0 : externalSlotProps.className, className, additionalProps == null ? void 0 : additionalProps.className);
-    const mergedStyle = esm_extends_extends({}, additionalProps == null ? void 0 : additionalProps.style, externalForwardedProps == null ? void 0 : externalForwardedProps.style, externalSlotProps == null ? void 0 : externalSlotProps.style);
-    const props = esm_extends_extends({}, additionalProps, externalForwardedProps, externalSlotProps);
-    if (joinedClasses.length > 0) {
-      props.className = joinedClasses;
-    }
-    if (Object.keys(mergedStyle).length > 0) {
-      props.style = mergedStyle;
-    }
-    return {
-      props,
-      internalRef: undefined
-    };
-  }
-
-  // In this case, getSlotProps is responsible for calling the external event handlers.
-  // We don't need to include them in the merged props because of this.
-
-  const eventHandlers = extractEventHandlers(esm_extends_extends({}, externalForwardedProps, externalSlotProps));
-  const componentsPropsWithoutEventHandlers = omitEventHandlers(externalSlotProps);
-  const otherPropsWithoutEventHandlers = omitEventHandlers(externalForwardedProps);
-  const internalSlotProps = getSlotProps(eventHandlers);
-
-  // The order of classes is important here.
-  // Emotion (that we use in libraries consuming MUI Base) depends on this order
-  // to properly override style. It requires the most important classes to be last
-  // (see https://github.com/mui/material-ui/pull/33205) for the related discussion.
-  const joinedClasses = node_modules_clsx_dist_clsx_m(internalSlotProps == null ? void 0 : internalSlotProps.className, additionalProps == null ? void 0 : additionalProps.className, className, externalForwardedProps == null ? void 0 : externalForwardedProps.className, externalSlotProps == null ? void 0 : externalSlotProps.className);
-  const mergedStyle = esm_extends_extends({}, internalSlotProps == null ? void 0 : internalSlotProps.style, additionalProps == null ? void 0 : additionalProps.style, externalForwardedProps == null ? void 0 : externalForwardedProps.style, externalSlotProps == null ? void 0 : externalSlotProps.style);
-  const props = esm_extends_extends({}, internalSlotProps, additionalProps, otherPropsWithoutEventHandlers, componentsPropsWithoutEventHandlers);
-  if (joinedClasses.length > 0) {
-    props.className = joinedClasses;
-  }
-  if (Object.keys(mergedStyle).length > 0) {
-    props.style = mergedStyle;
-  }
-  return {
-    props,
-    internalRef: internalSlotProps.ref
-  };
-}
-;// CONCATENATED MODULE: ./node_modules/@mui/base/utils/resolveComponentProps.js
-/**
- * If `componentProps` is a function, calls it with the provided `ownerState`.
- * Otherwise, just returns `componentProps`.
- */
-function resolveComponentProps(componentProps, ownerState) {
-  if (typeof componentProps === 'function') {
-    return componentProps(ownerState);
-  }
-  return componentProps;
-}
-;// CONCATENATED MODULE: ./node_modules/@mui/base/utils/useSlotProps.js
-
-
-const useSlotProps_excluded = ["elementType", "externalSlotProps", "ownerState"];
-
-
-
-
-/**
- * Builds the props to be passed into the slot of an unstyled component.
- * It merges the internal props of the component with the ones supplied by the user, allowing to customize the behavior.
- * If the slot component is not a host component, it also merges in the `ownerState`.
- *
- * @param parameters.getSlotProps - A function that returns the props to be passed to the slot component.
- */
-function useSlotProps(parameters) {
-  var _parameters$additiona;
-  const {
-      elementType,
-      externalSlotProps,
-      ownerState
-    } = parameters,
-    rest = objectWithoutPropertiesLoose_objectWithoutPropertiesLoose(parameters, useSlotProps_excluded);
-  const resolvedComponentsProps = resolveComponentProps(externalSlotProps, ownerState);
-  const {
-    props: mergedProps,
-    internalRef
-  } = mergeSlotProps(esm_extends_extends({}, rest, {
-    externalSlotProps: resolvedComponentsProps
-  }));
-  const ref = (0,esm_useForkRef/* default */.Z)(internalRef, resolvedComponentsProps == null ? void 0 : resolvedComponentsProps.ref, (_parameters$additiona = parameters.additionalProps) == null ? void 0 : _parameters$additiona.ref);
-  const props = appendOwnerState(elementType, esm_extends_extends({}, mergedProps, {
-    ref
-  }), ownerState);
-  return props;
-}
 ;// CONCATENATED MODULE: ./node_modules/@mui/base/ModalUnstyled/ModalUnstyled.js
 
 
-const ModalUnstyled_excluded = ["children", "classes", "closeAfterTransition", "component", "container", "disableAutoFocus", "disableEnforceFocus", "disableEscapeKeyDown", "disablePortal", "disableRestoreFocus", "disableScrollLock", "hideBackdrop", "keepMounted", "manager", "onBackdropClick", "onClose", "onKeyDown", "open", "onTransitionEnter", "onTransitionExited", "slotProps", "slots"];
+const ModalUnstyled_excluded = ["BackdropComponent", "BackdropProps", "children", "classes", "className", "closeAfterTransition", "component", "components", "componentsProps", "container", "disableAutoFocus", "disableEnforceFocus", "disableEscapeKeyDown", "disablePortal", "disableRestoreFocus", "disableScrollLock", "hideBackdrop", "keepMounted", "manager", "onBackdropClick", "onClose", "onKeyDown", "open", "theme", "onTransitionEnter", "onTransitionExited"];
+
+
 
 
 
@@ -29091,99 +25179,98 @@ const ModalUnstyled_useUtilityClasses = ownerState => {
     classes
   } = ownerState;
   const slots = {
-    root: ['root', !open && exited && 'hidden'],
-    backdrop: ['backdrop']
+    root: ['root', !open && exited && 'hidden']
   };
   return (0,composeClasses/* default */.Z)(slots, getModalUtilityClass, classes);
 };
+
 function ModalUnstyled_getContainer(container) {
   return typeof container === 'function' ? container() : container;
 }
-function ModalUnstyled_getHasTransition(children) {
-  return children ? children.props.hasOwnProperty('in') : false;
-}
 
-// A modal manager used to track and manage the state of open Modals.
+function ModalUnstyled_getHasTransition(props) {
+  return props.children ? props.children.props.hasOwnProperty('in') : false;
+} // A modal manager used to track and manage the state of open Modals.
 // Modals don't open on the server so this won't conflict with concurrent requests.
-const ModalUnstyled_defaultManager = new ModalManager_ModalManager();
 
+
+const ModalUnstyled_defaultManager = new ModalManager_ModalManager();
 /**
  * Modal is a lower-level construct that is leveraged by the following components:
  *
- * *   [Dialog](https://mui.com/material-ui/api/dialog/)
- * *   [Drawer](https://mui.com/material-ui/api/drawer/)
- * *   [Menu](https://mui.com/material-ui/api/menu/)
- * *   [Popover](https://mui.com/material-ui/api/popover/)
+ * - [Dialog](/material-ui/api/dialog/)
+ * - [Drawer](/material-ui/api/drawer/)
+ * - [Menu](/material-ui/api/menu/)
+ * - [Popover](/material-ui/api/popover/)
  *
- * If you are creating a modal dialog, you probably want to use the [Dialog](https://mui.com/material-ui/api/dialog/) component
+ * If you are creating a modal dialog, you probably want to use the [Dialog](/material-ui/api/dialog/) component
  * rather than directly using Modal.
  *
  * This component shares many concepts with [react-overlays](https://react-bootstrap.github.io/react-overlays/#modals).
- *
- * Demos:
- *
- * - [Unstyled Modal](https://mui.com/base/react-modal/)
- *
- * API:
- *
- * - [ModalUnstyled API](https://mui.com/base/api/modal-unstyled/)
  */
-const ModalUnstyled = /*#__PURE__*/react.forwardRef(function ModalUnstyled(props, forwardedRef) {
-  var _props$ariaHidden, _ref;
+
+const ModalUnstyled = /*#__PURE__*/react.forwardRef(function ModalUnstyled(props, ref) {
   const {
-      children,
-      classes: classesProp,
-      closeAfterTransition = false,
-      component,
-      container,
-      disableAutoFocus = false,
-      disableEnforceFocus = false,
-      disableEscapeKeyDown = false,
-      disablePortal = false,
-      disableRestoreFocus = false,
-      disableScrollLock = false,
-      hideBackdrop = false,
-      keepMounted = false,
-      // private
-      manager = ModalUnstyled_defaultManager,
-      onBackdropClick,
-      onClose,
-      onKeyDown,
-      open,
-      onTransitionEnter,
-      onTransitionExited,
-      slotProps = {},
-      slots = {}
-    } = props,
-    other = objectWithoutPropertiesLoose_objectWithoutPropertiesLoose(props, ModalUnstyled_excluded);
-  const [exited, setExited] = react.useState(!open);
+    BackdropComponent,
+    BackdropProps,
+    children,
+    classes: classesProp,
+    className,
+    closeAfterTransition = false,
+    component = 'div',
+    components = {},
+    componentsProps = {},
+    container,
+    disableAutoFocus = false,
+    disableEnforceFocus = false,
+    disableEscapeKeyDown = false,
+    disablePortal = false,
+    disableRestoreFocus = false,
+    disableScrollLock = false,
+    hideBackdrop = false,
+    keepMounted = false,
+    // private
+    // eslint-disable-next-line react/prop-types
+    manager = ModalUnstyled_defaultManager,
+    onBackdropClick,
+    onClose,
+    onKeyDown,
+    open,
+
+    /* eslint-disable react/prop-types */
+    theme,
+    onTransitionEnter,
+    onTransitionExited
+  } = props,
+        other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, ModalUnstyled_excluded);
+
+  const [exited, setExited] = react.useState(true);
   const modal = react.useRef({});
   const mountNodeRef = react.useRef(null);
   const modalRef = react.useRef(null);
-  const handleRef = (0,esm_useForkRef/* default */.Z)(modalRef, forwardedRef);
-  const hasTransition = ModalUnstyled_getHasTransition(children);
-  const ariaHiddenProp = (_props$ariaHidden = props['aria-hidden']) != null ? _props$ariaHidden : true;
+  const handleRef = (0,esm_useForkRef/* default */.Z)(modalRef, ref);
+  const hasTransition = ModalUnstyled_getHasTransition(props);
+
   const getDoc = () => (0,esm_ownerDocument/* default */.Z)(mountNodeRef.current);
+
   const getModal = () => {
     modal.current.modalRef = modalRef.current;
     modal.current.mountNode = mountNodeRef.current;
     return modal.current;
   };
+
   const handleMounted = () => {
     manager.mount(getModal(), {
       disableScrollLock
-    });
+    }); // Fix a bug on Chrome where the scroll isn't initially 0.
 
-    // Fix a bug on Chrome where the scroll isn't initially 0.
-    if (modalRef.current) {
-      modalRef.current.scrollTop = 0;
-    }
+    modalRef.current.scrollTop = 0;
   };
+
   const handleOpen = (0,esm_useEventCallback/* default */.Z)(() => {
     const resolvedContainer = ModalUnstyled_getContainer(container) || getDoc().body;
-    manager.add(getModal(), resolvedContainer);
+    manager.add(getModal(), resolvedContainer); // The element was already mounted.
 
-    // The element was already mounted.
     if (modalRef.current) {
       handleMounted();
     }
@@ -29191,18 +25278,20 @@ const ModalUnstyled = /*#__PURE__*/react.forwardRef(function ModalUnstyled(props
   const isTopModal = react.useCallback(() => manager.isTopModal(getModal()), [manager]);
   const handlePortalRef = (0,esm_useEventCallback/* default */.Z)(node => {
     mountNodeRef.current = node;
-    if (!node || !modalRef.current) {
+
+    if (!node) {
       return;
     }
+
     if (open && isTopModal()) {
       handleMounted();
     } else {
-      ModalManager_ariaHidden(modalRef.current, ariaHiddenProp);
+      ModalManager_ariaHidden(modalRef.current, true);
     }
   });
   const handleClose = react.useCallback(() => {
-    manager.remove(getModal(), ariaHiddenProp);
-  }, [manager, ariaHiddenProp]);
+    manager.remove(getModal());
+  }, [manager]);
   react.useEffect(() => {
     return () => {
       handleClose();
@@ -29215,7 +25304,8 @@ const ModalUnstyled = /*#__PURE__*/react.forwardRef(function ModalUnstyled(props
       handleClose();
     }
   }, [open, handleClose, hasTransition, closeAfterTransition, handleOpen]);
-  const ownerState = esm_extends_extends({}, props, {
+
+  const ownerState = (0,esm_extends/* default */.Z)({}, props, {
     classes: classesProp,
     closeAfterTransition,
     disableAutoFocus,
@@ -29228,101 +25318,105 @@ const ModalUnstyled = /*#__PURE__*/react.forwardRef(function ModalUnstyled(props
     hideBackdrop,
     keepMounted
   });
+
   const classes = ModalUnstyled_useUtilityClasses(ownerState);
+
+  if (!keepMounted && !open && (!hasTransition || exited)) {
+    return null;
+  }
+
   const handleEnter = () => {
     setExited(false);
+
     if (onTransitionEnter) {
       onTransitionEnter();
     }
   };
+
   const handleExited = () => {
     setExited(true);
+
     if (onTransitionExited) {
       onTransitionExited();
     }
+
     if (closeAfterTransition) {
       handleClose();
     }
   };
+
   const handleBackdropClick = event => {
     if (event.target !== event.currentTarget) {
       return;
     }
+
     if (onBackdropClick) {
       onBackdropClick(event);
     }
+
     if (onClose) {
       onClose(event, 'backdropClick');
     }
   };
+
   const handleKeyDown = event => {
     if (onKeyDown) {
       onKeyDown(event);
-    }
-
-    // The handler doesn't take event.defaultPrevented into account:
+    } // The handler doesn't take event.defaultPrevented into account:
     //
     // event.preventDefault() is meant to stop default behaviors like
     // clicking a checkbox to check it, hitting a button to submit a form,
     // and hitting left arrow to move the cursor in a text input etc.
     // Only special HTML elements have these default behaviors.
+
+
     if (event.key !== 'Escape' || !isTopModal()) {
       return;
     }
+
     if (!disableEscapeKeyDown) {
       // Swallow the event, in case someone is listening for the escape key on the body.
       event.stopPropagation();
+
       if (onClose) {
         onClose(event, 'escapeKeyDown');
       }
     }
   };
+
   const childProps = {};
+
   if (children.props.tabIndex === undefined) {
     childProps.tabIndex = '-1';
-  }
+  } // It's a Transition like component
 
-  // It's a Transition like component
+
   if (hasTransition) {
     childProps.onEnter = (0,esm_createChainedFunction/* default */.Z)(handleEnter, children.props.onEnter);
     childProps.onExited = (0,esm_createChainedFunction/* default */.Z)(handleExited, children.props.onExited);
   }
-  const Root = (_ref = component != null ? component : slots.root) != null ? _ref : 'div';
-  const rootProps = useSlotProps({
-    elementType: Root,
-    externalSlotProps: slotProps.root,
-    externalForwardedProps: other,
-    additionalProps: {
-      ref: handleRef,
-      role: 'presentation',
-      onKeyDown: handleKeyDown
-    },
-    className: classes.root,
-    ownerState
-  });
-  const BackdropComponent = slots.backdrop;
-  const backdropProps = useSlotProps({
-    elementType: BackdropComponent,
-    externalSlotProps: slotProps.backdrop,
-    additionalProps: {
-      'aria-hidden': true,
-      onClick: handleBackdropClick,
-      open
-    },
-    className: classes.backdrop,
-    ownerState
-  });
-  if (!keepMounted && !open && (!hasTransition || exited)) {
-    return null;
-  }
-  return /*#__PURE__*/(0,jsx_runtime.jsx)(base_Portal_Portal
-  // @ts-expect-error TODO: include ref to MUI Base Portal props
-  , {
+
+  const Root = components.Root || component;
+  const rootProps = componentsProps.root || {};
+  return /*#__PURE__*/(0,jsx_runtime.jsx)(base_Portal_Portal, {
     ref: handlePortalRef,
     container: container,
     disablePortal: disablePortal,
-    children: /*#__PURE__*/(0,jsx_runtime.jsxs)(Root, esm_extends_extends({}, rootProps, {
-      children: [!hideBackdrop && BackdropComponent ? /*#__PURE__*/(0,jsx_runtime.jsx)(BackdropComponent, esm_extends_extends({}, backdropProps)) : null, /*#__PURE__*/(0,jsx_runtime.jsx)(FocusTrap_FocusTrap, {
+    children: /*#__PURE__*/(0,jsx_runtime.jsxs)(Root, (0,esm_extends/* default */.Z)({
+      role: "presentation"
+    }, rootProps, !utils_isHostComponent(Root) && {
+      as: component,
+      ownerState: (0,esm_extends/* default */.Z)({}, ownerState, rootProps.ownerState),
+      theme
+    }, other, {
+      ref: handleRef,
+      onKeyDown: handleKeyDown,
+      className: (0,clsx_m/* default */.Z)(classes.root, rootProps.className, className),
+      children: [!hideBackdrop && BackdropComponent ? /*#__PURE__*/(0,jsx_runtime.jsx)(BackdropComponent, (0,esm_extends/* default */.Z)({
+        "aria-hidden": true,
+        open: open,
+        onClick: handleBackdropClick
+      }, BackdropProps)) : null, /*#__PURE__*/(0,jsx_runtime.jsx)(TrapFocus_TrapFocus, {
         disableEnforceFocus: disableEnforceFocus,
         disableAutoFocus: disableAutoFocus,
         disableRestoreFocus: disableRestoreFocus,
@@ -29335,476 +25429,11 @@ const ModalUnstyled = /*#__PURE__*/react.forwardRef(function ModalUnstyled(props
 });
  false ? 0 : void 0;
 /* harmony default export */ const ModalUnstyled_ModalUnstyled = (ModalUnstyled);
-;// CONCATENATED MODULE: ./node_modules/@mui/material/node_modules/@babel/runtime/helpers/esm/setPrototypeOf.js
-function setPrototypeOf_setPrototypeOf(o, p) {
-  setPrototypeOf_setPrototypeOf = Object.setPrototypeOf ? Object.setPrototypeOf.bind() : function _setPrototypeOf(o, p) {
-    o.__proto__ = p;
-    return o;
-  };
-  return setPrototypeOf_setPrototypeOf(o, p);
-}
-;// CONCATENATED MODULE: ./node_modules/@mui/material/node_modules/@babel/runtime/helpers/esm/inheritsLoose.js
-
-function inheritsLoose_inheritsLoose(subClass, superClass) {
-  subClass.prototype = Object.create(superClass.prototype);
-  subClass.prototype.constructor = subClass;
-  setPrototypeOf_setPrototypeOf(subClass, superClass);
-}
-;// CONCATENATED MODULE: ./node_modules/@mui/material/node_modules/react-transition-group/esm/config.js
-/* harmony default export */ const esm_config = ({
-  disabled: false
-});
-;// CONCATENATED MODULE: ./node_modules/@mui/material/node_modules/react-transition-group/esm/TransitionGroupContext.js
-
-/* harmony default export */ const esm_TransitionGroupContext = (react.createContext(null));
-;// CONCATENATED MODULE: ./node_modules/@mui/material/node_modules/react-transition-group/esm/utils/reflow.js
-var forceReflow = function forceReflow(node) {
-  return node.scrollTop;
-};
-;// CONCATENATED MODULE: ./node_modules/@mui/material/node_modules/react-transition-group/esm/Transition.js
-
-
-
-
-
-
-
-
-
-var Transition_UNMOUNTED = 'unmounted';
-var Transition_EXITED = 'exited';
-var Transition_ENTERING = 'entering';
-var Transition_ENTERED = 'entered';
-var Transition_EXITING = 'exiting';
-/**
- * The Transition component lets you describe a transition from one component
- * state to another _over time_ with a simple declarative API. Most commonly
- * it's used to animate the mounting and unmounting of a component, but can also
- * be used to describe in-place transition states as well.
- *
- * ---
- *
- * **Note**: `Transition` is a platform-agnostic base component. If you're using
- * transitions in CSS, you'll probably want to use
- * [`CSSTransition`](https://reactcommunity.org/react-transition-group/css-transition)
- * instead. It inherits all the features of `Transition`, but contains
- * additional features necessary to play nice with CSS transitions (hence the
- * name of the component).
- *
- * ---
- *
- * By default the `Transition` component does not alter the behavior of the
- * component it renders, it only tracks "enter" and "exit" states for the
- * components. It's up to you to give meaning and effect to those states. For
- * example we can add styles to a component when it enters or exits:
- *
- * ```jsx
- * import { Transition } from 'react-transition-group';
- *
- * const duration = 300;
- *
- * const defaultStyle = {
- *   transition: `opacity ${duration}ms ease-in-out`,
- *   opacity: 0,
- * }
- *
- * const transitionStyles = {
- *   entering: { opacity: 1 },
- *   entered:  { opacity: 1 },
- *   exiting:  { opacity: 0 },
- *   exited:  { opacity: 0 },
- * };
- *
- * const Fade = ({ in: inProp }) => (
- *   <Transition in={inProp} timeout={duration}>
- *     {state => (
- *       <div style={{
- *         ...defaultStyle,
- *         ...transitionStyles[state]
- *       }}>
- *         I'm a fade Transition!
- *       </div>
- *     )}
- *   </Transition>
- * );
- * ```
- *
- * There are 4 main states a Transition can be in:
- *  - `'entering'`
- *  - `'entered'`
- *  - `'exiting'`
- *  - `'exited'`
- *
- * Transition state is toggled via the `in` prop. When `true` the component
- * begins the "Enter" stage. During this stage, the component will shift from
- * its current transition state, to `'entering'` for the duration of the
- * transition and then to the `'entered'` stage once it's complete. Let's take
- * the following example (we'll use the
- * [useState](https://reactjs.org/docs/hooks-reference.html#usestate) hook):
- *
- * ```jsx
- * function App() {
- *   const [inProp, setInProp] = useState(false);
- *   return (
- *     <div>
- *       <Transition in={inProp} timeout={500}>
- *         {state => (
- *           // ...
- *         )}
- *       </Transition>
- *       <button onClick={() => setInProp(true)}>
- *         Click to Enter
- *       </button>
- *     </div>
- *   );
- * }
- * ```
- *
- * When the button is clicked the component will shift to the `'entering'` state
- * and stay there for 500ms (the value of `timeout`) before it finally switches
- * to `'entered'`.
- *
- * When `in` is `false` the same thing happens except the state moves from
- * `'exiting'` to `'exited'`.
- */
-
-var Transition_Transition = /*#__PURE__*/function (_React$Component) {
-  inheritsLoose_inheritsLoose(Transition, _React$Component);
-
-  function Transition(props, context) {
-    var _this;
-
-    _this = _React$Component.call(this, props, context) || this;
-    var parentGroup = context; // In the context of a TransitionGroup all enters are really appears
-
-    var appear = parentGroup && !parentGroup.isMounting ? props.enter : props.appear;
-    var initialStatus;
-    _this.appearStatus = null;
-
-    if (props.in) {
-      if (appear) {
-        initialStatus = Transition_EXITED;
-        _this.appearStatus = Transition_ENTERING;
-      } else {
-        initialStatus = Transition_ENTERED;
-      }
-    } else {
-      if (props.unmountOnExit || props.mountOnEnter) {
-        initialStatus = Transition_UNMOUNTED;
-      } else {
-        initialStatus = Transition_EXITED;
-      }
-    }
-
-    _this.state = {
-      status: initialStatus
-    };
-    _this.nextCallback = null;
-    return _this;
-  }
-
-  Transition.getDerivedStateFromProps = function getDerivedStateFromProps(_ref, prevState) {
-    var nextIn = _ref.in;
-
-    if (nextIn && prevState.status === Transition_UNMOUNTED) {
-      return {
-        status: Transition_EXITED
-      };
-    }
-
-    return null;
-  } // getSnapshotBeforeUpdate(prevProps) {
-  //   let nextStatus = null
-  //   if (prevProps !== this.props) {
-  //     const { status } = this.state
-  //     if (this.props.in) {
-  //       if (status !== ENTERING && status !== ENTERED) {
-  //         nextStatus = ENTERING
-  //       }
-  //     } else {
-  //       if (status === ENTERING || status === ENTERED) {
-  //         nextStatus = EXITING
-  //       }
-  //     }
-  //   }
-  //   return { nextStatus }
-  // }
-  ;
-
-  var _proto = Transition.prototype;
-
-  _proto.componentDidMount = function componentDidMount() {
-    this.updateStatus(true, this.appearStatus);
-  };
-
-  _proto.componentDidUpdate = function componentDidUpdate(prevProps) {
-    var nextStatus = null;
-
-    if (prevProps !== this.props) {
-      var status = this.state.status;
-
-      if (this.props.in) {
-        if (status !== Transition_ENTERING && status !== Transition_ENTERED) {
-          nextStatus = Transition_ENTERING;
-        }
-      } else {
-        if (status === Transition_ENTERING || status === Transition_ENTERED) {
-          nextStatus = Transition_EXITING;
-        }
-      }
-    }
-
-    this.updateStatus(false, nextStatus);
-  };
-
-  _proto.componentWillUnmount = function componentWillUnmount() {
-    this.cancelNextCallback();
-  };
-
-  _proto.getTimeouts = function getTimeouts() {
-    var timeout = this.props.timeout;
-    var exit, enter, appear;
-    exit = enter = appear = timeout;
-
-    if (timeout != null && typeof timeout !== 'number') {
-      exit = timeout.exit;
-      enter = timeout.enter; // TODO: remove fallback for next major
-
-      appear = timeout.appear !== undefined ? timeout.appear : enter;
-    }
-
-    return {
-      exit: exit,
-      enter: enter,
-      appear: appear
-    };
-  };
-
-  _proto.updateStatus = function updateStatus(mounting, nextStatus) {
-    if (mounting === void 0) {
-      mounting = false;
-    }
-
-    if (nextStatus !== null) {
-      // nextStatus will always be ENTERING or EXITING.
-      this.cancelNextCallback();
-
-      if (nextStatus === Transition_ENTERING) {
-        if (this.props.unmountOnExit || this.props.mountOnEnter) {
-          var node = this.props.nodeRef ? this.props.nodeRef.current : react_dom.findDOMNode(this); // https://github.com/reactjs/react-transition-group/pull/749
-          // With unmountOnExit or mountOnEnter, the enter animation should happen at the transition between `exited` and `entering`.
-          // To make the animation happen,  we have to separate each rendering and avoid being processed as batched.
-
-          if (node) forceReflow(node);
-        }
-
-        this.performEnter(mounting);
-      } else {
-        this.performExit();
-      }
-    } else if (this.props.unmountOnExit && this.state.status === Transition_EXITED) {
-      this.setState({
-        status: Transition_UNMOUNTED
-      });
-    }
-  };
-
-  _proto.performEnter = function performEnter(mounting) {
-    var _this2 = this;
-
-    var enter = this.props.enter;
-    var appearing = this.context ? this.context.isMounting : mounting;
-
-    var _ref2 = this.props.nodeRef ? [appearing] : [react_dom.findDOMNode(this), appearing],
-        maybeNode = _ref2[0],
-        maybeAppearing = _ref2[1];
-
-    var timeouts = this.getTimeouts();
-    var enterTimeout = appearing ? timeouts.appear : timeouts.enter; // no enter animation skip right to ENTERED
-    // if we are mounting and running this it means appear _must_ be set
-
-    if (!mounting && !enter || esm_config.disabled) {
-      this.safeSetState({
-        status: Transition_ENTERED
-      }, function () {
-        _this2.props.onEntered(maybeNode);
-      });
-      return;
-    }
-
-    this.props.onEnter(maybeNode, maybeAppearing);
-    this.safeSetState({
-      status: Transition_ENTERING
-    }, function () {
-      _this2.props.onEntering(maybeNode, maybeAppearing);
-
-      _this2.onTransitionEnd(enterTimeout, function () {
-        _this2.safeSetState({
-          status: Transition_ENTERED
-        }, function () {
-          _this2.props.onEntered(maybeNode, maybeAppearing);
-        });
-      });
-    });
-  };
-
-  _proto.performExit = function performExit() {
-    var _this3 = this;
-
-    var exit = this.props.exit;
-    var timeouts = this.getTimeouts();
-    var maybeNode = this.props.nodeRef ? undefined : react_dom.findDOMNode(this); // no exit animation skip right to EXITED
-
-    if (!exit || esm_config.disabled) {
-      this.safeSetState({
-        status: Transition_EXITED
-      }, function () {
-        _this3.props.onExited(maybeNode);
-      });
-      return;
-    }
-
-    this.props.onExit(maybeNode);
-    this.safeSetState({
-      status: Transition_EXITING
-    }, function () {
-      _this3.props.onExiting(maybeNode);
-
-      _this3.onTransitionEnd(timeouts.exit, function () {
-        _this3.safeSetState({
-          status: Transition_EXITED
-        }, function () {
-          _this3.props.onExited(maybeNode);
-        });
-      });
-    });
-  };
-
-  _proto.cancelNextCallback = function cancelNextCallback() {
-    if (this.nextCallback !== null) {
-      this.nextCallback.cancel();
-      this.nextCallback = null;
-    }
-  };
-
-  _proto.safeSetState = function safeSetState(nextState, callback) {
-    // This shouldn't be necessary, but there are weird race conditions with
-    // setState callbacks and unmounting in testing, so always make sure that
-    // we can cancel any pending setState callbacks after we unmount.
-    callback = this.setNextCallback(callback);
-    this.setState(nextState, callback);
-  };
-
-  _proto.setNextCallback = function setNextCallback(callback) {
-    var _this4 = this;
-
-    var active = true;
-
-    this.nextCallback = function (event) {
-      if (active) {
-        active = false;
-        _this4.nextCallback = null;
-        callback(event);
-      }
-    };
-
-    this.nextCallback.cancel = function () {
-      active = false;
-    };
-
-    return this.nextCallback;
-  };
-
-  _proto.onTransitionEnd = function onTransitionEnd(timeout, handler) {
-    this.setNextCallback(handler);
-    var node = this.props.nodeRef ? this.props.nodeRef.current : react_dom.findDOMNode(this);
-    var doesNotHaveTimeoutOrListener = timeout == null && !this.props.addEndListener;
-
-    if (!node || doesNotHaveTimeoutOrListener) {
-      setTimeout(this.nextCallback, 0);
-      return;
-    }
-
-    if (this.props.addEndListener) {
-      var _ref3 = this.props.nodeRef ? [this.nextCallback] : [node, this.nextCallback],
-          maybeNode = _ref3[0],
-          maybeNextCallback = _ref3[1];
-
-      this.props.addEndListener(maybeNode, maybeNextCallback);
-    }
-
-    if (timeout != null) {
-      setTimeout(this.nextCallback, timeout);
-    }
-  };
-
-  _proto.render = function render() {
-    var status = this.state.status;
-
-    if (status === Transition_UNMOUNTED) {
-      return null;
-    }
-
-    var _this$props = this.props,
-        children = _this$props.children,
-        _in = _this$props.in,
-        _mountOnEnter = _this$props.mountOnEnter,
-        _unmountOnExit = _this$props.unmountOnExit,
-        _appear = _this$props.appear,
-        _enter = _this$props.enter,
-        _exit = _this$props.exit,
-        _timeout = _this$props.timeout,
-        _addEndListener = _this$props.addEndListener,
-        _onEnter = _this$props.onEnter,
-        _onEntering = _this$props.onEntering,
-        _onEntered = _this$props.onEntered,
-        _onExit = _this$props.onExit,
-        _onExiting = _this$props.onExiting,
-        _onExited = _this$props.onExited,
-        _nodeRef = _this$props.nodeRef,
-        childProps = (0,objectWithoutPropertiesLoose/* default */.Z)(_this$props, ["children", "in", "mountOnEnter", "unmountOnExit", "appear", "enter", "exit", "timeout", "addEndListener", "onEnter", "onEntering", "onEntered", "onExit", "onExiting", "onExited", "nodeRef"]);
-
-    return (
-      /*#__PURE__*/
-      // allows for nested Transitions
-      react.createElement(esm_TransitionGroupContext.Provider, {
-        value: null
-      }, typeof children === 'function' ? children(status, childProps) : react.cloneElement(react.Children.only(children), childProps))
-    );
-  };
-
-  return Transition;
-}(react.Component);
-
-Transition_Transition.contextType = esm_TransitionGroupContext;
-Transition_Transition.propTypes =  false ? 0 : {}; // Name the function so it is clearer in the documentation
-
-function Transition_noop() {}
-
-Transition_Transition.defaultProps = {
-  in: false,
-  mountOnEnter: false,
-  unmountOnExit: false,
-  appear: false,
-  enter: true,
-  exit: true,
-  onEnter: Transition_noop,
-  onEntering: Transition_noop,
-  onEntered: Transition_noop,
-  onExit: Transition_noop,
-  onExiting: Transition_noop,
-  onExited: Transition_noop
-};
-Transition_Transition.UNMOUNTED = Transition_UNMOUNTED;
-Transition_Transition.EXITED = Transition_EXITED;
-Transition_Transition.ENTERING = Transition_ENTERING;
-Transition_Transition.ENTERED = Transition_ENTERED;
-Transition_Transition.EXITING = Transition_EXITING;
-/* harmony default export */ const react_transition_group_esm_Transition = (Transition_Transition);
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/transitions/utils.js
 const utils_reflow = node => node.scrollTop;
 function utils_getTransitionProps(props, options) {
   var _style$transitionDura, _style$transitionTimi;
+
   const {
     timeout,
     easing,
@@ -29838,43 +25467,46 @@ const Fade_styles = {
     opacity: 1
   }
 };
-
 /**
  * The Fade transition is used by the [Modal](/material-ui/react-modal/) component.
  * It uses [react-transition-group](https://github.com/reactjs/react-transition-group) internally.
  */
+
 const Fade = /*#__PURE__*/react.forwardRef(function Fade(props, ref) {
   const theme = styles_useTheme_useTheme();
   const defaultTimeout = {
     enter: theme.transitions.duration.enteringScreen,
     exit: theme.transitions.duration.leavingScreen
   };
+
   const {
-      addEndListener,
-      appear = true,
-      children,
-      easing,
-      in: inProp,
-      onEnter,
-      onEntered,
-      onEntering,
-      onExit,
-      onExited,
-      onExiting,
-      style,
-      timeout = defaultTimeout,
-      // eslint-disable-next-line react/prop-types
-      TransitionComponent = react_transition_group_esm_Transition
-    } = props,
-    other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, Fade_excluded);
+    addEndListener,
+    appear = true,
+    children,
+    easing,
+    in: inProp,
+    onEnter,
+    onEntered,
+    onEntering,
+    onExit,
+    onExited,
+    onExiting,
+    style,
+    timeout = defaultTimeout,
+    // eslint-disable-next-line react/prop-types
+    TransitionComponent = esm_Transition
+  } = props,
+        other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, Fade_excluded);
+
   const enableStrictModeCompat = true;
   const nodeRef = react.useRef(null);
-  const handleRef = (0,utils_useForkRef/* default */.Z)(nodeRef, children.ref, ref);
+  const foreignRef = (0,utils_useForkRef/* default */.Z)(children.ref, ref);
+  const handleRef = (0,utils_useForkRef/* default */.Z)(nodeRef, foreignRef);
+
   const normalizedTransitionCallback = callback => maybeIsAppearing => {
     if (callback) {
-      const node = nodeRef.current;
+      const node = nodeRef.current; // onEnterXxx and onExitXxx callbacks have a different arguments.length value.
 
-      // onEnterXxx and onExitXxx callbacks have a different arguments.length value.
       if (maybeIsAppearing === undefined) {
         callback(node);
       } else {
@@ -29882,6 +25514,7 @@ const Fade = /*#__PURE__*/react.forwardRef(function Fade(props, ref) {
       }
     }
   };
+
   const handleEntering = normalizedTransitionCallback(onEntering);
   const handleEnter = normalizedTransitionCallback((node, isAppearing) => {
     utils_reflow(node); // So the animation always start from the start.
@@ -29895,6 +25528,7 @@ const Fade = /*#__PURE__*/react.forwardRef(function Fade(props, ref) {
     });
     node.style.webkitTransition = theme.transitions.create('opacity', transitionProps);
     node.style.transition = theme.transitions.create('opacity', transitionProps);
+
     if (onEnter) {
       onEnter(node, isAppearing);
     }
@@ -29911,17 +25545,20 @@ const Fade = /*#__PURE__*/react.forwardRef(function Fade(props, ref) {
     });
     node.style.webkitTransition = theme.transitions.create('opacity', transitionProps);
     node.style.transition = theme.transitions.create('opacity', transitionProps);
+
     if (onExit) {
       onExit(node);
     }
   });
   const handleExited = normalizedTransitionCallback(onExited);
+
   const handleAddEndListener = next => {
     if (addEndListener) {
       // Old call signature before `react-transition-group` implemented `nodeRef`
       addEndListener(nodeRef.current, next);
     }
   };
+
   return /*#__PURE__*/(0,jsx_runtime.jsx)(TransitionComponent, (0,esm_extends/* default */.Z)({
     appear: appear,
     in: inProp,
@@ -29950,7 +25587,6 @@ const Fade = /*#__PURE__*/react.forwardRef(function Fade(props, ref) {
 /* harmony default export */ const Fade_Fade = (Fade);
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/Backdrop/backdropClasses.js
 
-
 function getBackdropUtilityClass(slot) {
   return (0,generateUtilityClass_generateUtilityClass/* default */.Z)('MuiBackdrop', slot);
 }
@@ -29959,7 +25595,8 @@ const backdropClasses = (0,generateUtilityClasses/* default */.Z)('MuiBackdrop',
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/Backdrop/Backdrop.js
 
 
-const Backdrop_excluded = ["children", "component", "components", "componentsProps", "className", "invisible", "open", "slotProps", "slots", "transitionDuration", "TransitionComponent"];
+const Backdrop_excluded = ["children", "component", "components", "componentsProps", "className", "invisible", "open", "transitionDuration", "TransitionComponent"];
+
 
 
 
@@ -29979,6 +25616,7 @@ const Backdrop_useUtilityClasses = ownerState => {
   };
   return (0,composeClasses/* default */.Z)(slots, getBackdropUtilityClass, classes);
 };
+
 const BackdropRoot = (0,styled/* default */.ZP)('div', {
   name: 'MuiBackdrop',
   slot: 'Root',
@@ -30005,46 +25643,46 @@ const BackdropRoot = (0,styled/* default */.ZP)('div', {
   backgroundColor: 'transparent'
 }));
 const Backdrop = /*#__PURE__*/react.forwardRef(function Backdrop(inProps, ref) {
-  var _slotProps$root, _ref, _slots$root;
+  var _components$Root, _componentsProps$root;
+
   const props = (0,useThemeProps/* default */.Z)({
     props: inProps,
     name: 'MuiBackdrop'
   });
+
   const {
-      children,
-      component = 'div',
-      components = {},
-      componentsProps = {},
-      className,
-      invisible = false,
-      open,
-      slotProps = {},
-      slots = {},
-      transitionDuration,
-      // eslint-disable-next-line react/prop-types
-      TransitionComponent = Fade_Fade
-    } = props,
-    other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, Backdrop_excluded);
+    children,
+    component = 'div',
+    components = {},
+    componentsProps = {},
+    className,
+    invisible = false,
+    open,
+    transitionDuration,
+    // eslint-disable-next-line react/prop-types
+    TransitionComponent = Fade_Fade
+  } = props,
+        other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, Backdrop_excluded);
+
   const ownerState = (0,esm_extends/* default */.Z)({}, props, {
     component,
     invisible
   });
+
   const classes = Backdrop_useUtilityClasses(ownerState);
-  const rootSlotProps = (_slotProps$root = slotProps.root) != null ? _slotProps$root : componentsProps.root;
   return /*#__PURE__*/(0,jsx_runtime.jsx)(TransitionComponent, (0,esm_extends/* default */.Z)({
     in: open,
     timeout: transitionDuration
   }, other, {
-    children: /*#__PURE__*/(0,jsx_runtime.jsx)(BackdropRoot, (0,esm_extends/* default */.Z)({
-      "aria-hidden": true
-    }, rootSlotProps, {
-      as: (_ref = (_slots$root = slots.root) != null ? _slots$root : components.Root) != null ? _ref : component,
-      className: (0,dist_clsx_m/* default */.Z)(classes.root, className, rootSlotProps == null ? void 0 : rootSlotProps.className),
-      ownerState: (0,esm_extends/* default */.Z)({}, ownerState, rootSlotProps == null ? void 0 : rootSlotProps.ownerState),
+    children: /*#__PURE__*/(0,jsx_runtime.jsx)(BackdropRoot, {
+      "aria-hidden": true,
+      as: (_components$Root = components.Root) != null ? _components$Root : component,
+      className: (0,clsx_m/* default */.Z)(classes.root, className),
+      ownerState: (0,esm_extends/* default */.Z)({}, ownerState, (_componentsProps$root = componentsProps.root) == null ? void 0 : _componentsProps$root.ownerState),
       classes: classes,
       ref: ref,
       children: children
-    }))
+    })
   }));
 });
  false ? 0 : void 0;
@@ -30052,7 +25690,7 @@ const Backdrop = /*#__PURE__*/react.forwardRef(function Backdrop(inProps, ref) {
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/Modal/Modal.js
 
 
-const Modal_excluded = ["BackdropComponent", "BackdropProps", "closeAfterTransition", "children", "component", "components", "componentsProps", "disableAutoFocus", "disableEnforceFocus", "disableEscapeKeyDown", "disablePortal", "disableRestoreFocus", "disableScrollLock", "hideBackdrop", "keepMounted", "slotProps", "slots", "theme"];
+const Modal_excluded = ["BackdropComponent", "closeAfterTransition", "children", "components", "componentsProps", "disableAutoFocus", "disableEnforceFocus", "disableEscapeKeyDown", "disablePortal", "disableRestoreFocus", "disableScrollLock", "hideBackdrop", "keepMounted"];
 
 
 
@@ -30063,9 +25701,11 @@ const Modal_excluded = ["BackdropComponent", "BackdropProps", "closeAfterTransit
 
 
 const modalClasses = (/* unused pure expression or super */ null && (modalUnstyledClasses));
+
 const extendUtilityClasses = ownerState => {
   return ownerState.classes;
 };
+
 const ModalRoot = (0,styled/* default */.ZP)('div', {
   name: 'MuiModal',
   slot: 'Root',
@@ -30080,7 +25720,7 @@ const ModalRoot = (0,styled/* default */.ZP)('div', {
   ownerState
 }) => (0,esm_extends/* default */.Z)({
   position: 'fixed',
-  zIndex: (theme.vars || theme).zIndex.modal,
+  zIndex: theme.zIndex.modal,
   right: 0,
   bottom: 0,
   top: 0,
@@ -30097,7 +25737,6 @@ const ModalBackdrop = (0,styled/* default */.ZP)(Backdrop_Backdrop, {
 })({
   zIndex: -1
 });
-
 /**
  * Modal is a lower-level construct that is leveraged by the following components:
  *
@@ -30111,34 +25750,32 @@ const ModalBackdrop = (0,styled/* default */.ZP)(Backdrop_Backdrop, {
  *
  * This component shares many concepts with [react-overlays](https://react-bootstrap.github.io/react-overlays/#modals).
  */
+
 const Modal_Modal_Modal = /*#__PURE__*/react.forwardRef(function Modal(inProps, ref) {
-  var _ref, _slots$root, _ref2, _slots$backdrop, _slotProps$root, _slotProps$backdrop;
+  var _componentsProps$root;
+
   const props = (0,useThemeProps/* default */.Z)({
     name: 'MuiModal',
     props: inProps
   });
+
   const {
-      BackdropComponent = ModalBackdrop,
-      BackdropProps,
-      closeAfterTransition = false,
-      children,
-      component,
-      components = {},
-      componentsProps = {},
-      disableAutoFocus = false,
-      disableEnforceFocus = false,
-      disableEscapeKeyDown = false,
-      disablePortal = false,
-      disableRestoreFocus = false,
-      disableScrollLock = false,
-      hideBackdrop = false,
-      keepMounted = false,
-      slotProps,
-      slots,
-      // eslint-disable-next-line react/prop-types
-      theme
-    } = props,
-    other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, Modal_excluded);
+    BackdropComponent = ModalBackdrop,
+    closeAfterTransition = false,
+    children,
+    components = {},
+    componentsProps = {},
+    disableAutoFocus = false,
+    disableEnforceFocus = false,
+    disableEscapeKeyDown = false,
+    disablePortal = false,
+    disableRestoreFocus = false,
+    disableScrollLock = false,
+    hideBackdrop = false,
+    keepMounted = false
+  } = props,
+        other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, Modal_excluded);
+
   const [exited, setExited] = react.useState(true);
   const commonProps = {
     closeAfterTransition,
@@ -30151,26 +25788,22 @@ const Modal_Modal_Modal = /*#__PURE__*/react.forwardRef(function Modal(inProps, 
     hideBackdrop,
     keepMounted
   };
+
   const ownerState = (0,esm_extends/* default */.Z)({}, props, commonProps, {
     exited
   });
+
   const classes = extendUtilityClasses(ownerState);
-  const RootSlot = (_ref = (_slots$root = slots == null ? void 0 : slots.root) != null ? _slots$root : components.Root) != null ? _ref : ModalRoot;
-  const BackdropSlot = (_ref2 = (_slots$backdrop = slots == null ? void 0 : slots.backdrop) != null ? _slots$backdrop : components.Backdrop) != null ? _ref2 : BackdropComponent;
-  const rootSlotProps = (_slotProps$root = slotProps == null ? void 0 : slotProps.root) != null ? _slotProps$root : componentsProps.root;
-  const backdropSlotProps = (_slotProps$backdrop = slotProps == null ? void 0 : slotProps.backdrop) != null ? _slotProps$backdrop : componentsProps.backdrop;
   return /*#__PURE__*/(0,jsx_runtime.jsx)(ModalUnstyled_ModalUnstyled, (0,esm_extends/* default */.Z)({
-    slots: {
-      root: RootSlot,
-      backdrop: BackdropSlot
+    components: (0,esm_extends/* default */.Z)({
+      Root: ModalRoot
+    }, components),
+    componentsProps: {
+      root: (0,esm_extends/* default */.Z)({}, componentsProps.root, (!components.Root || !utils_isHostComponent(components.Root)) && {
+        ownerState: (0,esm_extends/* default */.Z)({}, (_componentsProps$root = componentsProps.root) == null ? void 0 : _componentsProps$root.ownerState)
+      })
     },
-    slotProps: {
-      root: () => (0,esm_extends/* default */.Z)({}, resolveComponentProps(rootSlotProps, ownerState), !utils_isHostComponent(RootSlot) && {
-        as: component,
-        theme
-      }),
-      backdrop: () => (0,esm_extends/* default */.Z)({}, BackdropProps, resolveComponentProps(backdropSlotProps, ownerState))
-    },
+    BackdropComponent: BackdropComponent,
     onTransitionEnter: () => setExited(false),
     onTransitionExited: () => setExited(true),
     ref: ref
@@ -30198,70 +25831,83 @@ const Slide_excluded = ["addEndListener", "appear", "children", "container", "di
 
 
 
-
-
-// Translate the node so it can't be seen on the screen.
+ // Translate the node so it can't be seen on the screen.
 // Later, we're going to translate the node back to its original location with `none`.
+
+
 
 function getTranslateValue(direction, node, resolvedContainer) {
   const rect = node.getBoundingClientRect();
   const containerRect = resolvedContainer && resolvedContainer.getBoundingClientRect();
   const containerWindow = (0,utils_ownerWindow/* default */.Z)(node);
   let transform;
+
   if (node.fakeTransform) {
     transform = node.fakeTransform;
   } else {
     const computedStyle = containerWindow.getComputedStyle(node);
     transform = computedStyle.getPropertyValue('-webkit-transform') || computedStyle.getPropertyValue('transform');
   }
+
   let offsetX = 0;
   let offsetY = 0;
+
   if (transform && transform !== 'none' && typeof transform === 'string') {
     const transformValues = transform.split('(')[1].split(')')[0].split(',');
     offsetX = parseInt(transformValues[4], 10);
     offsetY = parseInt(transformValues[5], 10);
   }
+
   if (direction === 'left') {
     if (containerRect) {
       return `translateX(${containerRect.right + offsetX - rect.left}px)`;
     }
+
     return `translateX(${containerWindow.innerWidth + offsetX - rect.left}px)`;
   }
+
   if (direction === 'right') {
     if (containerRect) {
       return `translateX(-${rect.right - containerRect.left - offsetX}px)`;
     }
+
     return `translateX(-${rect.left + rect.width - offsetX}px)`;
   }
+
   if (direction === 'up') {
     if (containerRect) {
       return `translateY(${containerRect.bottom + offsetY - rect.top}px)`;
     }
-    return `translateY(${containerWindow.innerHeight + offsetY - rect.top}px)`;
-  }
 
-  // direction === 'down'
+    return `translateY(${containerWindow.innerHeight + offsetY - rect.top}px)`;
+  } // direction === 'down'
+
+
   if (containerRect) {
     return `translateY(-${rect.top - containerRect.top + rect.height - offsetY}px)`;
   }
+
   return `translateY(-${rect.top + rect.height - offsetY}px)`;
 }
+
 function resolveContainer(containerPropProp) {
   return typeof containerPropProp === 'function' ? containerPropProp() : containerPropProp;
 }
+
 function setTranslateValue(direction, node, containerProp) {
   const resolvedContainer = resolveContainer(containerProp);
   const transform = getTranslateValue(direction, node, resolvedContainer);
+
   if (transform) {
     node.style.webkitTransform = transform;
     node.style.transform = transform;
   }
 }
-
 /**
  * The Slide transition is used by the [Drawer](/material-ui/react-drawer/) component.
  * It uses [react-transition-group](https://github.com/reactjs/react-transition-group) internally.
  */
+
 const Slide = /*#__PURE__*/react.forwardRef(function Slide(props, ref) {
   const theme = styles_useTheme_useTheme();
   const defaultEasing = {
@@ -30272,28 +25918,32 @@ const Slide = /*#__PURE__*/react.forwardRef(function Slide(props, ref) {
     enter: theme.transitions.duration.enteringScreen,
     exit: theme.transitions.duration.leavingScreen
   };
+
   const {
-      addEndListener,
-      appear = true,
-      children,
-      container: containerProp,
-      direction = 'down',
-      easing: easingProp = defaultEasing,
-      in: inProp,
-      onEnter,
-      onEntered,
-      onEntering,
-      onExit,
-      onExited,
-      onExiting,
-      style,
-      timeout = defaultTimeout,
-      // eslint-disable-next-line react/prop-types
-      TransitionComponent = react_transition_group_esm_Transition
-    } = props,
-    other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, Slide_excluded);
+    addEndListener,
+    appear = true,
+    children,
+    container: containerProp,
+    direction = 'down',
+    easing: easingProp = defaultEasing,
+    in: inProp,
+    onEnter,
+    onEntered,
+    onEntering,
+    onExit,
+    onExited,
+    onExiting,
+    style,
+    timeout = defaultTimeout,
+    // eslint-disable-next-line react/prop-types
+    TransitionComponent = esm_Transition
+  } = props,
+        other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, Slide_excluded);
+
   const childrenRef = react.useRef(null);
-  const handleRef = (0,utils_useForkRef/* default */.Z)(children.ref, childrenRef, ref);
+  const handleRefIntermediary = (0,utils_useForkRef/* default */.Z)(children.ref, childrenRef);
+  const handleRef = (0,utils_useForkRef/* default */.Z)(handleRefIntermediary, ref);
+
   const normalizedTransitionCallback = callback => isAppearing => {
     if (callback) {
       // onEnterXxx and onExitXxx callbacks have a different arguments.length value.
@@ -30304,9 +25954,11 @@ const Slide = /*#__PURE__*/react.forwardRef(function Slide(props, ref) {
       }
     }
   };
+
   const handleEnter = normalizedTransitionCallback((node, isAppearing) => {
     setTranslateValue(direction, node, containerProp);
     utils_reflow(node);
+
     if (onEnter) {
       onEnter(node, isAppearing);
     }
@@ -30323,6 +25975,7 @@ const Slide = /*#__PURE__*/react.forwardRef(function Slide(props, ref) {
     node.style.transition = theme.transitions.create('transform', (0,esm_extends/* default */.Z)({}, transitionProps));
     node.style.webkitTransform = 'none';
     node.style.transform = 'none';
+
     if (onEntering) {
       onEntering(node, isAppearing);
     }
@@ -30340,6 +25993,7 @@ const Slide = /*#__PURE__*/react.forwardRef(function Slide(props, ref) {
     node.style.webkitTransition = theme.transitions.create('-webkit-transform', transitionProps);
     node.style.transition = theme.transitions.create('transform', transitionProps);
     setTranslateValue(direction, node, containerProp);
+
     if (onExit) {
       onExit(node);
     }
@@ -30348,16 +26002,19 @@ const Slide = /*#__PURE__*/react.forwardRef(function Slide(props, ref) {
     // No need for transitions when the component is hidden
     node.style.webkitTransition = '';
     node.style.transition = '';
+
     if (onExited) {
       onExited(node);
     }
   });
+
   const handleAddEndListener = next => {
     if (addEndListener) {
       // Old call signature before `react-transition-group` implemented `nodeRef`
       addEndListener(childrenRef.current, next);
     }
   };
+
   const updatePosition = react.useCallback(() => {
     if (childrenRef.current) {
       setTranslateValue(direction, childrenRef.current, containerProp);
@@ -30368,6 +26025,7 @@ const Slide = /*#__PURE__*/react.forwardRef(function Slide(props, ref) {
     if (inProp || direction === 'down' || direction === 'right') {
       return undefined;
     }
+
     const handleResize = (0,utils_debounce/* default */.Z)(() => {
       if (childrenRef.current) {
         setTranslateValue(direction, childrenRef.current, containerProp);
@@ -30414,20 +26072,7 @@ const Slide = /*#__PURE__*/react.forwardRef(function Slide(props, ref) {
 /* harmony default export */ const Slide_Slide = (Slide);
 // EXTERNAL MODULE: ./node_modules/@mui/system/esm/colorManipulator.js
 var colorManipulator = __webpack_require__(1796);
-;// CONCATENATED MODULE: ./node_modules/@mui/material/styles/getOverlayAlpha.js
-// Inspired by https://github.com/material-components/material-components-ios/blob/bca36107405594d5b7b16265a5b0ed698f85a5ee/components/Elevation/src/UIColor%2BMaterialElevation.m#L61
-const getOverlayAlpha = elevation => {
-  let alphaValue;
-  if (elevation < 1) {
-    alphaValue = 5.11916 * elevation ** 2;
-  } else {
-    alphaValue = 4.5 * Math.log(elevation + 1) + 2;
-  }
-  return (alphaValue / 100).toFixed(2);
-};
-/* harmony default export */ const styles_getOverlayAlpha = (getOverlayAlpha);
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/Paper/paperClasses.js
-
 
 function getPaperUtilityClass(slot) {
   return (0,generateUtilityClass_generateUtilityClass/* default */.Z)('MuiPaper', slot);
@@ -30447,8 +26092,21 @@ const Paper_excluded = ["className", "component", "elevation", "square", "varian
 
 
 
+ // Inspired by https://github.com/material-components/material-components-ios/blob/bca36107405594d5b7b16265a5b0ed698f85a5ee/components/Elevation/src/UIColor%2BMaterialElevation.m#L61
 
 
+
+const getOverlayAlpha = elevation => {
+  let alphaValue;
+
+  if (elevation < 1) {
+    alphaValue = 5.11916 * elevation ** 2;
+  } else {
+    alphaValue = 4.5 * Math.log(elevation + 1) + 2;
+  }
+
+  return (alphaValue / 100).toFixed(2);
+};
 
 const Paper_useUtilityClasses = ownerState => {
   const {
@@ -30462,6 +26120,7 @@ const Paper_useUtilityClasses = ownerState => {
   };
   return (0,composeClasses/* default */.Z)(slots, getPaperUtilityClass, classes);
 };
+
 const PaperRoot = (0,styled/* default */.ZP)('div', {
   name: 'MuiPaper',
   slot: 'Root',
@@ -30474,56 +26133,55 @@ const PaperRoot = (0,styled/* default */.ZP)('div', {
 })(({
   theme,
   ownerState
-}) => {
-  var _theme$vars$overlays;
-  return (0,esm_extends/* default */.Z)({
-    backgroundColor: (theme.vars || theme).palette.background.paper,
-    color: (theme.vars || theme).palette.text.primary,
-    transition: theme.transitions.create('box-shadow')
-  }, !ownerState.square && {
-    borderRadius: theme.shape.borderRadius
-  }, ownerState.variant === 'outlined' && {
-    border: `1px solid ${(theme.vars || theme).palette.divider}`
-  }, ownerState.variant === 'elevation' && (0,esm_extends/* default */.Z)({
-    boxShadow: (theme.vars || theme).shadows[ownerState.elevation]
-  }, !theme.vars && theme.palette.mode === 'dark' && {
-    backgroundImage: `linear-gradient(${(0,colorManipulator/* alpha */.Fq)('#fff', styles_getOverlayAlpha(ownerState.elevation))}, ${(0,colorManipulator/* alpha */.Fq)('#fff', styles_getOverlayAlpha(ownerState.elevation))})`
-  }, theme.vars && {
-    backgroundImage: (_theme$vars$overlays = theme.vars.overlays) == null ? void 0 : _theme$vars$overlays[ownerState.elevation]
-  }));
-});
+}) => (0,esm_extends/* default */.Z)({
+  backgroundColor: theme.palette.background.paper,
+  color: theme.palette.text.primary,
+  transition: theme.transitions.create('box-shadow')
+}, !ownerState.square && {
+  borderRadius: theme.shape.borderRadius
+}, ownerState.variant === 'outlined' && {
+  border: `1px solid ${theme.palette.divider}`
+}, ownerState.variant === 'elevation' && (0,esm_extends/* default */.Z)({
+  boxShadow: theme.shadows[ownerState.elevation]
+}, theme.palette.mode === 'dark' && {
+  backgroundImage: `linear-gradient(${(0,colorManipulator/* alpha */.Fq)('#fff', getOverlayAlpha(ownerState.elevation))}, ${(0,colorManipulator/* alpha */.Fq)('#fff', getOverlayAlpha(ownerState.elevation))})`
+})));
 const Paper_Paper_Paper = /*#__PURE__*/react.forwardRef(function Paper(inProps, ref) {
   const props = (0,useThemeProps/* default */.Z)({
     props: inProps,
     name: 'MuiPaper'
   });
+
   const {
-      className,
-      component = 'div',
-      elevation = 1,
-      square = false,
-      variant = 'elevation'
-    } = props,
-    other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, Paper_excluded);
+    className,
+    component = 'div',
+    elevation = 1,
+    square = false,
+    variant = 'elevation'
+  } = props,
+        other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, Paper_excluded);
+
   const ownerState = (0,esm_extends/* default */.Z)({}, props, {
     component,
     elevation,
     square,
     variant
   });
+
   const classes = Paper_useUtilityClasses(ownerState);
+
   if (false) {}
+
   return /*#__PURE__*/(0,jsx_runtime.jsx)(PaperRoot, (0,esm_extends/* default */.Z)({
     as: component,
     ownerState: ownerState,
-    className: (0,dist_clsx_m/* default */.Z)(classes.root, className),
+    className: (0,clsx_m/* default */.Z)(classes.root, className),
     ref: ref
   }, other));
 });
  false ? 0 : void 0;
 /* harmony default export */ const material_Paper_Paper = (Paper_Paper_Paper);
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/Drawer/drawerClasses.js
-
 
 function getDrawerUtilityClass(slot) {
   return (0,generateUtilityClass_generateUtilityClass/* default */.Z)('MuiDrawer', slot);
@@ -30534,7 +26192,8 @@ const drawerClasses = (0,generateUtilityClasses/* default */.Z)('MuiDrawer', ['r
 
 
 const Drawer_excluded = ["BackdropProps"],
-  _excluded2 = ["anchor", "BackdropProps", "children", "className", "elevation", "hideBackdrop", "ModalProps", "onClose", "open", "PaperProps", "SlideProps", "TransitionComponent", "transitionDuration", "variant"];
+      _excluded2 = ["anchor", "BackdropProps", "children", "className", "elevation", "hideBackdrop", "ModalProps", "onClose", "open", "PaperProps", "SlideProps", "TransitionComponent", "transitionDuration", "variant"];
+
 
 
 
@@ -30555,6 +26214,7 @@ const Drawer_overridesResolver = (props, styles) => {
   } = props;
   return [styles.root, (ownerState.variant === 'permanent' || ownerState.variant === 'persistent') && styles.docked, styles.modal];
 };
+
 const Drawer_useUtilityClasses = ownerState => {
   const {
     classes,
@@ -30569,6 +26229,7 @@ const Drawer_useUtilityClasses = ownerState => {
   };
   return (0,composeClasses/* default */.Z)(slots, getDrawerUtilityClass, classes);
 };
+
 const DrawerRoot = (0,styled/* default */.ZP)(material_Modal_Modal, {
   name: 'MuiDrawer',
   slot: 'Root',
@@ -30576,7 +26237,7 @@ const DrawerRoot = (0,styled/* default */.ZP)(material_Modal_Modal, {
 })(({
   theme
 }) => ({
-  zIndex: (theme.vars || theme).zIndex.drawer
+  zIndex: theme.zIndex.drawer
 }));
 const DrawerDockedRoot = (0,styled/* default */.ZP)('div', {
   shouldForwardProp: styled/* rootShouldForwardProp */.FO,
@@ -30605,7 +26266,7 @@ const DrawerPaper = (0,styled/* default */.ZP)(material_Paper_Paper, {
   flexDirection: 'column',
   height: '100%',
   flex: '1 0 auto',
-  zIndex: (theme.vars || theme).zIndex.drawer,
+  zIndex: theme.zIndex.drawer,
   // Add iOS momentum scrolling for iOS < 13.0
   WebkitOverflowScrolling: 'touch',
   // temporary style
@@ -30633,13 +26294,13 @@ const DrawerPaper = (0,styled/* default */.ZP)(material_Paper_Paper, {
   height: 'auto',
   maxHeight: '100%'
 }, ownerState.anchor === 'left' && ownerState.variant !== 'temporary' && {
-  borderRight: `1px solid ${(theme.vars || theme).palette.divider}`
+  borderRight: `1px solid ${theme.palette.divider}`
 }, ownerState.anchor === 'top' && ownerState.variant !== 'temporary' && {
-  borderBottom: `1px solid ${(theme.vars || theme).palette.divider}`
+  borderBottom: `1px solid ${theme.palette.divider}`
 }, ownerState.anchor === 'right' && ownerState.variant !== 'temporary' && {
-  borderLeft: `1px solid ${(theme.vars || theme).palette.divider}`
+  borderLeft: `1px solid ${theme.palette.divider}`
 }, ownerState.anchor === 'bottom' && ownerState.variant !== 'temporary' && {
-  borderTop: `1px solid ${(theme.vars || theme).palette.divider}`
+  borderTop: `1px solid ${theme.palette.divider}`
 }));
 const oppositeDirection = {
   left: 'right',
@@ -30653,11 +26314,11 @@ function isHorizontal(anchor) {
 function getAnchor(theme, anchor) {
   return theme.direction === 'rtl' && isHorizontal(anchor) ? oppositeDirection[anchor] : anchor;
 }
-
 /**
  * The props of the [Modal](/material-ui/api/modal/) component are available
  * when `variant="temporary"` is set.
  */
+
 const Drawer = /*#__PURE__*/react.forwardRef(function Drawer(inProps, ref) {
   const props = (0,useThemeProps/* default */.Z)({
     props: inProps,
@@ -30668,61 +26329,67 @@ const Drawer = /*#__PURE__*/react.forwardRef(function Drawer(inProps, ref) {
     enter: theme.transitions.duration.enteringScreen,
     exit: theme.transitions.duration.leavingScreen
   };
-  const {
-      anchor: anchorProp = 'left',
-      BackdropProps,
-      children,
-      className,
-      elevation = 16,
-      hideBackdrop = false,
-      ModalProps: {
-        BackdropProps: BackdropPropsProp
-      } = {},
-      onClose,
-      open = false,
-      PaperProps = {},
-      SlideProps,
-      // eslint-disable-next-line react/prop-types
-      TransitionComponent = Slide_Slide,
-      transitionDuration = defaultTransitionDuration,
-      variant = 'temporary'
-    } = props,
-    ModalProps = (0,objectWithoutPropertiesLoose/* default */.Z)(props.ModalProps, Drawer_excluded),
-    other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, _excluded2);
 
-  // Let's assume that the Drawer will always be rendered on user space.
+  const {
+    anchor: anchorProp = 'left',
+    BackdropProps,
+    children,
+    className,
+    elevation = 16,
+    hideBackdrop = false,
+    ModalProps: {
+      BackdropProps: BackdropPropsProp
+    } = {},
+    onClose,
+    open = false,
+    PaperProps = {},
+    SlideProps,
+    // eslint-disable-next-line react/prop-types
+    TransitionComponent = Slide_Slide,
+    transitionDuration = defaultTransitionDuration,
+    variant = 'temporary'
+  } = props,
+        ModalProps = (0,objectWithoutPropertiesLoose/* default */.Z)(props.ModalProps, Drawer_excluded),
+        other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, _excluded2); // Let's assume that the Drawer will always be rendered on user space.
   // We use this state is order to skip the appear transition during the
   // initial mount of the component.
+
+
   const mounted = react.useRef(false);
   react.useEffect(() => {
     mounted.current = true;
   }, []);
   const anchorInvariant = getAnchor(theme, anchorProp);
   const anchor = anchorProp;
+
   const ownerState = (0,esm_extends/* default */.Z)({}, props, {
     anchor,
     elevation,
     open,
     variant
   }, other);
+
   const classes = Drawer_useUtilityClasses(ownerState);
+
   const drawer = /*#__PURE__*/(0,jsx_runtime.jsx)(DrawerPaper, (0,esm_extends/* default */.Z)({
     elevation: variant === 'temporary' ? elevation : 0,
     square: true
   }, PaperProps, {
-    className: (0,dist_clsx_m/* default */.Z)(classes.paper, PaperProps.className),
+    className: (0,clsx_m/* default */.Z)(classes.paper, PaperProps.className),
     ownerState: ownerState,
     children: children
   }));
+
   if (variant === 'permanent') {
     return /*#__PURE__*/(0,jsx_runtime.jsx)(DrawerDockedRoot, (0,esm_extends/* default */.Z)({
-      className: (0,dist_clsx_m/* default */.Z)(classes.root, classes.docked, className),
+      className: (0,clsx_m/* default */.Z)(classes.root, classes.docked, className),
       ownerState: ownerState,
       ref: ref
     }, other, {
       children: drawer
     }));
   }
+
   const slidingDrawer = /*#__PURE__*/(0,jsx_runtime.jsx)(TransitionComponent, (0,esm_extends/* default */.Z)({
     in: open,
     direction: oppositeDirection[anchorInvariant],
@@ -30731,22 +26398,23 @@ const Drawer = /*#__PURE__*/react.forwardRef(function Drawer(inProps, ref) {
   }, SlideProps, {
     children: drawer
   }));
+
   if (variant === 'persistent') {
     return /*#__PURE__*/(0,jsx_runtime.jsx)(DrawerDockedRoot, (0,esm_extends/* default */.Z)({
-      className: (0,dist_clsx_m/* default */.Z)(classes.root, classes.docked, className),
+      className: (0,clsx_m/* default */.Z)(classes.root, classes.docked, className),
       ownerState: ownerState,
       ref: ref
     }, other, {
       children: slidingDrawer
     }));
-  }
+  } // variant === temporary
 
-  // variant === temporary
+
   return /*#__PURE__*/(0,jsx_runtime.jsx)(DrawerRoot, (0,esm_extends/* default */.Z)({
     BackdropProps: (0,esm_extends/* default */.Z)({}, BackdropProps, BackdropPropsProp, {
       transitionDuration
     }),
-    className: (0,dist_clsx_m/* default */.Z)(classes.root, classes.modal, className),
+    className: (0,clsx_m/* default */.Z)(classes.root, classes.modal, className),
     open: open,
     ownerState: ownerState,
     onClose: onClose,
@@ -30760,15 +26428,16 @@ const Drawer = /*#__PURE__*/react.forwardRef(function Drawer(inProps, ref) {
 /* harmony default export */ const Drawer_Drawer = (Drawer);
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/List/ListContext.js
 
-
 /**
  * @ignore - internal component.
  */
+
 const ListContext_ListContext = /*#__PURE__*/react.createContext({});
+
 if (false) {}
+
 /* harmony default export */ const material_List_ListContext = (ListContext_ListContext);
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/List/listClasses.js
-
 
 function getListUtilityClass(slot) {
   return (0,generateUtilityClass_generateUtilityClass/* default */.Z)('MuiList', slot);
@@ -30779,6 +26448,7 @@ const listClasses = (0,generateUtilityClasses/* default */.Z)('MuiList', ['root'
 
 
 const List_excluded = ["children", "className", "component", "dense", "disablePadding", "subheader"];
+
 
 
 
@@ -30801,6 +26471,7 @@ const List_useUtilityClasses = ownerState => {
   };
   return (0,composeClasses/* default */.Z)(slots, getListUtilityClass, classes);
 };
+
 const ListRoot = (0,styled/* default */.ZP)('ul', {
   name: 'MuiList',
   slot: 'Root',
@@ -30828,29 +26499,33 @@ const List_List_List = /*#__PURE__*/react.forwardRef(function List(inProps, ref)
     props: inProps,
     name: 'MuiList'
   });
+
   const {
-      children,
-      className,
-      component = 'ul',
-      dense = false,
-      disablePadding = false,
-      subheader
-    } = props,
-    other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, List_excluded);
+    children,
+    className,
+    component = 'ul',
+    dense = false,
+    disablePadding = false,
+    subheader
+  } = props,
+        other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, List_excluded);
+
   const context = react.useMemo(() => ({
     dense
   }), [dense]);
+
   const ownerState = (0,esm_extends/* default */.Z)({}, props, {
     component,
     dense,
     disablePadding
   });
+
   const classes = List_useUtilityClasses(ownerState);
   return /*#__PURE__*/(0,jsx_runtime.jsx)(material_List_ListContext.Provider, {
     value: context,
     children: /*#__PURE__*/(0,jsx_runtime.jsxs)(ListRoot, (0,esm_extends/* default */.Z)({
       as: component,
-      className: (0,dist_clsx_m/* default */.Z)(classes.root, className),
+      className: (0,clsx_m/* default */.Z)(classes.root, className),
       ref: ref,
       ownerState: ownerState
     }, other, {
@@ -30864,293 +26539,10 @@ const List_List_List = /*#__PURE__*/react.forwardRef(function List(inProps, ref)
 var utils_useEventCallback = __webpack_require__(2068);
 // EXTERNAL MODULE: ./node_modules/@mui/material/utils/useIsFocusVisible.js + 1 modules
 var utils_useIsFocusVisible = __webpack_require__(3511);
-;// CONCATENATED MODULE: ./node_modules/@mui/material/node_modules/@babel/runtime/helpers/esm/assertThisInitialized.js
-function assertThisInitialized_assertThisInitialized(self) {
-  if (self === void 0) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }
-  return self;
-}
-;// CONCATENATED MODULE: ./node_modules/@mui/material/node_modules/react-transition-group/esm/utils/ChildMapping.js
-
-/**
- * Given `this.props.children`, return an object mapping key to child.
- *
- * @param {*} children `this.props.children`
- * @return {object} Mapping of key to child
- */
-
-function ChildMapping_getChildMapping(children, mapFn) {
-  var mapper = function mapper(child) {
-    return mapFn && (0,react.isValidElement)(child) ? mapFn(child) : child;
-  };
-
-  var result = Object.create(null);
-  if (children) react.Children.map(children, function (c) {
-    return c;
-  }).forEach(function (child) {
-    // run the map function here instead so that the key is the computed one
-    result[child.key] = mapper(child);
-  });
-  return result;
-}
-/**
- * When you're adding or removing children some may be added or removed in the
- * same render pass. We want to show *both* since we want to simultaneously
- * animate elements in and out. This function takes a previous set of keys
- * and a new set of keys and merges them with its best guess of the correct
- * ordering. In the future we may expose some of the utilities in
- * ReactMultiChild to make this easy, but for now React itself does not
- * directly have this concept of the union of prevChildren and nextChildren
- * so we implement it here.
- *
- * @param {object} prev prev children as returned from
- * `ReactTransitionChildMapping.getChildMapping()`.
- * @param {object} next next children as returned from
- * `ReactTransitionChildMapping.getChildMapping()`.
- * @return {object} a key set that contains all keys in `prev` and all keys
- * in `next` in a reasonable order.
- */
-
-function ChildMapping_mergeChildMappings(prev, next) {
-  prev = prev || {};
-  next = next || {};
-
-  function getValueForKey(key) {
-    return key in next ? next[key] : prev[key];
-  } // For each key of `next`, the list of keys to insert before that key in
-  // the combined list
-
-
-  var nextKeysPending = Object.create(null);
-  var pendingKeys = [];
-
-  for (var prevKey in prev) {
-    if (prevKey in next) {
-      if (pendingKeys.length) {
-        nextKeysPending[prevKey] = pendingKeys;
-        pendingKeys = [];
-      }
-    } else {
-      pendingKeys.push(prevKey);
-    }
-  }
-
-  var i;
-  var childMapping = {};
-
-  for (var nextKey in next) {
-    if (nextKeysPending[nextKey]) {
-      for (i = 0; i < nextKeysPending[nextKey].length; i++) {
-        var pendingNextKey = nextKeysPending[nextKey][i];
-        childMapping[nextKeysPending[nextKey][i]] = getValueForKey(pendingNextKey);
-      }
-    }
-
-    childMapping[nextKey] = getValueForKey(nextKey);
-  } // Finally, add the keys which didn't appear before any key in `next`
-
-
-  for (i = 0; i < pendingKeys.length; i++) {
-    childMapping[pendingKeys[i]] = getValueForKey(pendingKeys[i]);
-  }
-
-  return childMapping;
-}
-
-function ChildMapping_getProp(child, prop, props) {
-  return props[prop] != null ? props[prop] : child.props[prop];
-}
-
-function ChildMapping_getInitialChildMapping(props, onExited) {
-  return ChildMapping_getChildMapping(props.children, function (child) {
-    return (0,react.cloneElement)(child, {
-      onExited: onExited.bind(null, child),
-      in: true,
-      appear: ChildMapping_getProp(child, 'appear', props),
-      enter: ChildMapping_getProp(child, 'enter', props),
-      exit: ChildMapping_getProp(child, 'exit', props)
-    });
-  });
-}
-function ChildMapping_getNextChildMapping(nextProps, prevChildMapping, onExited) {
-  var nextChildMapping = ChildMapping_getChildMapping(nextProps.children);
-  var children = ChildMapping_mergeChildMappings(prevChildMapping, nextChildMapping);
-  Object.keys(children).forEach(function (key) {
-    var child = children[key];
-    if (!(0,react.isValidElement)(child)) return;
-    var hasPrev = (key in prevChildMapping);
-    var hasNext = (key in nextChildMapping);
-    var prevChild = prevChildMapping[key];
-    var isLeaving = (0,react.isValidElement)(prevChild) && !prevChild.props.in; // item is new (entering)
-
-    if (hasNext && (!hasPrev || isLeaving)) {
-      // console.log('entering', key)
-      children[key] = (0,react.cloneElement)(child, {
-        onExited: onExited.bind(null, child),
-        in: true,
-        exit: ChildMapping_getProp(child, 'exit', nextProps),
-        enter: ChildMapping_getProp(child, 'enter', nextProps)
-      });
-    } else if (!hasNext && hasPrev && !isLeaving) {
-      // item is old (exiting)
-      // console.log('leaving', key)
-      children[key] = (0,react.cloneElement)(child, {
-        in: false
-      });
-    } else if (hasNext && hasPrev && (0,react.isValidElement)(prevChild)) {
-      // item hasn't changed transition states
-      // copy over the last transition props;
-      // console.log('unchanged', key)
-      children[key] = (0,react.cloneElement)(child, {
-        onExited: onExited.bind(null, child),
-        in: prevChild.props.in,
-        exit: ChildMapping_getProp(child, 'exit', nextProps),
-        enter: ChildMapping_getProp(child, 'enter', nextProps)
-      });
-    }
-  });
-  return children;
-}
-;// CONCATENATED MODULE: ./node_modules/@mui/material/node_modules/react-transition-group/esm/TransitionGroup.js
-
-
-
-
-
-
-
-
-
-var esm_TransitionGroup_values = Object.values || function (obj) {
-  return Object.keys(obj).map(function (k) {
-    return obj[k];
-  });
-};
-
-var TransitionGroup_defaultProps = {
-  component: 'div',
-  childFactory: function childFactory(child) {
-    return child;
-  }
-};
-/**
- * The `<TransitionGroup>` component manages a set of transition components
- * (`<Transition>` and `<CSSTransition>`) in a list. Like with the transition
- * components, `<TransitionGroup>` is a state machine for managing the mounting
- * and unmounting of components over time.
- *
- * Consider the example below. As items are removed or added to the TodoList the
- * `in` prop is toggled automatically by the `<TransitionGroup>`.
- *
- * Note that `<TransitionGroup>`  does not define any animation behavior!
- * Exactly _how_ a list item animates is up to the individual transition
- * component. This means you can mix and match animations across different list
- * items.
- */
-
-var TransitionGroup_TransitionGroup = /*#__PURE__*/function (_React$Component) {
-  inheritsLoose_inheritsLoose(TransitionGroup, _React$Component);
-
-  function TransitionGroup(props, context) {
-    var _this;
-
-    _this = _React$Component.call(this, props, context) || this;
-
-    var handleExited = _this.handleExited.bind(assertThisInitialized_assertThisInitialized(_this)); // Initial children should all be entering, dependent on appear
-
-
-    _this.state = {
-      contextValue: {
-        isMounting: true
-      },
-      handleExited: handleExited,
-      firstRender: true
-    };
-    return _this;
-  }
-
-  var _proto = TransitionGroup.prototype;
-
-  _proto.componentDidMount = function componentDidMount() {
-    this.mounted = true;
-    this.setState({
-      contextValue: {
-        isMounting: false
-      }
-    });
-  };
-
-  _proto.componentWillUnmount = function componentWillUnmount() {
-    this.mounted = false;
-  };
-
-  TransitionGroup.getDerivedStateFromProps = function getDerivedStateFromProps(nextProps, _ref) {
-    var prevChildMapping = _ref.children,
-        handleExited = _ref.handleExited,
-        firstRender = _ref.firstRender;
-    return {
-      children: firstRender ? ChildMapping_getInitialChildMapping(nextProps, handleExited) : ChildMapping_getNextChildMapping(nextProps, prevChildMapping, handleExited),
-      firstRender: false
-    };
-  } // node is `undefined` when user provided `nodeRef` prop
-  ;
-
-  _proto.handleExited = function handleExited(child, node) {
-    var currentChildMapping = ChildMapping_getChildMapping(this.props.children);
-    if (child.key in currentChildMapping) return;
-
-    if (child.props.onExited) {
-      child.props.onExited(node);
-    }
-
-    if (this.mounted) {
-      this.setState(function (state) {
-        var children = (0,esm_extends/* default */.Z)({}, state.children);
-
-        delete children[child.key];
-        return {
-          children: children
-        };
-      });
-    }
-  };
-
-  _proto.render = function render() {
-    var _this$props = this.props,
-        Component = _this$props.component,
-        childFactory = _this$props.childFactory,
-        props = (0,objectWithoutPropertiesLoose/* default */.Z)(_this$props, ["component", "childFactory"]);
-
-    var contextValue = this.state.contextValue;
-    var children = esm_TransitionGroup_values(this.state.children).map(childFactory);
-    delete props.appear;
-    delete props.enter;
-    delete props.exit;
-
-    if (Component === null) {
-      return /*#__PURE__*/react.createElement(esm_TransitionGroupContext.Provider, {
-        value: contextValue
-      }, children);
-    }
-
-    return /*#__PURE__*/react.createElement(esm_TransitionGroupContext.Provider, {
-      value: contextValue
-    }, /*#__PURE__*/react.createElement(Component, props, children));
-  };
-
-  return TransitionGroup;
-}(react.Component);
-
-TransitionGroup_TransitionGroup.propTypes =  false ? 0 : {};
-TransitionGroup_TransitionGroup.defaultProps = TransitionGroup_defaultProps;
-/* harmony default export */ const react_transition_group_esm_TransitionGroup = (TransitionGroup_TransitionGroup);
-// EXTERNAL MODULE: ./node_modules/@emotion/cache/dist/emotion-cache.browser.esm.js + 7 modules
-var emotion_cache_browser_esm = __webpack_require__(6751);
+// EXTERNAL MODULE: ./node_modules/@emotion/cache/dist/emotion-cache.browser.esm.js + 8 modules
+var emotion_cache_browser_esm = __webpack_require__(6898);
 // EXTERNAL MODULE: ./node_modules/@emotion/serialize/dist/emotion-serialize.browser.esm.js + 2 modules
-var emotion_serialize_browser_esm = __webpack_require__(1095);
-// EXTERNAL MODULE: ./node_modules/@emotion/use-insertion-effect-with-fallbacks/dist/emotion-use-insertion-effect-with-fallbacks.browser.esm.js
-var emotion_use_insertion_effect_with_fallbacks_browser_esm = __webpack_require__(7278);
+var emotion_serialize_browser_esm = __webpack_require__(4199);
 ;// CONCATENATED MODULE: ./node_modules/@emotion/react/dist/emotion-react.browser.esm.js
 
 
@@ -31166,48 +26558,12 @@ var emotion_use_insertion_effect_with_fallbacks_browser_esm = __webpack_require_
 
 var pkg = {
 	name: "@emotion/react",
-	version: "11.10.5",
+	version: "11.9.0",
 	main: "dist/emotion-react.cjs.js",
 	module: "dist/emotion-react.esm.js",
 	browser: {
+		"./dist/emotion-react.cjs.js": "./dist/emotion-react.browser.cjs.js",
 		"./dist/emotion-react.esm.js": "./dist/emotion-react.browser.esm.js"
-	},
-	exports: {
-		".": {
-			module: {
-				worker: "./dist/emotion-react.worker.esm.js",
-				browser: "./dist/emotion-react.browser.esm.js",
-				"default": "./dist/emotion-react.esm.js"
-			},
-			"default": "./dist/emotion-react.cjs.js"
-		},
-		"./jsx-runtime": {
-			module: {
-				worker: "./jsx-runtime/dist/emotion-react-jsx-runtime.worker.esm.js",
-				browser: "./jsx-runtime/dist/emotion-react-jsx-runtime.browser.esm.js",
-				"default": "./jsx-runtime/dist/emotion-react-jsx-runtime.esm.js"
-			},
-			"default": "./jsx-runtime/dist/emotion-react-jsx-runtime.cjs.js"
-		},
-		"./_isolated-hnrs": {
-			module: {
-				worker: "./_isolated-hnrs/dist/emotion-react-_isolated-hnrs.worker.esm.js",
-				browser: "./_isolated-hnrs/dist/emotion-react-_isolated-hnrs.browser.esm.js",
-				"default": "./_isolated-hnrs/dist/emotion-react-_isolated-hnrs.esm.js"
-			},
-			"default": "./_isolated-hnrs/dist/emotion-react-_isolated-hnrs.cjs.js"
-		},
-		"./jsx-dev-runtime": {
-			module: {
-				worker: "./jsx-dev-runtime/dist/emotion-react-jsx-dev-runtime.worker.esm.js",
-				browser: "./jsx-dev-runtime/dist/emotion-react-jsx-dev-runtime.browser.esm.js",
-				"default": "./jsx-dev-runtime/dist/emotion-react-jsx-dev-runtime.esm.js"
-			},
-			"default": "./jsx-dev-runtime/dist/emotion-react-jsx-dev-runtime.cjs.js"
-		},
-		"./package.json": "./package.json",
-		"./types/css-prop": "./types/css-prop.d.ts",
-		"./macro": "./macro.js"
 	},
 	types: "types/index.d.ts",
 	files: [
@@ -31228,13 +26584,12 @@ var pkg = {
 		"test:typescript": "dtslint types"
 	},
 	dependencies: {
-		"@babel/runtime": "^7.18.3",
-		"@emotion/babel-plugin": "^11.10.5",
-		"@emotion/cache": "^11.10.5",
-		"@emotion/serialize": "^1.1.1",
-		"@emotion/use-insertion-effect-with-fallbacks": "^1.0.0",
-		"@emotion/utils": "^1.2.0",
-		"@emotion/weak-memoize": "^0.3.0",
+		"@babel/runtime": "^7.13.10",
+		"@emotion/babel-plugin": "^11.7.1",
+		"@emotion/cache": "^11.7.1",
+		"@emotion/serialize": "^1.0.3",
+		"@emotion/utils": "^1.1.0",
+		"@emotion/weak-memoize": "^0.2.5",
 		"hoist-non-react-statics": "^3.3.1"
 	},
 	peerDependencies: {
@@ -31250,12 +26605,13 @@ var pkg = {
 		}
 	},
 	devDependencies: {
-		"@babel/core": "^7.18.5",
-		"@definitelytyped/dtslint": "0.0.112",
-		"@emotion/css": "11.10.5",
-		"@emotion/css-prettifier": "1.1.1",
-		"@emotion/server": "11.10.0",
-		"@emotion/styled": "11.10.5",
+		"@babel/core": "^7.13.10",
+		"@emotion/css": "11.9.0",
+		"@emotion/css-prettifier": "1.0.1",
+		"@emotion/server": "11.4.0",
+		"@emotion/styled": "11.8.1",
+		"@types/react": "^16.9.11",
+		dtslint: "^4.2.1",
 		"html-tag-names": "^1.1.2",
 		react: "16.14.0",
 		"svg-tag-names": "^1.1.1",
@@ -31273,17 +26629,7 @@ var pkg = {
 			"./jsx-dev-runtime.js",
 			"./_isolated-hnrs.js"
 		],
-		umdName: "emotionReact",
-		exports: {
-			envConditions: [
-				"browser",
-				"worker"
-			],
-			extra: {
-				"./types/css-prop": "./types/css-prop.d.ts",
-				"./macro": "./macro.js"
-			}
-		}
+		umdName: "emotionReact"
 	}
 };
 
@@ -31308,6 +26654,7 @@ var jsx = function jsx(type, props) {
   return createElement.apply(null, createElementArgArray);
 };
 
+var useInsertionEffect = react_namespaceObject['useInsertion' + 'Effect'] ? react_namespaceObject['useInsertion' + 'Effect'] : react.useLayoutEffect;
 var warnedAboutCssPropForGlobal = false; // maintain place over rerenders.
 // initial render from browser, insertBefore context.sheet.tags[0] or if a style hasn't been inserted there yet, appendChild
 // initial client-side render from SSR, use place of hydrating tag
@@ -31323,7 +26670,7 @@ var Global = /* #__PURE__ */(/* unused pure expression or super */ null && (with
 
 
   var sheetRef = useRef();
-  useInsertionEffectWithLayoutFallback(function () {
+  useInsertionEffect(function () {
     var key = cache.key + "-global"; // use case of https://github.com/emotion-js/emotion/issues/2675
 
     var sheet = new cache.sheet.constructor({
@@ -31352,7 +26699,7 @@ var Global = /* #__PURE__ */(/* unused pure expression or super */ null && (with
       sheet.flush();
     };
   }, [cache]);
-  useInsertionEffectWithLayoutFallback(function () {
+  useInsertionEffect(function () {
     var sheetRefCurrent = sheetRef.current;
     var sheet = sheetRefCurrent[0],
         rehydrating = sheetRefCurrent[1];
@@ -31466,7 +26813,7 @@ function emotion_react_browser_esm_merge(registered, css, className) {
 var Insertion = function Insertion(_ref) {
   var cache = _ref.cache,
       serializedArr = _ref.serializedArr;
-  var rules = useInsertionEffectAlwaysWithSyncFallback(function () {
+  var rules = useInsertionEffectMaybe(function () {
 
     for (var i = 0; i < serializedArr.length; i++) {
       var res = insertStyles(cache, serializedArr[i], false);
@@ -31519,7 +26866,7 @@ var ClassNames = /* #__PURE__ */(/* unused pure expression or super */ null && (
 
 if (false) {}
 
-if (false) { var globalKey, globalContext, isTestEnv, emotion_react_browser_esm_isBrowser; }
+if (false) { var globalKey, globalContext, isJest, emotion_react_browser_esm_isBrowser; }
 
 
 
@@ -31527,10 +26874,11 @@ if (false) { var globalKey, globalContext, isTestEnv, emotion_react_browser_esm_
 
 
 
-
 /**
  * @ignore - internal component.
  */
+
+
 
 function Ripple_Ripple(props) {
   const {
@@ -31545,17 +26893,19 @@ function Ripple_Ripple(props) {
     timeout
   } = props;
   const [leaving, setLeaving] = react.useState(false);
-  const rippleClassName = (0,dist_clsx_m/* default */.Z)(className, classes.ripple, classes.rippleVisible, pulsate && classes.ripplePulsate);
+  const rippleClassName = (0,clsx_m/* default */.Z)(className, classes.ripple, classes.rippleVisible, pulsate && classes.ripplePulsate);
   const rippleStyles = {
     width: rippleSize,
     height: rippleSize,
     top: -(rippleSize / 2) + rippleY,
     left: -(rippleSize / 2) + rippleX
   };
-  const childClassName = (0,dist_clsx_m/* default */.Z)(classes.child, leaving && classes.childLeaving, pulsate && classes.childPulsate);
+  const childClassName = (0,clsx_m/* default */.Z)(classes.child, leaving && classes.childLeaving, pulsate && classes.childPulsate);
+
   if (!inProp && !leaving) {
     setLeaving(true);
   }
+
   react.useEffect(() => {
     if (!inProp && onExited != null) {
       // react-transition-group#onExited
@@ -31564,6 +26914,7 @@ function Ripple_Ripple(props) {
         clearTimeout(timeoutId);
       };
     }
+
     return undefined;
   }, [onExited, inProp, timeout]);
   return /*#__PURE__*/(0,jsx_runtime.jsx)("span", {
@@ -31574,10 +26925,10 @@ function Ripple_Ripple(props) {
     })
   });
 }
+
  false ? 0 : void 0;
 /* harmony default export */ const material_ButtonBase_Ripple = (Ripple_Ripple);
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/ButtonBase/touchRippleClasses.js
-
 
 function getTouchRippleUtilityClass(slot) {
   return generateUtilityClass('MuiTouchRipple', slot);
@@ -31588,11 +26939,13 @@ const touchRippleClasses = (0,generateUtilityClasses/* default */.Z)('MuiTouchRi
 
 
 const TouchRipple_excluded = ["center", "classes", "className"];
+
 let _ = t => t,
-  _t,
-  _t2,
-  _t3,
-  _t4;
+    _t,
+    _t2,
+    _t3,
+    _t4;
+
 
 
 
@@ -31651,10 +27004,9 @@ const TouchRippleRoot = (0,styled/* default */.ZP)('span', {
   bottom: 0,
   left: 0,
   borderRadius: 'inherit'
-});
-
-// This `styled()` function invokes keyframes. `styled-components` only supports keyframes
+}); // This `styled()` function invokes keyframes. `styled-components` only supports keyframes
 // in string templates. Do not convert these styles in JS object as it will break.
+
 const TouchRippleRipple = (0,styled/* default */.ZP)(material_ButtonBase_Ripple, {
   name: 'MuiTouchRipple',
   slot: 'Ripple'
@@ -31710,23 +27062,25 @@ const TouchRippleRipple = (0,styled/* default */.ZP)(material_ButtonBase_Ripple,
 }) => theme.transitions.easing.easeInOut, ButtonBase_touchRippleClasses.childPulsate, pulsateKeyframe, ({
   theme
 }) => theme.transitions.easing.easeInOut);
-
 /**
  * @ignore - internal component.
  *
  * TODO v5: Make private
  */
+
 const TouchRipple_TouchRipple = /*#__PURE__*/react.forwardRef(function TouchRipple(inProps, ref) {
   const props = (0,useThemeProps/* default */.Z)({
     props: inProps,
     name: 'MuiTouchRipple'
   });
+
   const {
-      center: centerProp = false,
-      classes = {},
-      className
-    } = props,
-    other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, TouchRipple_excluded);
+    center: centerProp = false,
+    classes = {},
+    className
+  } = props,
+        other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, TouchRipple_excluded);
+
   const [ripples, setRipples] = react.useState([]);
   const nextKey = react.useRef(0);
   const rippleCallback = react.useRef(null);
@@ -31735,15 +27089,13 @@ const TouchRipple_TouchRipple = /*#__PURE__*/react.forwardRef(function TouchRipp
       rippleCallback.current();
       rippleCallback.current = null;
     }
-  }, [ripples]);
+  }, [ripples]); // Used to filter out mouse emulated events on mobile.
 
-  // Used to filter out mouse emulated events on mobile.
-  const ignoringMouseDown = react.useRef(false);
-  // We use a timer in order to only show the ripples for touch "click" like events.
+  const ignoringMouseDown = react.useRef(false); // We use a timer in order to only show the ripples for touch "click" like events.
   // We don't want to display the ripple for touch scroll events.
-  const startTimer = react.useRef(null);
 
-  // This is the hook called once the previous timeout is ready.
+  const startTimer = react.useRef(null); // This is the hook called once the previous timeout is ready.
+
   const startTimerCommit = react.useRef(null);
   const container = react.useRef(null);
   react.useEffect(() => {
@@ -31761,12 +27113,12 @@ const TouchRipple_TouchRipple = /*#__PURE__*/react.forwardRef(function TouchRipp
     } = params;
     setRipples(oldRipples => [...oldRipples, /*#__PURE__*/(0,jsx_runtime.jsx)(TouchRippleRipple, {
       classes: {
-        ripple: (0,dist_clsx_m/* default */.Z)(classes.ripple, ButtonBase_touchRippleClasses.ripple),
-        rippleVisible: (0,dist_clsx_m/* default */.Z)(classes.rippleVisible, ButtonBase_touchRippleClasses.rippleVisible),
-        ripplePulsate: (0,dist_clsx_m/* default */.Z)(classes.ripplePulsate, ButtonBase_touchRippleClasses.ripplePulsate),
-        child: (0,dist_clsx_m/* default */.Z)(classes.child, ButtonBase_touchRippleClasses.child),
-        childLeaving: (0,dist_clsx_m/* default */.Z)(classes.childLeaving, ButtonBase_touchRippleClasses.childLeaving),
-        childPulsate: (0,dist_clsx_m/* default */.Z)(classes.childPulsate, ButtonBase_touchRippleClasses.childPulsate)
+        ripple: (0,clsx_m/* default */.Z)(classes.ripple, ButtonBase_touchRippleClasses.ripple),
+        rippleVisible: (0,clsx_m/* default */.Z)(classes.rippleVisible, ButtonBase_touchRippleClasses.rippleVisible),
+        ripplePulsate: (0,clsx_m/* default */.Z)(classes.ripplePulsate, ButtonBase_touchRippleClasses.ripplePulsate),
+        child: (0,clsx_m/* default */.Z)(classes.child, ButtonBase_touchRippleClasses.child),
+        childLeaving: (0,clsx_m/* default */.Z)(classes.childLeaving, ButtonBase_touchRippleClasses.childLeaving),
+        childPulsate: (0,clsx_m/* default */.Z)(classes.childPulsate, ButtonBase_touchRippleClasses.childPulsate)
       },
       timeout: TouchRipple_DURATION,
       pulsate: pulsate,
@@ -31777,46 +27129,50 @@ const TouchRipple_TouchRipple = /*#__PURE__*/react.forwardRef(function TouchRipp
     nextKey.current += 1;
     rippleCallback.current = cb;
   }, [classes]);
-  const start = react.useCallback((event = {}, options = {}, cb = () => {}) => {
+  const start = react.useCallback((event = {}, options = {}, cb) => {
     const {
       pulsate = false,
       center = centerProp || options.pulsate,
       fakeElement = false // For test purposes
+
     } = options;
-    if ((event == null ? void 0 : event.type) === 'mousedown' && ignoringMouseDown.current) {
+
+    if (event.type === 'mousedown' && ignoringMouseDown.current) {
       ignoringMouseDown.current = false;
       return;
     }
-    if ((event == null ? void 0 : event.type) === 'touchstart') {
+
+    if (event.type === 'touchstart') {
       ignoringMouseDown.current = true;
     }
+
     const element = fakeElement ? null : container.current;
     const rect = element ? element.getBoundingClientRect() : {
       width: 0,
       height: 0,
       left: 0,
       top: 0
-    };
+    }; // Get the size of the ripple
 
-    // Get the size of the ripple
     let rippleX;
     let rippleY;
     let rippleSize;
-    if (center || event === undefined || event.clientX === 0 && event.clientY === 0 || !event.clientX && !event.touches) {
+
+    if (center || event.clientX === 0 && event.clientY === 0 || !event.clientX && !event.touches) {
       rippleX = Math.round(rect.width / 2);
       rippleY = Math.round(rect.height / 2);
     } else {
       const {
         clientX,
         clientY
-      } = event.touches && event.touches.length > 0 ? event.touches[0] : event;
+      } = event.touches ? event.touches[0] : event;
       rippleX = Math.round(clientX - rect.left);
       rippleY = Math.round(clientY - rect.top);
     }
-    if (center) {
-      rippleSize = Math.sqrt((2 * rect.width ** 2 + rect.height ** 2) / 3);
 
-      // For some reason the animation is broken on Mobile Chrome if the size is even.
+    if (center) {
+      rippleSize = Math.sqrt((2 * rect.width ** 2 + rect.height ** 2) / 3); // For some reason the animation is broken on Mobile Chrome if the size is even.
+
       if (rippleSize % 2 === 0) {
         rippleSize += 1;
       }
@@ -31824,10 +27180,10 @@ const TouchRipple_TouchRipple = /*#__PURE__*/react.forwardRef(function TouchRipp
       const sizeX = Math.max(Math.abs((element ? element.clientWidth : 0) - rippleX), rippleX) * 2 + 2;
       const sizeY = Math.max(Math.abs((element ? element.clientHeight : 0) - rippleY), rippleY) * 2 + 2;
       rippleSize = Math.sqrt(sizeX ** 2 + sizeY ** 2);
-    }
+    } // Touche devices
 
-    // Touche devices
-    if (event != null && event.touches) {
+
+    if (event.touches) {
       // check that this isn't another touchstart due to multitouch
       // otherwise we will only clear a single timer when unmounting while two
       // are running
@@ -31841,8 +27197,9 @@ const TouchRipple_TouchRipple = /*#__PURE__*/react.forwardRef(function TouchRipp
             rippleSize,
             cb
           });
-        };
-        // Delay the execution of the ripple effect.
+        }; // Delay the execution of the ripple effect.
+
+
         startTimer.current = setTimeout(() => {
           if (startTimerCommit.current) {
             startTimerCommit.current();
@@ -31866,11 +27223,10 @@ const TouchRipple_TouchRipple = /*#__PURE__*/react.forwardRef(function TouchRipp
     });
   }, [start]);
   const stop = react.useCallback((event, cb) => {
-    clearTimeout(startTimer.current);
-
-    // The touch interaction occurs too quickly.
+    clearTimeout(startTimer.current); // The touch interaction occurs too quickly.
     // We still want to show ripple effect.
-    if ((event == null ? void 0 : event.type) === 'touchend' && startTimerCommit.current) {
+
+    if (event.type === 'touchend' && startTimerCommit.current) {
       startTimerCommit.current();
       startTimerCommit.current = null;
       startTimer.current = setTimeout(() => {
@@ -31878,11 +27234,13 @@ const TouchRipple_TouchRipple = /*#__PURE__*/react.forwardRef(function TouchRipp
       });
       return;
     }
+
     startTimerCommit.current = null;
     setRipples(oldRipples => {
       if (oldRipples.length > 0) {
         return oldRipples.slice(1);
       }
+
       return oldRipples;
     });
     rippleCallback.current = cb;
@@ -31893,10 +27251,10 @@ const TouchRipple_TouchRipple = /*#__PURE__*/react.forwardRef(function TouchRipp
     stop
   }), [pulsate, start, stop]);
   return /*#__PURE__*/(0,jsx_runtime.jsx)(TouchRippleRoot, (0,esm_extends/* default */.Z)({
-    className: (0,dist_clsx_m/* default */.Z)(ButtonBase_touchRippleClasses.root, classes.root, className),
+    className: (0,clsx_m/* default */.Z)(classes.root, ButtonBase_touchRippleClasses.root, className),
     ref: container
   }, other, {
-    children: /*#__PURE__*/(0,jsx_runtime.jsx)(react_transition_group_esm_TransitionGroup, {
+    children: /*#__PURE__*/(0,jsx_runtime.jsx)(esm_TransitionGroup, {
       component: null,
       exit: true,
       children: ripples
@@ -31907,7 +27265,6 @@ const TouchRipple_TouchRipple = /*#__PURE__*/react.forwardRef(function TouchRipp
 /* harmony default export */ const material_ButtonBase_TouchRipple = (TouchRipple_TouchRipple);
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/ButtonBase/buttonBaseClasses.js
 
-
 function getButtonBaseUtilityClass(slot) {
   return (0,generateUtilityClass_generateUtilityClass/* default */.Z)('MuiButtonBase', slot);
 }
@@ -31917,6 +27274,7 @@ const buttonBaseClasses = (0,generateUtilityClasses/* default */.Z)('MuiButtonBa
 
 
 const ButtonBase_excluded = ["action", "centerRipple", "children", "className", "component", "disabled", "disableRipple", "disableTouchRipple", "focusRipple", "focusVisibleClassName", "LinkComponent", "onBlur", "onClick", "onContextMenu", "onDragLeave", "onFocus", "onFocusVisible", "onKeyDown", "onKeyUp", "onMouseDown", "onMouseLeave", "onMouseUp", "onTouchEnd", "onTouchMove", "onTouchStart", "tabIndex", "TouchRippleProps", "touchRippleRef", "type"];
+
 
 
 
@@ -31942,11 +27300,14 @@ const ButtonBase_useUtilityClasses = ownerState => {
     root: ['root', disabled && 'disabled', focusVisible && 'focusVisible']
   };
   const composedClasses = (0,composeClasses/* default */.Z)(slots, getButtonBaseUtilityClass, classes);
+
   if (focusVisible && focusVisibleClassName) {
     composedClasses.root += ` ${focusVisibleClassName}`;
   }
+
   return composedClasses;
 };
+
 const ButtonBaseRoot = (0,styled/* default */.ZP)('button', {
   name: 'MuiButtonBase',
   slot: 'Root',
@@ -31980,8 +27341,8 @@ const ButtonBaseRoot = (0,styled/* default */.ZP)('button', {
   color: 'inherit',
   '&::-moz-focus-inner': {
     borderStyle: 'none' // Remove Firefox dotted outline.
-  },
 
+  },
   [`&.${ButtonBase_buttonBaseClasses.disabled}`]: {
     pointerEvents: 'none',
     // Disable link interactions
@@ -31991,48 +27352,50 @@ const ButtonBaseRoot = (0,styled/* default */.ZP)('button', {
     colorAdjust: 'exact'
   }
 });
-
 /**
  * `ButtonBase` contains as few styles as possible.
  * It aims to be a simple building block for creating a button.
  * It contains a load of style reset and some focus/ripple logic.
  */
+
 const ButtonBase_ButtonBase_ButtonBase = /*#__PURE__*/react.forwardRef(function ButtonBase(inProps, ref) {
   const props = (0,useThemeProps/* default */.Z)({
     props: inProps,
     name: 'MuiButtonBase'
   });
+
   const {
-      action,
-      centerRipple = false,
-      children,
-      className,
-      component = 'button',
-      disabled = false,
-      disableRipple = false,
-      disableTouchRipple = false,
-      focusRipple = false,
-      LinkComponent = 'a',
-      onBlur,
-      onClick,
-      onContextMenu,
-      onDragLeave,
-      onFocus,
-      onFocusVisible,
-      onKeyDown,
-      onKeyUp,
-      onMouseDown,
-      onMouseLeave,
-      onMouseUp,
-      onTouchEnd,
-      onTouchMove,
-      onTouchStart,
-      tabIndex = 0,
-      TouchRippleProps,
-      touchRippleRef,
-      type
-    } = props,
-    other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, ButtonBase_excluded);
+    action,
+    centerRipple = false,
+    children,
+    className,
+    component = 'button',
+    disabled = false,
+    disableRipple = false,
+    disableTouchRipple = false,
+    focusRipple = false,
+    LinkComponent = 'a',
+    onBlur,
+    onClick,
+    onContextMenu,
+    onDragLeave,
+    onFocus,
+    onFocusVisible,
+    onKeyDown,
+    onKeyUp,
+    onMouseDown,
+    onMouseLeave,
+    onMouseUp,
+    onTouchEnd,
+    onTouchMove,
+    onTouchStart,
+    tabIndex = 0,
+    TouchRippleProps,
+    touchRippleRef,
+    type
+  } = props,
+        other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, ButtonBase_excluded);
+
   const buttonRef = react.useRef(null);
   const rippleRef = react.useRef(null);
   const handleRippleRef = (0,utils_useForkRef/* default */.Z)(rippleRef, touchRippleRef);
@@ -32043,9 +27406,11 @@ const ButtonBase_ButtonBase_ButtonBase = /*#__PURE__*/react.forwardRef(function 
     ref: focusVisibleRef
   } = (0,utils_useIsFocusVisible/* default */.Z)();
   const [focusVisible, setFocusVisible] = react.useState(false);
+
   if (disabled && focusVisible) {
     setFocusVisible(false);
   }
+
   react.useImperativeHandle(action, () => ({
     focusVisible: () => {
       setFocusVisible(true);
@@ -32062,18 +27427,23 @@ const ButtonBase_ButtonBase_ButtonBase = /*#__PURE__*/react.forwardRef(function 
       rippleRef.current.pulsate();
     }
   }, [disableRipple, focusRipple, focusVisible, mountedState]);
+
   function useRippleHandler(rippleAction, eventCallback, skipRippleAction = disableTouchRipple) {
     return (0,utils_useEventCallback/* default */.Z)(event => {
       if (eventCallback) {
         eventCallback(event);
       }
+
       const ignore = skipRippleAction;
+
       if (!ignore && rippleRef.current) {
         rippleRef.current[rippleAction](event);
       }
+
       return true;
     });
   }
+
   const handleMouseDown = useRippleHandler('start', onMouseDown);
   const handleContextMenu = useRippleHandler('stop', onContextMenu);
   const handleDragLeave = useRippleHandler('stop', onDragLeave);
@@ -32082,6 +27452,7 @@ const ButtonBase_ButtonBase_ButtonBase = /*#__PURE__*/react.forwardRef(function 
     if (focusVisible) {
       event.preventDefault();
     }
+
     if (onMouseLeave) {
       onMouseLeave(event);
     }
@@ -32091,9 +27462,11 @@ const ButtonBase_ButtonBase_ButtonBase = /*#__PURE__*/react.forwardRef(function 
   const handleTouchMove = useRippleHandler('stop', onTouchMove);
   const handleBlur = useRippleHandler('stop', event => {
     handleBlurVisible(event);
+
     if (isFocusVisibleRef.current === false) {
       setFocusVisible(false);
     }
+
     if (onBlur) {
       onBlur(event);
     }
@@ -32103,25 +27476,31 @@ const ButtonBase_ButtonBase_ButtonBase = /*#__PURE__*/react.forwardRef(function 
     if (!buttonRef.current) {
       buttonRef.current = event.currentTarget;
     }
+
     handleFocusVisible(event);
+
     if (isFocusVisibleRef.current === true) {
       setFocusVisible(true);
+
       if (onFocusVisible) {
         onFocusVisible(event);
       }
     }
+
     if (onFocus) {
       onFocus(event);
     }
   });
+
   const isNonNativeButton = () => {
     const button = buttonRef.current;
     return component && component !== 'button' && !(button.tagName === 'A' && button.href);
   };
-
   /**
    * IE11 shim for https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/repeat
    */
+
+
   const keydownRef = react.useRef(false);
   const handleKeyDown = (0,utils_useEventCallback/* default */.Z)(event => {
     // Check if key is already down to avoid repeats being counted as multiple activations
@@ -32131,16 +27510,19 @@ const ButtonBase_ButtonBase_ButtonBase = /*#__PURE__*/react.forwardRef(function 
         rippleRef.current.start(event);
       });
     }
+
     if (event.target === event.currentTarget && isNonNativeButton() && event.key === ' ') {
       event.preventDefault();
     }
+
     if (onKeyDown) {
       onKeyDown(event);
-    }
+    } // Keyboard accessibility for non interactive elements
 
-    // Keyboard accessibility for non interactive elements
+
     if (event.target === event.currentTarget && isNonNativeButton() && event.key === 'Enter' && !disabled) {
       event.preventDefault();
+
       if (onClick) {
         onClick(event);
       }
@@ -32155,20 +27537,24 @@ const ButtonBase_ButtonBase_ButtonBase = /*#__PURE__*/react.forwardRef(function 
         rippleRef.current.pulsate(event);
       });
     }
+
     if (onKeyUp) {
       onKeyUp(event);
-    }
+    } // Keyboard accessibility for non interactive elements
 
-    // Keyboard accessibility for non interactive elements
+
     if (onClick && event.target === event.currentTarget && isNonNativeButton() && event.key === ' ' && !event.defaultPrevented) {
       onClick(event);
     }
   });
   let ComponentProp = component;
+
   if (ComponentProp === 'button' && (other.href || other.to)) {
     ComponentProp = LinkComponent;
   }
+
   const buttonProps = {};
+
   if (ComponentProp === 'button') {
     buttonProps.type = type === undefined ? 'button' : type;
     buttonProps.disabled = disabled;
@@ -32176,12 +27562,17 @@ const ButtonBase_ButtonBase_ButtonBase = /*#__PURE__*/react.forwardRef(function 
     if (!other.href && !other.to) {
       buttonProps.role = 'button';
     }
+
     if (disabled) {
       buttonProps['aria-disabled'] = disabled;
     }
   }
-  const handleRef = (0,utils_useForkRef/* default */.Z)(ref, focusVisibleRef, buttonRef);
+
+  const handleOwnRef = (0,utils_useForkRef/* default */.Z)(focusVisibleRef, buttonRef);
+  const handleRef = (0,utils_useForkRef/* default */.Z)(ref, handleOwnRef);
+
   if (false) {}
+
   const ownerState = (0,esm_extends/* default */.Z)({}, props, {
     centerRipple,
     component,
@@ -32192,10 +27583,11 @@ const ButtonBase_ButtonBase_ButtonBase = /*#__PURE__*/react.forwardRef(function 
     tabIndex,
     focusVisible
   });
+
   const classes = ButtonBase_useUtilityClasses(ownerState);
   return /*#__PURE__*/(0,jsx_runtime.jsxs)(ButtonBaseRoot, (0,esm_extends/* default */.Z)({
     as: ComponentProp,
-    className: (0,dist_clsx_m/* default */.Z)(classes.root, className),
+    className: (0,clsx_m/* default */.Z)(classes.root, className),
     ownerState: ownerState,
     onBlur: handleBlur,
     onClick: onClick,
@@ -32216,6 +27608,7 @@ const ButtonBase_ButtonBase_ButtonBase = /*#__PURE__*/react.forwardRef(function 
   }, buttonProps, other, {
     children: [children, enableTouchRipple ?
     /*#__PURE__*/
+
     /* TouchRipple is only needed client-side, x2 boost on the server. */
     (0,jsx_runtime.jsx)(material_ButtonBase_TouchRipple, (0,esm_extends/* default */.Z)({
       ref: handleRippleRef,
@@ -32229,7 +27622,6 @@ const ButtonBase_ButtonBase_ButtonBase = /*#__PURE__*/react.forwardRef(function 
 var utils_useEnhancedEffect = __webpack_require__(8974);
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/ListItemButton/listItemButtonClasses.js
 
-
 function getListItemButtonUtilityClass(slot) {
   return (0,generateUtilityClass_generateUtilityClass/* default */.Z)('MuiListItemButton', slot);
 }
@@ -32238,7 +27630,7 @@ const listItemButtonClasses = (0,generateUtilityClasses/* default */.Z)('MuiList
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/ListItemButton/ListItemButton.js
 
 
-const ListItemButton_excluded = ["alignItems", "autoFocus", "component", "children", "dense", "disableGutters", "divider", "focusVisibleClassName", "selected", "className"];
+const ListItemButton_excluded = ["alignItems", "autoFocus", "component", "children", "dense", "disableGutters", "divider", "focusVisibleClassName", "selected"];
 
 
 
@@ -32258,6 +27650,7 @@ const ListItemButton_overridesResolver = (props, styles) => {
   } = props;
   return [styles.root, ownerState.dense && styles.dense, ownerState.alignItems === 'flex-start' && styles.alignItemsFlexStart, ownerState.divider && styles.divider, !ownerState.disableGutters && styles.gutters];
 };
+
 const ListItemButton_useUtilityClasses = ownerState => {
   const {
     alignItems,
@@ -32274,6 +27667,7 @@ const ListItemButton_useUtilityClasses = ownerState => {
   const composedClasses = (0,composeClasses/* default */.Z)(slots, getListItemButtonUtilityClass, classes);
   return (0,esm_extends/* default */.Z)({}, classes, composedClasses);
 };
+
 const ListItemButtonRoot = (0,styled/* default */.ZP)(material_ButtonBase_ButtonBase, {
   shouldForwardProp: prop => (0,styled/* rootShouldForwardProp */.FO)(prop) || prop === 'classes',
   name: 'MuiListItemButton',
@@ -32299,33 +27693,33 @@ const ListItemButtonRoot = (0,styled/* default */.ZP)(material_ButtonBase_Button
   }),
   '&:hover': {
     textDecoration: 'none',
-    backgroundColor: (theme.vars || theme).palette.action.hover,
+    backgroundColor: theme.palette.action.hover,
     // Reset on touch devices, it doesn't add specificity
     '@media (hover: none)': {
       backgroundColor: 'transparent'
     }
   },
   [`&.${ListItemButton_listItemButtonClasses.selected}`]: {
-    backgroundColor: theme.vars ? `rgba(${theme.vars.palette.primary.mainChannel} / ${theme.vars.palette.action.selectedOpacity})` : (0,colorManipulator/* alpha */.Fq)(theme.palette.primary.main, theme.palette.action.selectedOpacity),
+    backgroundColor: (0,colorManipulator/* alpha */.Fq)(theme.palette.primary.main, theme.palette.action.selectedOpacity),
     [`&.${ListItemButton_listItemButtonClasses.focusVisible}`]: {
-      backgroundColor: theme.vars ? `rgba(${theme.vars.palette.primary.mainChannel} / calc(${theme.vars.palette.action.selectedOpacity} + ${theme.vars.palette.action.focusOpacity}))` : (0,colorManipulator/* alpha */.Fq)(theme.palette.primary.main, theme.palette.action.selectedOpacity + theme.palette.action.focusOpacity)
+      backgroundColor: (0,colorManipulator/* alpha */.Fq)(theme.palette.primary.main, theme.palette.action.selectedOpacity + theme.palette.action.focusOpacity)
     }
   },
   [`&.${ListItemButton_listItemButtonClasses.selected}:hover`]: {
-    backgroundColor: theme.vars ? `rgba(${theme.vars.palette.primary.mainChannel} / calc(${theme.vars.palette.action.selectedOpacity} + ${theme.vars.palette.action.hoverOpacity}))` : (0,colorManipulator/* alpha */.Fq)(theme.palette.primary.main, theme.palette.action.selectedOpacity + theme.palette.action.hoverOpacity),
+    backgroundColor: (0,colorManipulator/* alpha */.Fq)(theme.palette.primary.main, theme.palette.action.selectedOpacity + theme.palette.action.hoverOpacity),
     // Reset on touch devices, it doesn't add specificity
     '@media (hover: none)': {
-      backgroundColor: theme.vars ? `rgba(${theme.vars.palette.primary.mainChannel} / ${theme.vars.palette.action.selectedOpacity})` : (0,colorManipulator/* alpha */.Fq)(theme.palette.primary.main, theme.palette.action.selectedOpacity)
+      backgroundColor: (0,colorManipulator/* alpha */.Fq)(theme.palette.primary.main, theme.palette.action.selectedOpacity)
     }
   },
   [`&.${ListItemButton_listItemButtonClasses.focusVisible}`]: {
-    backgroundColor: (theme.vars || theme).palette.action.focus
+    backgroundColor: theme.palette.action.focus
   },
   [`&.${ListItemButton_listItemButtonClasses.disabled}`]: {
-    opacity: (theme.vars || theme).palette.action.disabledOpacity
+    opacity: theme.palette.action.disabledOpacity
   }
 }, ownerState.divider && {
-  borderBottom: `1px solid ${(theme.vars || theme).palette.divider}`,
+  borderBottom: `1px solid ${theme.palette.divider}`,
   backgroundClip: 'padding-box'
 }, ownerState.alignItems === 'flex-start' && {
   alignItems: 'flex-start'
@@ -32341,25 +27735,26 @@ const ListItemButton = /*#__PURE__*/react.forwardRef(function ListItemButton(inP
     props: inProps,
     name: 'MuiListItemButton'
   });
+
   const {
-      alignItems = 'center',
-      autoFocus = false,
-      component = 'div',
-      children,
-      dense = false,
-      disableGutters = false,
-      divider = false,
-      focusVisibleClassName,
-      selected = false,
-      className
-    } = props,
-    other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, ListItemButton_excluded);
+    alignItems = 'center',
+    autoFocus = false,
+    component = 'div',
+    children,
+    dense = false,
+    disableGutters = false,
+    divider = false,
+    focusVisibleClassName,
+    selected = false
+  } = props,
+        other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, ListItemButton_excluded);
+
   const context = react.useContext(material_List_ListContext);
-  const childContext = react.useMemo(() => ({
+  const childContext = {
     dense: dense || context.dense || false,
     alignItems,
     disableGutters
-  }), [alignItems, context.dense, dense, disableGutters]);
+  };
   const listItemRef = react.useRef(null);
   (0,utils_useEnhancedEffect/* default */.Z)(() => {
     if (autoFocus) {
@@ -32368,6 +27763,7 @@ const ListItemButton = /*#__PURE__*/react.forwardRef(function ListItemButton(inP
       } else if (false) {}
     }
   }, [autoFocus]);
+
   const ownerState = (0,esm_extends/* default */.Z)({}, props, {
     alignItems,
     dense: childContext.dense,
@@ -32375,17 +27771,16 @@ const ListItemButton = /*#__PURE__*/react.forwardRef(function ListItemButton(inP
     divider,
     selected
   });
+
   const classes = ListItemButton_useUtilityClasses(ownerState);
   const handleRef = (0,utils_useForkRef/* default */.Z)(listItemRef, ref);
   return /*#__PURE__*/(0,jsx_runtime.jsx)(material_List_ListContext.Provider, {
     value: childContext,
     children: /*#__PURE__*/(0,jsx_runtime.jsx)(ListItemButtonRoot, (0,esm_extends/* default */.Z)({
       ref: handleRef,
-      href: other.href || other.to,
-      component: (other.href || other.to) && component === 'div' ? 'a' : component,
-      focusVisibleClassName: (0,dist_clsx_m/* default */.Z)(classes.focusVisible, focusVisibleClassName),
-      ownerState: ownerState,
-      className: (0,dist_clsx_m/* default */.Z)(classes.root, className)
+      component: component,
+      focusVisibleClassName: (0,clsx_m/* default */.Z)(classes.focusVisible, focusVisibleClassName),
+      ownerState: ownerState
     }, other, {
       classes: classes,
       children: children
@@ -32395,7 +27790,6 @@ const ListItemButton = /*#__PURE__*/react.forwardRef(function ListItemButton(inP
  false ? 0 : void 0;
 /* harmony default export */ const ListItemButton_ListItemButton = (ListItemButton);
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/ListItemIcon/listItemIconClasses.js
-
 
 function getListItemIconUtilityClass(slot) {
   return (0,generateUtilityClass_generateUtilityClass/* default */.Z)('MuiListItemIcon', slot);
@@ -32415,6 +27809,7 @@ const ListItemIcon_excluded = ["className"];
 
 
 
+
 const ListItemIcon_useUtilityClasses = ownerState => {
   const {
     alignItems,
@@ -32425,6 +27820,7 @@ const ListItemIcon_useUtilityClasses = ownerState => {
   };
   return (0,composeClasses/* default */.Z)(slots, getListItemIconUtilityClass, classes);
 };
+
 const ListItemIconRoot = (0,styled/* default */.ZP)('div', {
   name: 'MuiListItemIcon',
   slot: 'Root',
@@ -32439,32 +27835,36 @@ const ListItemIconRoot = (0,styled/* default */.ZP)('div', {
   ownerState
 }) => (0,esm_extends/* default */.Z)({
   minWidth: 56,
-  color: (theme.vars || theme).palette.action.active,
+  color: theme.palette.action.active,
   flexShrink: 0,
   display: 'inline-flex'
 }, ownerState.alignItems === 'flex-start' && {
   marginTop: 8
 }));
-
 /**
  * A simple wrapper to apply `List` styles to an `Icon` or `SvgIcon`.
  */
+
 const ListItemIcon = /*#__PURE__*/react.forwardRef(function ListItemIcon(inProps, ref) {
   const props = (0,useThemeProps/* default */.Z)({
     props: inProps,
     name: 'MuiListItemIcon'
   });
+
   const {
-      className
-    } = props,
-    other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, ListItemIcon_excluded);
+    className
+  } = props,
+        other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, ListItemIcon_excluded);
+
   const context = react.useContext(material_List_ListContext);
+
   const ownerState = (0,esm_extends/* default */.Z)({}, props, {
     alignItems: context.alignItems
   });
+
   const classes = ListItemIcon_useUtilityClasses(ownerState);
   return /*#__PURE__*/(0,jsx_runtime.jsx)(ListItemIconRoot, (0,esm_extends/* default */.Z)({
-    className: (0,dist_clsx_m/* default */.Z)(classes.root, className),
+    className: (0,clsx_m/* default */.Z)(classes.root, className),
     ownerState: ownerState,
     ref: ref
   }, other));
@@ -32472,7 +27872,6 @@ const ListItemIcon = /*#__PURE__*/react.forwardRef(function ListItemIcon(inProps
  false ? 0 : void 0;
 /* harmony default export */ const ListItemIcon_ListItemIcon = (ListItemIcon);
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/ListItemText/listItemTextClasses.js
-
 
 function getListItemTextUtilityClass(slot) {
   return (0,generateUtilityClass_generateUtilityClass/* default */.Z)('MuiListItemText', slot);
@@ -32483,6 +27882,7 @@ const listItemTextClasses = (0,generateUtilityClasses/* default */.Z)('MuiListIt
 
 
 const ListItemText_excluded = ["children", "className", "disableTypography", "inset", "primary", "primaryTypographyProps", "secondary", "secondaryTypographyProps"];
+
 
 
 
@@ -32509,6 +27909,7 @@ const ListItemText_useUtilityClasses = ownerState => {
   };
   return (0,composeClasses/* default */.Z)(slots, getListItemTextUtilityClass, classes);
 };
+
 const ListItemTextRoot = (0,styled/* default */.ZP)('div', {
   name: 'MuiListItemText',
   slot: 'Root',
@@ -32540,22 +27941,25 @@ const ListItemText = /*#__PURE__*/react.forwardRef(function ListItemText(inProps
     props: inProps,
     name: 'MuiListItemText'
   });
+
   const {
-      children,
-      className,
-      disableTypography = false,
-      inset = false,
-      primary: primaryProp,
-      primaryTypographyProps,
-      secondary: secondaryProp,
-      secondaryTypographyProps
-    } = props,
-    other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, ListItemText_excluded);
+    children,
+    className,
+    disableTypography = false,
+    inset = false,
+    primary: primaryProp,
+    primaryTypographyProps,
+    secondary: secondaryProp,
+    secondaryTypographyProps
+  } = props,
+        other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, ListItemText_excluded);
+
   const {
     dense
   } = react.useContext(material_List_ListContext);
   let primary = primaryProp != null ? primaryProp : children;
   let secondary = secondaryProp;
+
   const ownerState = (0,esm_extends/* default */.Z)({}, props, {
     disableTypography,
     inset,
@@ -32563,17 +27967,20 @@ const ListItemText = /*#__PURE__*/react.forwardRef(function ListItemText(inProps
     secondary: !!secondary,
     dense
   });
+
   const classes = ListItemText_useUtilityClasses(ownerState);
+
   if (primary != null && primary.type !== Typography_Typography && !disableTypography) {
     primary = /*#__PURE__*/(0,jsx_runtime.jsx)(Typography_Typography, (0,esm_extends/* default */.Z)({
       variant: dense ? 'body2' : 'body1',
       className: classes.primary,
-      component: primaryTypographyProps != null && primaryTypographyProps.variant ? undefined : 'span',
+      component: "span",
       display: "block"
     }, primaryTypographyProps, {
       children: primary
     }));
   }
+
   if (secondary != null && secondary.type !== Typography_Typography && !disableTypography) {
     secondary = /*#__PURE__*/(0,jsx_runtime.jsx)(Typography_Typography, (0,esm_extends/* default */.Z)({
       variant: "body2",
@@ -32584,8 +27991,9 @@ const ListItemText = /*#__PURE__*/react.forwardRef(function ListItemText(inProps
       children: secondary
     }));
   }
+
   return /*#__PURE__*/(0,jsx_runtime.jsxs)(ListItemTextRoot, (0,esm_extends/* default */.Z)({
-    className: (0,dist_clsx_m/* default */.Z)(classes.root, className),
+    className: (0,clsx_m/* default */.Z)(classes.root, className),
     ownerState: ownerState,
     ref: ref
   }, other, {
@@ -32596,6 +28004,7 @@ const ListItemText = /*#__PURE__*/react.forwardRef(function ListItemText(inProps
 /* harmony default export */ const ListItemText_ListItemText = (ListItemText);
 ;// CONCATENATED MODULE: ./node_modules/@mui/utils/esm/usePreviousProps.js
 
+
 const usePreviousProps = value => {
   const ref = react.useRef({});
   react.useEffect(() => {
@@ -32603,28 +28012,51 @@ const usePreviousProps = value => {
   });
   return ref.current;
 };
+
 /* harmony default export */ const esm_usePreviousProps = (usePreviousProps);
+;// CONCATENATED MODULE: ./node_modules/@mui/base/utils/appendOwnerState.js
+
+
+/**
+ * Appends the ownerState object to the props, merging with the existing one if necessary.
+ *
+ * @param elementType Type of the element that owns the `existingProps`. If the element is a DOM node, `ownerState` are not applied.
+ * @param existingProps Props of the element.
+ * @param ownerState
+ */
+
+function appendOwnerState(elementType, existingProps = {}, ownerState) {
+  if (utils_isHostComponent(elementType)) {
+    return existingProps;
+  }
+
+  return (0,esm_extends/* default */.Z)({}, existingProps, {
+    ownerState: (0,esm_extends/* default */.Z)({}, existingProps.ownerState, ownerState)
+  });
+}
 ;// CONCATENATED MODULE: ./node_modules/@mui/base/BadgeUnstyled/useBadge.js
 
-function useBadge(parameters) {
+function useBadge(props) {
   const {
     badgeContent: badgeContentProp,
     invisible: invisibleProp = false,
     max: maxProp = 99,
     showZero = false
-  } = parameters;
+  } = props;
   const prevProps = esm_usePreviousProps({
     badgeContent: badgeContentProp,
     max: maxProp
   });
   let invisible = invisibleProp;
+
   if (invisibleProp === false && badgeContentProp === 0 && !showZero) {
     invisible = true;
   }
+
   const {
     badgeContent,
     max = maxProp
-  } = invisible ? prevProps : parameters;
+  } = invisible ? prevProps : props;
   const displayValue = badgeContent && Number(badgeContent) > max ? `${max}+` : badgeContent;
   return {
     badgeContent,
@@ -32637,14 +28069,16 @@ function useBadge(parameters) {
 
 
 function getBadgeUnstyledUtilityClass(slot) {
-  return (0,generateUtilityClass_generateUtilityClass/* default */.Z)('MuiBadge', slot);
+  return (0,generateUtilityClass_generateUtilityClass/* default */.Z)('BaseBadge', slot);
 }
-const badgeUnstyledClasses = (0,generateUtilityClasses/* default */.Z)('MuiBadge', ['root', 'badge', 'invisible']);
+const badgeUnstyledClasses = (0,generateUtilityClasses/* default */.Z)('BaseBadge', ['root', 'badge', 'invisible']);
 /* harmony default export */ const BadgeUnstyled_badgeUnstyledClasses = ((/* unused pure expression or super */ null && (badgeUnstyledClasses)));
 ;// CONCATENATED MODULE: ./node_modules/@mui/base/BadgeUnstyled/BadgeUnstyled.js
 
 
-const BadgeUnstyled_excluded = ["badgeContent", "component", "children", "invisible", "max", "slotProps", "slots", "showZero"];
+const BadgeUnstyled_excluded = ["badgeContent", "component", "children", "className", "components", "componentsProps", "invisible", "max", "showZero"];
+
+
 
 
 
@@ -32663,61 +28097,46 @@ const BadgeUnstyled_useUtilityClasses = ownerState => {
   };
   return (0,composeClasses/* default */.Z)(slots, getBadgeUnstyledUtilityClass, undefined);
 };
-/**
- *
- * Demos:
- *
- * - [Unstyled badge](https://mui.com/base/react-badge/)
- *
- * API:
- *
- * - [BadgeUnstyled API](https://mui.com/base/api/badge-unstyled/)
- */
+
 const BadgeUnstyled = /*#__PURE__*/react.forwardRef(function BadgeUnstyled(props, ref) {
   const {
-      component,
-      children,
-      max: maxProp = 99,
-      slotProps = {},
-      slots = {},
-      showZero = false
-    } = props,
-    other = objectWithoutPropertiesLoose_objectWithoutPropertiesLoose(props, BadgeUnstyled_excluded);
+    component,
+    children,
+    className,
+    components = {},
+    componentsProps = {},
+    max: maxProp = 99,
+    showZero = false
+  } = props,
+        other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, BadgeUnstyled_excluded);
+
   const {
     badgeContent,
     max,
     displayValue,
     invisible
-  } = useBadge(esm_extends_extends({}, props, {
+  } = useBadge((0,esm_extends/* default */.Z)({}, props, {
     max: maxProp
   }));
-  const ownerState = esm_extends_extends({}, props, {
+
+  const ownerState = (0,esm_extends/* default */.Z)({}, props, {
     badgeContent,
     invisible,
     max,
     showZero
   });
+
   const classes = BadgeUnstyled_useUtilityClasses(ownerState);
-  const Root = component || slots.root || 'span';
-  const rootProps = useSlotProps({
-    elementType: Root,
-    externalSlotProps: slotProps.root,
-    externalForwardedProps: other,
-    additionalProps: {
-      ref
-    },
-    ownerState,
-    className: classes.root
-  });
-  const Badge = slots.badge || 'span';
-  const badgeProps = useSlotProps({
-    elementType: Badge,
-    externalSlotProps: slotProps.badge,
-    ownerState,
-    className: classes.badge
-  });
-  return /*#__PURE__*/(0,jsx_runtime.jsxs)(Root, esm_extends_extends({}, rootProps, {
-    children: [children, /*#__PURE__*/(0,jsx_runtime.jsx)(Badge, esm_extends_extends({}, badgeProps, {
+  const Root = component || components.Root || 'span';
+  const rootProps = appendOwnerState(Root, (0,esm_extends/* default */.Z)({}, other, componentsProps.root), ownerState);
+  const Badge = components.Badge || 'span';
+  const badgeProps = appendOwnerState(Badge, componentsProps.badge, ownerState);
+  return /*#__PURE__*/(0,jsx_runtime.jsxs)(Root, (0,esm_extends/* default */.Z)({}, rootProps, {
+    ref: ref
+  }, other, {
+    className: (0,clsx_m/* default */.Z)(classes.root, rootProps.className, className),
+    children: [children, /*#__PURE__*/(0,jsx_runtime.jsx)(Badge, (0,esm_extends/* default */.Z)({}, badgeProps, {
+      className: (0,clsx_m/* default */.Z)(classes.badge, badgeProps.className),
       children: displayValue
     }))]
   }));
@@ -32726,9 +28145,11 @@ const BadgeUnstyled = /*#__PURE__*/react.forwardRef(function BadgeUnstyled(props
 /* harmony default export */ const BadgeUnstyled_BadgeUnstyled = (BadgeUnstyled);
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/utils/shouldSpreadAdditionalProps.js
 
+
 const shouldSpreadAdditionalProps = Slot => {
   return !Slot || !utils_isHostComponent(Slot);
 };
+
 /* harmony default export */ const utils_shouldSpreadAdditionalProps = (shouldSpreadAdditionalProps);
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/Badge/badgeClasses.js
 
@@ -32736,14 +28157,13 @@ const shouldSpreadAdditionalProps = Slot => {
 function getBadgeUtilityClass(slot) {
   return (0,generateUtilityClass_generateUtilityClass/* default */.Z)('MuiBadge', slot);
 }
-const badgeClasses = (0,generateUtilityClasses/* default */.Z)('MuiBadge', ['root', 'badge', 'dot', 'standard', 'anchorOriginTopRight', 'anchorOriginBottomRight', 'anchorOriginTopLeft', 'anchorOriginBottomLeft', 'invisible', 'colorError', 'colorInfo', 'colorPrimary', 'colorSecondary', 'colorSuccess', 'colorWarning', 'overlapRectangular', 'overlapCircular',
-// TODO: v6 remove the overlap value from these class keys
+const badgeClasses = (0,generateUtilityClasses/* default */.Z)('MuiBadge', ['root', 'badge', 'dot', 'standard', 'anchorOriginTopRight', 'anchorOriginBottomRight', 'anchorOriginTopLeft', 'anchorOriginBottomLeft', 'invisible', 'colorError', 'colorInfo', 'colorPrimary', 'colorSecondary', 'colorSuccess', 'colorWarning', 'overlapRectangular', 'overlapCircular', // TODO: v6 remove the overlap value from these class keys
 'anchorOriginTopLeftCircular', 'anchorOriginTopLeftRectangular', 'anchorOriginTopRightCircular', 'anchorOriginTopRightRectangular', 'anchorOriginBottomLeftCircular', 'anchorOriginBottomLeftRectangular', 'anchorOriginBottomRightCircular', 'anchorOriginBottomRightRectangular']);
 /* harmony default export */ const Badge_badgeClasses = (badgeClasses);
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/Badge/Badge.js
 
 
-const Badge_excluded = ["anchorOrigin", "className", "component", "components", "componentsProps", "overlap", "color", "invisible", "max", "badgeContent", "slots", "slotProps", "showZero", "variant"];
+const Badge_excluded = ["anchorOrigin", "className", "component", "components", "componentsProps", "overlap", "color", "invisible", "max", "badgeContent", "showZero", "variant"];
 
 
 
@@ -32758,6 +28178,7 @@ const Badge_excluded = ["anchorOrigin", "className", "component", "components", 
 
 const RADIUS_STANDARD = 10;
 const RADIUS_DOT = 4;
+
 const Badge_useUtilityClasses = ownerState => {
   const {
     color,
@@ -32773,6 +28194,7 @@ const Badge_useUtilityClasses = ownerState => {
   };
   return (0,composeClasses/* default */.Z)(slots, getBadgeUtilityClass, classes);
 };
+
 const BadgeRoot = (0,styled/* default */.ZP)('span', {
   name: 'MuiBadge',
   slot: 'Root',
@@ -32898,31 +28320,32 @@ const BadgeBadge = (0,styled/* default */.ZP)('span', {
   })
 }));
 const Badge = /*#__PURE__*/react.forwardRef(function Badge(inProps, ref) {
-  var _ref, _slots$root, _ref2, _slots$badge, _slotProps$root, _slotProps$badge;
+  var _componentsProps$root, _componentsProps$root2, _componentsProps$badg, _componentsProps$badg2;
+
   const props = (0,useThemeProps/* default */.Z)({
     props: inProps,
     name: 'MuiBadge'
   });
+
   const {
-      anchorOrigin: anchorOriginProp = {
-        vertical: 'top',
-        horizontal: 'right'
-      },
-      className,
-      component = 'span',
-      components = {},
-      componentsProps = {},
-      overlap: overlapProp = 'rectangular',
-      color: colorProp = 'default',
-      invisible: invisibleProp = false,
-      max,
-      badgeContent: badgeContentProp,
-      slots,
-      slotProps,
-      showZero = false,
-      variant: variantProp = 'standard'
-    } = props,
-    other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, Badge_excluded);
+    anchorOrigin: anchorOriginProp = {
+      vertical: 'top',
+      horizontal: 'right'
+    },
+    className,
+    component = 'span',
+    components = {},
+    componentsProps = {},
+    overlap: overlapProp = 'rectangular',
+    color: colorProp = 'default',
+    invisible: invisibleProp = false,
+    max,
+    badgeContent: badgeContentProp,
+    showZero = false,
+    variant: variantProp = 'standard'
+  } = props,
+        other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, Badge_excluded);
+
   const prevProps = esm_usePreviousProps({
     anchorOrigin: anchorOriginProp,
     color: colorProp,
@@ -32930,15 +28353,18 @@ const Badge = /*#__PURE__*/react.forwardRef(function Badge(inProps, ref) {
     variant: variantProp
   });
   let invisible = invisibleProp;
+
   if (invisibleProp === false && (badgeContentProp === 0 && !showZero || badgeContentProp == null && variantProp !== 'dot')) {
     invisible = true;
   }
+
   const {
     color = colorProp,
     overlap = overlapProp,
     anchorOrigin = anchorOriginProp,
     variant = variantProp
   } = invisible ? prevProps : props;
+
   const ownerState = (0,esm_extends/* default */.Z)({}, props, {
     anchorOrigin,
     invisible,
@@ -32946,42 +28372,39 @@ const Badge = /*#__PURE__*/react.forwardRef(function Badge(inProps, ref) {
     overlap,
     variant
   });
+
   const classes = Badge_useUtilityClasses(ownerState);
   let displayValue;
+
   if (variant !== 'dot') {
     displayValue = badgeContentProp && Number(badgeContentProp) > max ? `${max}+` : badgeContentProp;
   }
 
-  // support both `slots` and `components` for backward compatibility
-  const RootSlot = (_ref = (_slots$root = slots == null ? void 0 : slots.root) != null ? _slots$root : components.Root) != null ? _ref : BadgeRoot;
-  const BadgeSlot = (_ref2 = (_slots$badge = slots == null ? void 0 : slots.badge) != null ? _slots$badge : components.Badge) != null ? _ref2 : BadgeBadge;
-  const rootSlotProps = (_slotProps$root = slotProps == null ? void 0 : slotProps.root) != null ? _slotProps$root : componentsProps.root;
-  const badgeSlotProps = (_slotProps$badge = slotProps == null ? void 0 : slotProps.badge) != null ? _slotProps$badge : componentsProps.badge;
   return /*#__PURE__*/(0,jsx_runtime.jsx)(BadgeUnstyled_BadgeUnstyled, (0,esm_extends/* default */.Z)({
     invisible: invisibleProp,
     badgeContent: displayValue,
     showZero: showZero,
     max: max
   }, other, {
-    slots: {
-      root: RootSlot,
-      badge: BadgeSlot
-    },
-    className: (0,dist_clsx_m/* default */.Z)(rootSlotProps == null ? void 0 : rootSlotProps.className, classes.root, className),
-    slotProps: {
-      root: (0,esm_extends/* default */.Z)({}, rootSlotProps, utils_shouldSpreadAdditionalProps(RootSlot) && {
+    components: (0,esm_extends/* default */.Z)({
+      Root: BadgeRoot,
+      Badge: BadgeBadge
+    }, components),
+    className: (0,clsx_m/* default */.Z)(className, classes.root, (_componentsProps$root = componentsProps.root) == null ? void 0 : _componentsProps$root.className),
+    componentsProps: {
+      root: (0,esm_extends/* default */.Z)({}, componentsProps.root, utils_shouldSpreadAdditionalProps(components.Root) && {
         as: component,
-        ownerState: (0,esm_extends/* default */.Z)({}, rootSlotProps == null ? void 0 : rootSlotProps.ownerState, {
+        ownerState: (0,esm_extends/* default */.Z)({}, (_componentsProps$root2 = componentsProps.root) == null ? void 0 : _componentsProps$root2.ownerState, {
           anchorOrigin,
           color,
           overlap,
           variant
         })
       }),
-      badge: (0,esm_extends/* default */.Z)({}, badgeSlotProps, {
-        className: (0,dist_clsx_m/* default */.Z)(classes.badge, badgeSlotProps == null ? void 0 : badgeSlotProps.className)
-      }, utils_shouldSpreadAdditionalProps(BadgeSlot) && {
-        ownerState: (0,esm_extends/* default */.Z)({}, badgeSlotProps == null ? void 0 : badgeSlotProps.ownerState, {
+      badge: (0,esm_extends/* default */.Z)({}, componentsProps.badge, {
+        className: (0,clsx_m/* default */.Z)(classes.badge, (_componentsProps$badg = componentsProps.badge) == null ? void 0 : _componentsProps$badg.className)
+      }, utils_shouldSpreadAdditionalProps(components.Badge) && {
+        ownerState: (0,esm_extends/* default */.Z)({}, (_componentsProps$badg2 = componentsProps.badge) == null ? void 0 : _componentsProps$badg2.ownerState, {
           anchorOrigin,
           color,
           overlap,
@@ -33006,9 +28429,11 @@ const Grow_excluded = ["addEndListener", "appear", "children", "easing", "in", "
 
 
 
+
 function Grow_getScale(value) {
   return `scale(${value}, ${value ** 2})`;
 }
+
 const Grow_Grow_styles = {
   entering: {
     opacity: 1,
@@ -33019,47 +28444,49 @@ const Grow_Grow_styles = {
     transform: 'none'
   }
 };
-
-/*
- TODO v6: remove
- Conditionally apply a workaround for the CSS transition bug in Safari 15.4 / WebKit browsers.
+/**
+ * Conditionally apply a workaround for the CSS transition bug in Safari 15.4 / WebKit browsers.
+ * Remove this workaround once the WebKit bug fix is released.
  */
-const isWebKit154 = typeof navigator !== 'undefined' && /^((?!chrome|android).)*(safari|mobile)/i.test(navigator.userAgent) && /(os |version\/)15(.|_)4/i.test(navigator.userAgent);
 
+const isWebKit154 = typeof navigator !== 'undefined' && /^((?!chrome|android).)*(safari|mobile)/i.test(navigator.userAgent) && /(os |version\/)15(.|_)[4-9]/i.test(navigator.userAgent);
 /**
  * The Grow transition is used by the [Tooltip](/material-ui/react-tooltip/) and
  * [Popover](/material-ui/react-popover/) components.
  * It uses [react-transition-group](https://github.com/reactjs/react-transition-group) internally.
  */
+
 const Grow_Grow_Grow = /*#__PURE__*/react.forwardRef(function Grow(props, ref) {
   const {
-      addEndListener,
-      appear = true,
-      children,
-      easing,
-      in: inProp,
-      onEnter,
-      onEntered,
-      onEntering,
-      onExit,
-      onExited,
-      onExiting,
-      style,
-      timeout = 'auto',
-      // eslint-disable-next-line react/prop-types
-      TransitionComponent = react_transition_group_esm_Transition
-    } = props,
-    other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, Grow_excluded);
+    addEndListener,
+    appear = true,
+    children,
+    easing,
+    in: inProp,
+    onEnter,
+    onEntered,
+    onEntering,
+    onExit,
+    onExited,
+    onExiting,
+    style,
+    timeout = 'auto',
+    // eslint-disable-next-line react/prop-types
+    TransitionComponent = esm_Transition
+  } = props,
+        other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, Grow_excluded);
+
   const timer = react.useRef();
   const autoTimeout = react.useRef();
   const theme = styles_useTheme_useTheme();
   const nodeRef = react.useRef(null);
-  const handleRef = (0,utils_useForkRef/* default */.Z)(nodeRef, children.ref, ref);
+  const foreignRef = (0,utils_useForkRef/* default */.Z)(children.ref, ref);
+  const handleRef = (0,utils_useForkRef/* default */.Z)(nodeRef, foreignRef);
+
   const normalizedTransitionCallback = callback => maybeIsAppearing => {
     if (callback) {
-      const node = nodeRef.current;
+      const node = nodeRef.current; // onEnterXxx and onExitXxx callbacks have a different arguments.length value.
 
-      // onEnterXxx and onExitXxx callbacks have a different arguments.length value.
       if (maybeIsAppearing === undefined) {
         callback(node);
       } else {
@@ -33067,6 +28494,7 @@ const Grow_Grow_Grow = /*#__PURE__*/react.forwardRef(function Grow(props, ref) {
       }
     }
   };
+
   const handleEntering = normalizedTransitionCallback(onEntering);
   const handleEnter = normalizedTransitionCallback((node, isAppearing) => {
     utils_reflow(node); // So the animation always start from the start.
@@ -33083,12 +28511,14 @@ const Grow_Grow_Grow = /*#__PURE__*/react.forwardRef(function Grow(props, ref) {
       mode: 'enter'
     });
     let duration;
+
     if (timeout === 'auto') {
       duration = theme.transitions.getAutoHeightDuration(node.clientHeight);
       autoTimeout.current = duration;
     } else {
       duration = transitionDuration;
     }
+
     node.style.transition = [theme.transitions.create('opacity', {
       duration,
       delay
@@ -33097,6 +28527,7 @@ const Grow_Grow_Grow = /*#__PURE__*/react.forwardRef(function Grow(props, ref) {
       delay,
       easing: transitionTimingFunction
     })].join(',');
+
     if (onEnter) {
       onEnter(node, isAppearing);
     }
@@ -33116,12 +28547,14 @@ const Grow_Grow_Grow = /*#__PURE__*/react.forwardRef(function Grow(props, ref) {
       mode: 'exit'
     });
     let duration;
+
     if (timeout === 'auto') {
       duration = theme.transitions.getAutoHeightDuration(node.clientHeight);
       autoTimeout.current = duration;
     } else {
       duration = transitionDuration;
     }
+
     node.style.transition = [theme.transitions.create('opacity', {
       duration,
       delay
@@ -33132,20 +28565,24 @@ const Grow_Grow_Grow = /*#__PURE__*/react.forwardRef(function Grow(props, ref) {
     })].join(',');
     node.style.opacity = 0;
     node.style.transform = Grow_getScale(0.75);
+
     if (onExit) {
       onExit(node);
     }
   });
   const handleExited = normalizedTransitionCallback(onExited);
+
   const handleAddEndListener = next => {
     if (timeout === 'auto') {
       timer.current = setTimeout(next, autoTimeout.current || 0);
     }
+
     if (addEndListener) {
       // Old call signature before `react-transition-group` implemented `nodeRef`
       addEndListener(nodeRef.current, next);
     }
   };
+
   react.useEffect(() => {
     return () => {
       clearTimeout(timer.current);
@@ -33220,63 +28657,41 @@ function isShadowRoot(node) {
 var math_max = Math.max;
 var math_min = Math.min;
 var math_round = Math.round;
-;// CONCATENATED MODULE: ./node_modules/@popperjs/core/lib/utils/userAgent.js
-function getUAString() {
-  var uaData = navigator.userAgentData;
-
-  if (uaData != null && uaData.brands) {
-    return uaData.brands.map(function (item) {
-      return item.brand + "/" + item.version;
-    }).join(' ');
-  }
-
-  return navigator.userAgent;
-}
-;// CONCATENATED MODULE: ./node_modules/@popperjs/core/lib/dom-utils/isLayoutViewport.js
-
-function isLayoutViewport() {
-  return !/^((?!chrome|android).)*safari/i.test(getUAString());
-}
 ;// CONCATENATED MODULE: ./node_modules/@popperjs/core/lib/dom-utils/getBoundingClientRect.js
 
 
-
-
-function getBoundingClientRect(element, includeScale, isFixedStrategy) {
+function getBoundingClientRect(element, includeScale) {
   if (includeScale === void 0) {
     includeScale = false;
   }
 
-  if (isFixedStrategy === void 0) {
-    isFixedStrategy = false;
-  }
-
-  var clientRect = element.getBoundingClientRect();
+  var rect = element.getBoundingClientRect();
   var scaleX = 1;
   var scaleY = 1;
 
-  if (includeScale && isHTMLElement(element)) {
-    scaleX = element.offsetWidth > 0 ? math_round(clientRect.width) / element.offsetWidth || 1 : 1;
-    scaleY = element.offsetHeight > 0 ? math_round(clientRect.height) / element.offsetHeight || 1 : 1;
+  if (isHTMLElement(element) && includeScale) {
+    var offsetHeight = element.offsetHeight;
+    var offsetWidth = element.offsetWidth; // Do not attempt to divide by 0, otherwise we get `Infinity` as scale
+    // Fallback to 1 in case both values are `0`
+
+    if (offsetWidth > 0) {
+      scaleX = math_round(rect.width) / offsetWidth || 1;
+    }
+
+    if (offsetHeight > 0) {
+      scaleY = math_round(rect.height) / offsetHeight || 1;
+    }
   }
 
-  var _ref = isElement(element) ? getWindow(element) : window,
-      visualViewport = _ref.visualViewport;
-
-  var addVisualOffsets = !isLayoutViewport() && isFixedStrategy;
-  var x = (clientRect.left + (addVisualOffsets && visualViewport ? visualViewport.offsetLeft : 0)) / scaleX;
-  var y = (clientRect.top + (addVisualOffsets && visualViewport ? visualViewport.offsetTop : 0)) / scaleY;
-  var width = clientRect.width / scaleX;
-  var height = clientRect.height / scaleY;
   return {
-    width: width,
-    height: height,
-    top: y,
-    right: x + width,
-    bottom: y + height,
-    left: x,
-    x: x,
-    y: y
+    width: rect.width / scaleX,
+    height: rect.height / scaleY,
+    top: rect.top / scaleY,
+    right: rect.right / scaleX,
+    bottom: rect.bottom / scaleY,
+    left: rect.left / scaleX,
+    x: rect.left / scaleX,
+    y: rect.top / scaleY
   };
 }
 ;// CONCATENATED MODULE: ./node_modules/@popperjs/core/lib/dom-utils/getWindowScroll.js
@@ -33377,7 +28792,7 @@ function getCompositeRect(elementOrVirtualElement, offsetParent, isFixed) {
   var isOffsetParentAnElement = isHTMLElement(offsetParent);
   var offsetParentIsScaled = isHTMLElement(offsetParent) && isElementScaled(offsetParent);
   var documentElement = getDocumentElement(offsetParent);
-  var rect = getBoundingClientRect(elementOrVirtualElement, offsetParentIsScaled, isFixed);
+  var rect = getBoundingClientRect(elementOrVirtualElement, offsetParentIsScaled);
   var scroll = {
     scrollLeft: 0,
     scrollTop: 0
@@ -33512,7 +28927,6 @@ function isTableElement(element) {
 
 
 
-
 function getTrueOffsetParent(element) {
   if (!isHTMLElement(element) || // https://github.com/popperjs/popper-core/issues/837
   getComputedStyle(element).position === 'fixed') {
@@ -33525,8 +28939,8 @@ function getTrueOffsetParent(element) {
 
 
 function getContainingBlock(element) {
-  var isFirefox = /firefox/i.test(getUAString());
-  var isIE = /Trident/i.test(getUAString());
+  var isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') !== -1;
+  var isIE = navigator.userAgent.indexOf('Trident') !== -1;
 
   if (isIE && isHTMLElement(element)) {
     // In IE 9, 10 and 11 fixed elements containing block is always established by the viewport
@@ -34400,22 +29814,31 @@ function getOppositeVariationPlacement(placement) {
 
 
 
-
-function getViewportRect(element, strategy) {
+function getViewportRect(element) {
   var win = getWindow(element);
   var html = getDocumentElement(element);
   var visualViewport = win.visualViewport;
   var width = html.clientWidth;
   var height = html.clientHeight;
   var x = 0;
-  var y = 0;
+  var y = 0; // NB: This isn't supported on iOS <= 12. If the keyboard is open, the popper
+  // can be obscured underneath it.
+  // Also, `html.clientHeight` adds the bottom bar height in Safari iOS, even
+  // if it isn't open, so if this isn't available, the popper will be detected
+  // to overflow the bottom of the screen too early.
 
   if (visualViewport) {
     width = visualViewport.width;
-    height = visualViewport.height;
-    var layoutViewport = isLayoutViewport();
+    height = visualViewport.height; // Uses Layout Viewport (like Chrome; Safari does not currently)
+    // In Chrome, it returns a value very close to 0 (+/-) but contains rounding
+    // errors due to floating point numbers, so we need to check precision.
+    // Safari returns a number <= 0, usually < -1 when pinch-zoomed
+    // Feature detection fails in mobile emulation mode in Chrome.
+    // Math.abs(win.innerWidth / visualViewport.scale - visualViewport.width) <
+    // 0.001
+    // Fallback here: "Not Safari" userAgent
 
-    if (layoutViewport || !layoutViewport && strategy === 'fixed') {
+    if (!/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
       x = visualViewport.offsetLeft;
       y = visualViewport.offsetTop;
     }
@@ -34507,8 +29930,8 @@ function rectToClientRect(rect) {
 
 
 
-function getInnerBoundingClientRect(element, strategy) {
-  var rect = getBoundingClientRect(element, false, strategy === 'fixed');
+function getInnerBoundingClientRect(element) {
+  var rect = getBoundingClientRect(element);
   rect.top = rect.top + element.clientTop;
   rect.left = rect.left + element.clientLeft;
   rect.bottom = rect.top + element.clientHeight;
@@ -34520,8 +29943,8 @@ function getInnerBoundingClientRect(element, strategy) {
   return rect;
 }
 
-function getClientRectFromMixedType(element, clippingParent, strategy) {
-  return clippingParent === viewport ? rectToClientRect(getViewportRect(element, strategy)) : isElement(clippingParent) ? getInnerBoundingClientRect(clippingParent, strategy) : rectToClientRect(getDocumentRect(getDocumentElement(element)));
+function getClientRectFromMixedType(element, clippingParent) {
+  return clippingParent === viewport ? rectToClientRect(getViewportRect(element)) : isElement(clippingParent) ? getInnerBoundingClientRect(clippingParent) : rectToClientRect(getDocumentRect(getDocumentElement(element)));
 } // A "clipping parent" is an overflowable container with the characteristic of
 // clipping (or hiding) overflowing elements with a position different from
 // `initial`
@@ -34544,18 +29967,18 @@ function getClippingParents(element) {
 // clipping parents
 
 
-function getClippingRect(element, boundary, rootBoundary, strategy) {
+function getClippingRect(element, boundary, rootBoundary) {
   var mainClippingParents = boundary === 'clippingParents' ? getClippingParents(element) : [].concat(boundary);
   var clippingParents = [].concat(mainClippingParents, [rootBoundary]);
   var firstClippingParent = clippingParents[0];
   var clippingRect = clippingParents.reduce(function (accRect, clippingParent) {
-    var rect = getClientRectFromMixedType(element, clippingParent, strategy);
+    var rect = getClientRectFromMixedType(element, clippingParent);
     accRect.top = math_max(rect.top, accRect.top);
     accRect.right = math_min(rect.right, accRect.right);
     accRect.bottom = math_min(rect.bottom, accRect.bottom);
     accRect.left = math_max(rect.left, accRect.left);
     return accRect;
-  }, getClientRectFromMixedType(element, firstClippingParent, strategy));
+  }, getClientRectFromMixedType(element, firstClippingParent));
   clippingRect.width = clippingRect.right - clippingRect.left;
   clippingRect.height = clippingRect.bottom - clippingRect.top;
   clippingRect.x = clippingRect.left;
@@ -34602,8 +30025,6 @@ function detectOverflow(state, options) {
   var _options = options,
       _options$placement = _options.placement,
       placement = _options$placement === void 0 ? state.placement : _options$placement,
-      _options$strategy = _options.strategy,
-      strategy = _options$strategy === void 0 ? state.strategy : _options$strategy,
       _options$boundary = _options.boundary,
       boundary = _options$boundary === void 0 ? clippingParents : _options$boundary,
       _options$rootBoundary = _options.rootBoundary,
@@ -34618,7 +30039,7 @@ function detectOverflow(state, options) {
   var altContext = elementContext === popper ? reference : popper;
   var popperRect = state.rects.popper;
   var element = state.elements[altBoundary ? altContext : elementContext];
-  var clippingClientRect = getClippingRect(isElement(element) ? element : element.contextElement || getDocumentElement(state.elements.popper), boundary, rootBoundary, strategy);
+  var clippingClientRect = getClippingRect(isElement(element) ? element : element.contextElement || getDocumentElement(state.elements.popper), boundary, rootBoundary);
   var referenceClientRect = getBoundingClientRect(state.elements.reference);
   var popperOffsets = computeOffsets({
     reference: referenceClientRect,
@@ -35178,21 +30599,11 @@ var popper_createPopper = /*#__PURE__*/popperGenerator({
  // eslint-disable-next-line import/no-unused-modules
 
 
-;// CONCATENATED MODULE: ./node_modules/@mui/base/PopperUnstyled/popperUnstyledClasses.js
-
-
-function getPopperUnstyledUtilityClass(slot) {
-  return (0,generateUtilityClass_generateUtilityClass/* default */.Z)('MuiPopperUnstyled', slot);
-}
-const popperUnstyledClasses = (0,generateUtilityClasses/* default */.Z)('MuiPopperUnstyled', ['root']);
-/* harmony default export */ const PopperUnstyled_popperUnstyledClasses = ((/* unused pure expression or super */ null && (popperUnstyledClasses)));
 ;// CONCATENATED MODULE: ./node_modules/@mui/base/PopperUnstyled/PopperUnstyled.js
 
 
-const PopperUnstyled_excluded = ["anchorEl", "children", "component", "direction", "disablePortal", "modifiers", "open", "ownerState", "placement", "popperOptions", "popperRef", "slotProps", "slots", "TransitionProps"],
-  PopperUnstyled_excluded2 = ["anchorEl", "children", "container", "direction", "disablePortal", "keepMounted", "modifiers", "open", "placement", "popperOptions", "popperRef", "style", "transition", "slotProps", "slots"];
-
-
+const PopperUnstyled_excluded = ["anchorEl", "children", "direction", "disablePortal", "modifiers", "open", "ownerState", "placement", "popperOptions", "popperRef", "TransitionProps"],
+      PopperUnstyled_excluded2 = ["anchorEl", "children", "container", "direction", "disablePortal", "keepMounted", "modifiers", "open", "placement", "popperOptions", "popperRef", "style", "transition"];
 
 
 
@@ -35204,54 +30615,47 @@ function flipPlacement(placement, direction) {
   if (direction === 'ltr') {
     return placement;
   }
+
   switch (placement) {
     case 'bottom-end':
       return 'bottom-start';
+
     case 'bottom-start':
       return 'bottom-end';
+
     case 'top-end':
       return 'top-start';
+
     case 'top-start':
       return 'top-end';
+
     default:
       return placement;
   }
 }
+
 function resolveAnchorEl(anchorEl) {
   return typeof anchorEl === 'function' ? anchorEl() : anchorEl;
 }
-function PopperUnstyled_isHTMLElement(element) {
-  return element.nodeType !== undefined;
-}
-function isVirtualElement(element) {
-  return !PopperUnstyled_isHTMLElement(element);
-}
-const PopperUnstyled_useUtilityClasses = () => {
-  const slots = {
-    root: ['root']
-  };
-  return (0,composeClasses/* default */.Z)(slots, getPopperUnstyledUtilityClass, {});
-};
+
 const defaultPopperOptions = {};
+/* eslint-disable react/prop-types */
+
 const PopperTooltip = /*#__PURE__*/react.forwardRef(function PopperTooltip(props, ref) {
-  var _ref;
   const {
-      anchorEl,
-      children,
-      component,
-      direction,
-      disablePortal,
-      modifiers,
-      open,
-      ownerState,
-      placement: initialPlacement,
-      popperOptions,
-      popperRef: popperRefProp,
-      slotProps = {},
-      slots = {},
-      TransitionProps
-    } = props,
-    other = objectWithoutPropertiesLoose_objectWithoutPropertiesLoose(props, PopperUnstyled_excluded);
+    anchorEl,
+    children,
+    direction,
+    disablePortal,
+    modifiers,
+    open,
+    placement: initialPlacement,
+    popperOptions,
+    popperRef: popperRefProp,
+    TransitionProps
+  } = props,
+        other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, PopperUnstyled_excluded);
+
   const tooltipRef = react.useRef(null);
   const ownRef = (0,esm_useForkRef/* default */.Z)(tooltipRef, ref);
   const popperRef = react.useRef(null);
@@ -35266,26 +30670,26 @@ const PopperTooltip = /*#__PURE__*/react.forwardRef(function PopperTooltip(props
    * placement initialized from prop but can change during lifetime if modifiers.flip.
    * modifiers.flip is essentially a flip for controlled/uncontrolled behavior
    */
+
   const [placement, setPlacement] = react.useState(rtlPlacement);
-  const [resolvedAnchorElement, setResolvedAnchorElement] = react.useState(resolveAnchorEl(anchorEl));
   react.useEffect(() => {
     if (popperRef.current) {
       popperRef.current.forceUpdate();
     }
   });
-  react.useEffect(() => {
-    if (anchorEl) {
-      setResolvedAnchorElement(resolveAnchorEl(anchorEl));
-    }
-  }, [anchorEl]);
   (0,esm_useEnhancedEffect/* default */.Z)(() => {
-    if (!resolvedAnchorElement || !open) {
+    if (!anchorEl || !open) {
       return undefined;
     }
+
     const handlePopperUpdate = data => {
       setPlacement(data.placement);
     };
+
+    const resolvedAnchorEl = resolveAnchorEl(anchorEl);
+
     if (false) {}
+
     let popperModifiers = [{
       name: 'preventOverflow',
       options: {
@@ -35306,13 +30710,16 @@ const PopperTooltip = /*#__PURE__*/react.forwardRef(function PopperTooltip(props
         handlePopperUpdate(state);
       }
     }];
+
     if (modifiers != null) {
       popperModifiers = popperModifiers.concat(modifiers);
     }
+
     if (popperOptions && popperOptions.modifiers != null) {
       popperModifiers = popperModifiers.concat(popperOptions.modifiers);
     }
-    const popper = popper_createPopper(resolvedAnchorElement, tooltipRef.current, esm_extends_extends({
+
+    const popper = popper_createPopper(resolveAnchorEl(anchorEl), tooltipRef.current, (0,esm_extends/* default */.Z)({
       placement: rtlPlacement
     }, popperOptions, {
       modifiers: popperModifiers
@@ -35322,92 +30729,68 @@ const PopperTooltip = /*#__PURE__*/react.forwardRef(function PopperTooltip(props
       popper.destroy();
       handlePopperRefRef.current(null);
     };
-  }, [resolvedAnchorElement, disablePortal, modifiers, open, popperOptions, rtlPlacement]);
+  }, [anchorEl, disablePortal, modifiers, open, popperOptions, rtlPlacement]);
   const childProps = {
-    placement: placement
+    placement
   };
+
   if (TransitionProps !== null) {
     childProps.TransitionProps = TransitionProps;
   }
-  const classes = PopperUnstyled_useUtilityClasses();
-  const Root = (_ref = component != null ? component : slots.root) != null ? _ref : 'div';
-  const rootProps = useSlotProps({
-    elementType: Root,
-    externalSlotProps: slotProps.root,
-    externalForwardedProps: other,
-    additionalProps: {
-      role: 'tooltip',
-      ref: ownRef
-    },
-    ownerState: esm_extends_extends({}, props, ownerState),
-    className: classes.root
-  });
-  return /*#__PURE__*/(0,jsx_runtime.jsx)(Root, esm_extends_extends({}, rootProps, {
+
+  return /*#__PURE__*/(0,jsx_runtime.jsx)("div", (0,esm_extends/* default */.Z)({
+    ref: ownRef,
+    role: "tooltip"
+  }, other, {
     children: typeof children === 'function' ? children(childProps) : children
   }));
 });
+/* eslint-enable react/prop-types */
 
 /**
  * Poppers rely on the 3rd party library [Popper.js](https://popper.js.org/docs/v2/) for positioning.
- *
- * Demos:
- *
- * - [Unstyled Popper](https://mui.com/base/react-popper/)
- *
- * API:
- *
- * - [PopperUnstyled API](https://mui.com/base/api/popper-unstyled/)
  */
+
 const PopperUnstyled = /*#__PURE__*/react.forwardRef(function PopperUnstyled(props, ref) {
   const {
-      anchorEl,
-      children,
-      container: containerProp,
-      direction = 'ltr',
-      disablePortal = false,
-      keepMounted = false,
-      modifiers,
-      open,
-      placement = 'bottom',
-      popperOptions = defaultPopperOptions,
-      popperRef,
-      style,
-      transition = false,
-      slotProps = {},
-      slots = {}
-    } = props,
-    other = objectWithoutPropertiesLoose_objectWithoutPropertiesLoose(props, PopperUnstyled_excluded2);
+    anchorEl,
+    children,
+    container: containerProp,
+    direction = 'ltr',
+    disablePortal = false,
+    keepMounted = false,
+    modifiers,
+    open,
+    placement = 'bottom',
+    popperOptions = defaultPopperOptions,
+    popperRef,
+    style,
+    transition = false
+  } = props,
+        other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, PopperUnstyled_excluded2);
+
   const [exited, setExited] = react.useState(true);
+
   const handleEnter = () => {
     setExited(false);
   };
+
   const handleExited = () => {
     setExited(true);
   };
+
   if (!keepMounted && !open && (!transition || exited)) {
     return null;
-  }
-
-  // If the container prop is provided, use that
+  } // If the container prop is provided, use that
   // If the anchorEl prop is provided, use its parent body element as the container
   // If neither are provided let the Modal take care of choosing the container
-  let container;
-  if (containerProp) {
-    container = containerProp;
-  } else if (anchorEl) {
-    const resolvedAnchorEl = resolveAnchorEl(anchorEl);
-    container = resolvedAnchorEl && PopperUnstyled_isHTMLElement(resolvedAnchorEl) ? (0,esm_ownerDocument/* default */.Z)(resolvedAnchorEl).body : (0,esm_ownerDocument/* default */.Z)(null).body;
-  }
-  const display = !open && keepMounted && (!transition || exited) ? 'none' : undefined;
-  const transitionProps = transition ? {
-    in: open,
-    onEnter: handleEnter,
-    onExited: handleExited
-  } : undefined;
+
+
+  const container = containerProp || (anchorEl ? (0,esm_ownerDocument/* default */.Z)(resolveAnchorEl(anchorEl)).body : undefined);
   return /*#__PURE__*/(0,jsx_runtime.jsx)(base_Portal_Portal, {
     disablePortal: disablePortal,
     container: container,
-    children: /*#__PURE__*/(0,jsx_runtime.jsx)(PopperTooltip, esm_extends_extends({
+    children: /*#__PURE__*/(0,jsx_runtime.jsx)(PopperTooltip, (0,esm_extends/* default */.Z)({
       anchorEl: anchorEl,
       direction: direction,
       disablePortal: disablePortal,
@@ -35416,19 +30799,21 @@ const PopperUnstyled = /*#__PURE__*/react.forwardRef(function PopperUnstyled(pro
       open: transition ? !exited : open,
       placement: placement,
       popperOptions: popperOptions,
-      popperRef: popperRef,
-      slotProps: slotProps,
-      slots: slots
+      popperRef: popperRef
     }, other, {
-      style: esm_extends_extends({
+      style: (0,esm_extends/* default */.Z)({
         // Prevents scroll issue, waiting for Popper.js to add this style once initiated.
         position: 'fixed',
         // Fix Popper.js display issue
         top: 0,
         left: 0,
-        display
+        display: !open && keepMounted && (!transition || exited) ? 'none' : null
       }, style),
-      TransitionProps: transitionProps,
+      TransitionProps: transition ? {
+        in: open,
+        onEnter: handleEnter,
+        onExited: handleExited
+      } : null,
       children: children
     }))
   });
@@ -35439,8 +30824,6 @@ const PopperUnstyled = /*#__PURE__*/react.forwardRef(function PopperUnstyled(pro
 var useThemeWithoutDefault = __webpack_require__(7103);
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/Popper/Popper.js
 
-
-const Popper_excluded = ["components", "componentsProps", "slots", "slotProps"];
 
 
 
@@ -35453,41 +30836,28 @@ const PopperRoot = (0,styled/* default */.ZP)(PopperUnstyled_PopperUnstyled, {
   slot: 'Root',
   overridesResolver: (props, styles) => styles.root
 })({});
-
 /**
  *
  * Demos:
  *
  * - [Autocomplete](https://mui.com/material-ui/react-autocomplete/)
- * - [Menu](https://mui.com/material-ui/react-menu/)
+ * - [Menus](https://mui.com/material-ui/react-menu/)
  * - [Popper](https://mui.com/material-ui/react-popper/)
  *
  * API:
  *
  * - [Popper API](https://mui.com/material-ui/api/popper/)
  */
+
 const Popper = /*#__PURE__*/react.forwardRef(function Popper(inProps, ref) {
-  var _slots$root;
   const theme = (0,useThemeWithoutDefault/* default */.Z)();
   const props = (0,useThemeProps/* default */.Z)({
     props: inProps,
     name: 'MuiPopper'
   });
-  const {
-      components,
-      componentsProps,
-      slots,
-      slotProps
-    } = props,
-    other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, Popper_excluded);
-  const RootComponent = (_slots$root = slots == null ? void 0 : slots.root) != null ? _slots$root : components == null ? void 0 : components.Root;
   return /*#__PURE__*/(0,jsx_runtime.jsx)(PopperRoot, (0,esm_extends/* default */.Z)({
-    direction: theme == null ? void 0 : theme.direction,
-    slots: {
-      root: RootComponent
-    },
-    slotProps: slotProps != null ? slotProps : componentsProps
-  }, other, {
+    direction: theme == null ? void 0 : theme.direction
+  }, props, {
     ref: ref
   }));
 });
@@ -35499,7 +30869,6 @@ var useId = __webpack_require__(1502);
 var utils_useControlled = __webpack_require__(2893);
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/Tooltip/tooltipClasses.js
 
-
 function getTooltipUtilityClass(slot) {
   return (0,generateUtilityClass_generateUtilityClass/* default */.Z)('MuiTooltip', slot);
 }
@@ -35508,7 +30877,8 @@ const tooltipClasses = (0,generateUtilityClasses/* default */.Z)('MuiTooltip', [
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/Tooltip/Tooltip.js
 
 
-const Tooltip_excluded = ["arrow", "children", "classes", "components", "componentsProps", "describeChild", "disableFocusListener", "disableHoverListener", "disableInteractive", "disableTouchListener", "enterDelay", "enterNextDelay", "enterTouchDelay", "followCursor", "id", "leaveDelay", "leaveTouchDelay", "onClose", "onOpen", "open", "placement", "PopperComponent", "PopperProps", "slotProps", "slots", "title", "TransitionComponent", "TransitionProps"];
+const Tooltip_excluded = ["arrow", "children", "classes", "components", "componentsProps", "describeChild", "disableFocusListener", "disableHoverListener", "disableInteractive", "disableTouchListener", "enterDelay", "enterNextDelay", "enterTouchDelay", "followCursor", "id", "leaveDelay", "leaveTouchDelay", "onClose", "onOpen", "open", "placement", "PopperComponent", "PopperProps", "title", "TransitionComponent", "TransitionProps"];
+
 
 
 
@@ -35532,6 +30902,7 @@ const Tooltip_excluded = ["arrow", "children", "classes", "components", "compone
 function Tooltip_round(value) {
   return Math.round(value * 1e5) / 1e5;
 }
+
 const Tooltip_useUtilityClasses = ownerState => {
   const {
     classes,
@@ -35547,6 +30918,7 @@ const Tooltip_useUtilityClasses = ownerState => {
   };
   return (0,composeClasses/* default */.Z)(slots, getTooltipUtilityClass, classes);
 };
+
 const TooltipPopper = (0,styled/* default */.ZP)(Popper_Popper, {
   name: 'MuiTooltip',
   slot: 'Popper',
@@ -35561,7 +30933,7 @@ const TooltipPopper = (0,styled/* default */.ZP)(Popper_Popper, {
   ownerState,
   open
 }) => (0,esm_extends/* default */.Z)({
-  zIndex: (theme.vars || theme).zIndex.tooltip,
+  zIndex: theme.zIndex.tooltip,
   pointerEvents: 'none'
 }, !ownerState.disableInteractive && {
   pointerEvents: 'auto'
@@ -35622,9 +30994,9 @@ const TooltipTooltip = (0,styled/* default */.ZP)('div', {
   theme,
   ownerState
 }) => (0,esm_extends/* default */.Z)({
-  backgroundColor: theme.vars ? theme.vars.palette.Tooltip.bg : (0,colorManipulator/* alpha */.Fq)(theme.palette.grey[700], 0.92),
-  borderRadius: (theme.vars || theme).shape.borderRadius,
-  color: (theme.vars || theme).palette.common.white,
+  backgroundColor: (0,colorManipulator/* alpha */.Fq)(theme.palette.grey[700], 0.92),
+  borderRadius: theme.shape.borderRadius,
+  color: theme.palette.common.white,
   fontFamily: theme.typography.fontFamily,
   padding: '4px 8px',
   fontSize: theme.typography.pxToRem(11),
@@ -35686,9 +31058,11 @@ const TooltipArrow = (0,styled/* default */.ZP)('span', {
   overflow: 'hidden',
   position: 'absolute',
   width: '1em',
-  height: '0.71em' /* = width / sqrt(2) = (length of the hypotenuse) */,
+  height: '0.71em'
+  /* = width / sqrt(2) = (length of the hypotenuse) */
+  ,
   boxSizing: 'border-box',
-  color: theme.vars ? theme.vars.palette.Tooltip.bg : (0,colorManipulator/* alpha */.Fq)(theme.palette.grey[700], 0.9),
+  color: (0,colorManipulator/* alpha */.Fq)(theme.palette.grey[700], 0.9),
   '&::before': {
     content: '""',
     margin: 'auto',
@@ -35705,52 +31079,55 @@ function testReset() {
   hystersisOpen = false;
   clearTimeout(hystersisTimer);
 }
+
 function composeEventHandler(handler, eventHandler) {
   return event => {
     if (eventHandler) {
       eventHandler(event);
     }
+
     handler(event);
   };
-}
+} // TODO v6: Remove PopperComponent, PopperProps, TransitionComponent and TransitionProps.
 
-// TODO v6: Remove PopperComponent, PopperProps, TransitionComponent and TransitionProps.
+
 const Tooltip = /*#__PURE__*/react.forwardRef(function Tooltip(inProps, ref) {
-  var _ref, _slots$popper, _ref2, _ref3, _slots$transition, _ref4, _slots$tooltip, _ref5, _slots$arrow, _slotProps$popper, _ref6, _slotProps$popper2, _slotProps$transition, _slotProps$tooltip, _ref7, _slotProps$tooltip2, _slotProps$arrow, _ref8, _slotProps$arrow2;
+  var _components$Popper, _ref, _components$Transitio, _components$Tooltip, _components$Arrow, _componentsProps$popp;
+
   const props = (0,useThemeProps/* default */.Z)({
     props: inProps,
     name: 'MuiTooltip'
   });
+
   const {
-      arrow = false,
-      children,
-      components = {},
-      componentsProps = {},
-      describeChild = false,
-      disableFocusListener = false,
-      disableHoverListener = false,
-      disableInteractive: disableInteractiveProp = false,
-      disableTouchListener = false,
-      enterDelay = 100,
-      enterNextDelay = 0,
-      enterTouchDelay = 700,
-      followCursor = false,
-      id: idProp,
-      leaveDelay = 0,
-      leaveTouchDelay = 1500,
-      onClose,
-      onOpen,
-      open: openProp,
-      placement = 'bottom',
-      PopperComponent: PopperComponentProp,
-      PopperProps = {},
-      slotProps = {},
-      slots = {},
-      title,
-      TransitionComponent: TransitionComponentProp = material_Grow_Grow,
-      TransitionProps
-    } = props,
-    other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, Tooltip_excluded);
+    arrow = false,
+    children,
+    components = {},
+    componentsProps = {},
+    describeChild = false,
+    disableFocusListener = false,
+    disableHoverListener = false,
+    disableInteractive: disableInteractiveProp = false,
+    disableTouchListener = false,
+    enterDelay = 100,
+    enterNextDelay = 0,
+    enterTouchDelay = 700,
+    followCursor = false,
+    id: idProp,
+    leaveDelay = 0,
+    leaveTouchDelay = 1500,
+    onClose,
+    onOpen,
+    open: openProp,
+    placement = 'bottom',
+    PopperComponent: PopperComponentProp,
+    PopperProps = {},
+    title,
+    TransitionComponent: TransitionComponentProp = material_Grow_Grow,
+    TransitionProps
+  } = props,
+        other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, Tooltip_excluded);
+
   const theme = styles_useTheme_useTheme();
   const isRtl = theme.direction === 'rtl';
   const [childNode, setChildNode] = react.useState();
@@ -35768,7 +31145,9 @@ const Tooltip = /*#__PURE__*/react.forwardRef(function Tooltip(inProps, ref) {
     state: 'open'
   });
   let open = openState;
+
   if (false) {}
+
   const id = (0,useId/* default */.Z)(idProp);
   const prevUserSelect = react.useRef();
   const stopTouchInteraction = react.useCallback(() => {
@@ -35776,6 +31155,7 @@ const Tooltip = /*#__PURE__*/react.forwardRef(function Tooltip(inProps, ref) {
       document.body.style.WebkitUserSelect = prevUserSelect.current;
       prevUserSelect.current = undefined;
     }
+
     clearTimeout(touchTimer.current);
   }, []);
   react.useEffect(() => {
@@ -35786,18 +31166,20 @@ const Tooltip = /*#__PURE__*/react.forwardRef(function Tooltip(inProps, ref) {
       stopTouchInteraction();
     };
   }, [stopTouchInteraction]);
+
   const handleOpen = event => {
     clearTimeout(hystersisTimer);
-    hystersisOpen = true;
-
-    // The mouseover event will trigger for every nested element in the tooltip.
+    hystersisOpen = true; // The mouseover event will trigger for every nested element in the tooltip.
     // We can skip rerendering when the tooltip is already open.
     // We are using the mouseover event instead of the mouseenter event to fix a hide/show issue.
+
     setOpenState(true);
+
     if (onOpen && !open) {
       onOpen(event);
     }
   };
+
   const handleClose = (0,utils_useEventCallback/* default */.Z)(
   /**
    * @param {React.SyntheticEvent | Event} event
@@ -35808,27 +31190,32 @@ const Tooltip = /*#__PURE__*/react.forwardRef(function Tooltip(inProps, ref) {
       hystersisOpen = false;
     }, 800 + leaveDelay);
     setOpenState(false);
+
     if (onClose && open) {
       onClose(event);
     }
+
     clearTimeout(closeTimer.current);
     closeTimer.current = setTimeout(() => {
       ignoreNonTouchEvents.current = false;
     }, theme.transitions.duration.shortest);
   });
+
   const handleEnter = event => {
     if (ignoreNonTouchEvents.current && event.type !== 'touchstart') {
       return;
-    }
-
-    // Remove the title ahead of time.
+    } // Remove the title ahead of time.
     // We don't want to wait for the next render commit.
     // We would risk displaying two tooltips at the same time (native + this one).
+
+
     if (childNode) {
       childNode.removeAttribute('title');
     }
+
     clearTimeout(enterTimer.current);
     clearTimeout(leaveTimer.current);
+
     if (enterDelay || hystersisOpen && enterNextDelay) {
       enterTimer.current = setTimeout(() => {
         handleOpen(event);
@@ -35837,6 +31224,7 @@ const Tooltip = /*#__PURE__*/react.forwardRef(function Tooltip(inProps, ref) {
       handleOpen(event);
     }
   };
+
   const handleLeave = event => {
     clearTimeout(enterTimer.current);
     clearTimeout(leaveTimer.current);
@@ -35844,22 +31232,26 @@ const Tooltip = /*#__PURE__*/react.forwardRef(function Tooltip(inProps, ref) {
       handleClose(event);
     }, leaveDelay);
   };
+
   const {
     isFocusVisibleRef,
     onBlur: handleBlurVisible,
     onFocus: handleFocusVisible,
     ref: focusVisibleRef
-  } = (0,utils_useIsFocusVisible/* default */.Z)();
-  // We don't necessarily care about the focusVisible state (which is safe to access via ref anyway).
+  } = (0,utils_useIsFocusVisible/* default */.Z)(); // We don't necessarily care about the focusVisible state (which is safe to access via ref anyway).
   // We just need to re-render the Tooltip if the focus-visible state changes.
+
   const [, setChildIsFocusVisible] = react.useState(false);
+
   const handleBlur = event => {
     handleBlurVisible(event);
+
     if (isFocusVisibleRef.current === false) {
       setChildIsFocusVisible(false);
       handleLeave(event);
     }
   };
+
   const handleFocus = event => {
     // Workaround for https://github.com/facebook/react/issues/7769
     // The autoFocus of React might trigger the event before the componentDidMount.
@@ -35867,89 +31259,108 @@ const Tooltip = /*#__PURE__*/react.forwardRef(function Tooltip(inProps, ref) {
     if (!childNode) {
       setChildNode(event.currentTarget);
     }
+
     handleFocusVisible(event);
+
     if (isFocusVisibleRef.current === true) {
       setChildIsFocusVisible(true);
       handleEnter(event);
     }
   };
+
   const detectTouchStart = event => {
     ignoreNonTouchEvents.current = true;
     const childrenProps = children.props;
+
     if (childrenProps.onTouchStart) {
       childrenProps.onTouchStart(event);
     }
   };
+
   const handleMouseOver = handleEnter;
   const handleMouseLeave = handleLeave;
+
   const handleTouchStart = event => {
     detectTouchStart(event);
     clearTimeout(leaveTimer.current);
     clearTimeout(closeTimer.current);
     stopTouchInteraction();
-    prevUserSelect.current = document.body.style.WebkitUserSelect;
-    // Prevent iOS text selection on long-tap.
+    prevUserSelect.current = document.body.style.WebkitUserSelect; // Prevent iOS text selection on long-tap.
+
     document.body.style.WebkitUserSelect = 'none';
     touchTimer.current = setTimeout(() => {
       document.body.style.WebkitUserSelect = prevUserSelect.current;
       handleEnter(event);
     }, enterTouchDelay);
   };
+
   const handleTouchEnd = event => {
     if (children.props.onTouchEnd) {
       children.props.onTouchEnd(event);
     }
+
     stopTouchInteraction();
     clearTimeout(leaveTimer.current);
     leaveTimer.current = setTimeout(() => {
       handleClose(event);
     }, leaveTouchDelay);
   };
+
   react.useEffect(() => {
     if (!open) {
       return undefined;
     }
-
     /**
      * @param {KeyboardEvent} nativeEvent
      */
+
+
     function handleKeyDown(nativeEvent) {
       // IE11, Edge (prior to using Bink?) use 'Esc'
       if (nativeEvent.key === 'Escape' || nativeEvent.key === 'Esc') {
         handleClose(nativeEvent);
       }
     }
+
     document.addEventListener('keydown', handleKeyDown);
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
   }, [handleClose, open]);
-  const handleRef = (0,utils_useForkRef/* default */.Z)(children.ref, focusVisibleRef, setChildNode, ref);
+  const handleUseRef = (0,utils_useForkRef/* default */.Z)(setChildNode, ref);
+  const handleFocusRef = (0,utils_useForkRef/* default */.Z)(focusVisibleRef, handleUseRef);
+  const handleRef = (0,utils_useForkRef/* default */.Z)(children.ref, handleFocusRef); // There is no point in displaying an empty tooltip.
 
-  // There is no point in displaying an empty tooltip.
-  if (!title && title !== 0) {
+  if (title === '') {
     open = false;
   }
+
   const positionRef = react.useRef({
     x: 0,
     y: 0
   });
   const popperRef = react.useRef();
+
   const handleMouseMove = event => {
     const childrenProps = children.props;
+
     if (childrenProps.onMouseMove) {
       childrenProps.onMouseMove(event);
     }
+
     positionRef.current = {
       x: event.clientX,
       y: event.clientY
     };
+
     if (popperRef.current) {
       popperRef.current.update();
     }
   };
+
   const nameOrDescProps = {};
   const titleIsString = typeof title === 'string';
+
   if (describeChild) {
     nameOrDescProps.title = !open && titleIsString && !disableHoverListener ? title : null;
     nameOrDescProps['aria-describedby'] = open ? id : null;
@@ -35957,38 +31368,49 @@ const Tooltip = /*#__PURE__*/react.forwardRef(function Tooltip(inProps, ref) {
     nameOrDescProps['aria-label'] = titleIsString ? title : null;
     nameOrDescProps['aria-labelledby'] = open && !titleIsString ? id : null;
   }
+
   const childrenProps = (0,esm_extends/* default */.Z)({}, nameOrDescProps, other, children.props, {
-    className: (0,dist_clsx_m/* default */.Z)(other.className, children.props.className),
+    className: (0,clsx_m/* default */.Z)(other.className, children.props.className),
     onTouchStart: detectTouchStart,
     ref: handleRef
   }, followCursor ? {
     onMouseMove: handleMouseMove
   } : {});
+
   if (false) {}
+
   const interactiveWrapperListeners = {};
+
   if (!disableTouchListener) {
     childrenProps.onTouchStart = handleTouchStart;
     childrenProps.onTouchEnd = handleTouchEnd;
   }
+
   if (!disableHoverListener) {
     childrenProps.onMouseOver = composeEventHandler(handleMouseOver, childrenProps.onMouseOver);
     childrenProps.onMouseLeave = composeEventHandler(handleMouseLeave, childrenProps.onMouseLeave);
+
     if (!disableInteractive) {
       interactiveWrapperListeners.onMouseOver = handleMouseOver;
       interactiveWrapperListeners.onMouseLeave = handleMouseLeave;
     }
   }
+
   if (!disableFocusListener) {
     childrenProps.onFocus = composeEventHandler(handleFocus, childrenProps.onFocus);
     childrenProps.onBlur = composeEventHandler(handleBlur, childrenProps.onBlur);
+
     if (!disableInteractive) {
       interactiveWrapperListeners.onFocus = handleFocus;
       interactiveWrapperListeners.onBlur = handleBlur;
     }
   }
+
   if (false) {}
+
   const popperOptions = react.useMemo(() => {
     var _PopperProps$popperOp;
+
     let tooltipModifiers = [{
       name: 'arrow',
       enabled: Boolean(arrowRef),
@@ -35997,13 +31419,16 @@ const Tooltip = /*#__PURE__*/react.forwardRef(function Tooltip(inProps, ref) {
         padding: 4
       }
     }];
+
     if ((_PopperProps$popperOp = PopperProps.popperOptions) != null && _PopperProps$popperOp.modifiers) {
       tooltipModifiers = tooltipModifiers.concat(PopperProps.popperOptions.modifiers);
     }
+
     return (0,esm_extends/* default */.Z)({}, PopperProps.popperOptions, {
       modifiers: tooltipModifiers
     });
   }, [arrowRef, PopperProps]);
+
   const ownerState = (0,esm_extends/* default */.Z)({}, props, {
     isRtl,
     arrow,
@@ -36012,21 +31437,16 @@ const Tooltip = /*#__PURE__*/react.forwardRef(function Tooltip(inProps, ref) {
     PopperComponentProp,
     touch: ignoreNonTouchEvents.current
   });
+
   const classes = Tooltip_useUtilityClasses(ownerState);
-  const PopperComponent = (_ref = (_slots$popper = slots.popper) != null ? _slots$popper : components.Popper) != null ? _ref : TooltipPopper;
-  const TransitionComponent = (_ref2 = (_ref3 = (_slots$transition = slots.transition) != null ? _slots$transition : components.Transition) != null ? _ref3 : TransitionComponentProp) != null ? _ref2 : material_Grow_Grow;
-  const TooltipComponent = (_ref4 = (_slots$tooltip = slots.tooltip) != null ? _slots$tooltip : components.Tooltip) != null ? _ref4 : TooltipTooltip;
-  const ArrowComponent = (_ref5 = (_slots$arrow = slots.arrow) != null ? _slots$arrow : components.Arrow) != null ? _ref5 : TooltipArrow;
-  const popperProps = appendOwnerState(PopperComponent, (0,esm_extends/* default */.Z)({}, PopperProps, (_slotProps$popper = slotProps.popper) != null ? _slotProps$popper : componentsProps.popper, {
-    className: (0,dist_clsx_m/* default */.Z)(classes.popper, PopperProps == null ? void 0 : PopperProps.className, (_ref6 = (_slotProps$popper2 = slotProps.popper) != null ? _slotProps$popper2 : componentsProps.popper) == null ? void 0 : _ref6.className)
-  }), ownerState);
-  const transitionProps = appendOwnerState(TransitionComponent, (0,esm_extends/* default */.Z)({}, TransitionProps, (_slotProps$transition = slotProps.transition) != null ? _slotProps$transition : componentsProps.transition), ownerState);
-  const tooltipProps = appendOwnerState(TooltipComponent, (0,esm_extends/* default */.Z)({}, (_slotProps$tooltip = slotProps.tooltip) != null ? _slotProps$tooltip : componentsProps.tooltip, {
-    className: (0,dist_clsx_m/* default */.Z)(classes.tooltip, (_ref7 = (_slotProps$tooltip2 = slotProps.tooltip) != null ? _slotProps$tooltip2 : componentsProps.tooltip) == null ? void 0 : _ref7.className)
-  }), ownerState);
-  const tooltipArrowProps = appendOwnerState(ArrowComponent, (0,esm_extends/* default */.Z)({}, (_slotProps$arrow = slotProps.arrow) != null ? _slotProps$arrow : componentsProps.arrow, {
-    className: (0,dist_clsx_m/* default */.Z)(classes.arrow, (_ref8 = (_slotProps$arrow2 = slotProps.arrow) != null ? _slotProps$arrow2 : componentsProps.arrow) == null ? void 0 : _ref8.className)
-  }), ownerState);
+  const PopperComponent = (_components$Popper = components.Popper) != null ? _components$Popper : TooltipPopper;
+  const TransitionComponent = (_ref = (_components$Transitio = components.Transition) != null ? _components$Transitio : TransitionComponentProp) != null ? _ref : material_Grow_Grow;
+  const TooltipComponent = (_components$Tooltip = components.Tooltip) != null ? _components$Tooltip : TooltipTooltip;
+  const ArrowComponent = (_components$Arrow = components.Arrow) != null ? _components$Arrow : TooltipArrow;
+  const popperProps = appendOwnerState(PopperComponent, (0,esm_extends/* default */.Z)({}, PopperProps, componentsProps.popper), ownerState);
+  const transitionProps = appendOwnerState(TransitionComponent, (0,esm_extends/* default */.Z)({}, TransitionProps, componentsProps.transition), ownerState);
+  const tooltipProps = appendOwnerState(TooltipComponent, (0,esm_extends/* default */.Z)({}, componentsProps.tooltip), ownerState);
+  const tooltipArrowProps = appendOwnerState(ArrowComponent, (0,esm_extends/* default */.Z)({}, componentsProps.arrow), ownerState);
   return /*#__PURE__*/(0,jsx_runtime.jsxs)(react.Fragment, {
     children: [/*#__PURE__*/react.cloneElement(children, childrenProps), /*#__PURE__*/(0,jsx_runtime.jsx)(PopperComponent, (0,esm_extends/* default */.Z)({
       as: PopperComponentProp != null ? PopperComponentProp : Popper_Popper,
@@ -36046,25 +31466,31 @@ const Tooltip = /*#__PURE__*/react.forwardRef(function Tooltip(inProps, ref) {
       id: id,
       transition: true
     }, interactiveWrapperListeners, popperProps, {
+      className: (0,clsx_m/* default */.Z)(classes.popper, PopperProps == null ? void 0 : PopperProps.className, (_componentsProps$popp = componentsProps.popper) == null ? void 0 : _componentsProps$popp.className),
       popperOptions: popperOptions,
       children: ({
         TransitionProps: TransitionPropsInner
-      }) => /*#__PURE__*/(0,jsx_runtime.jsx)(TransitionComponent, (0,esm_extends/* default */.Z)({
-        timeout: theme.transitions.duration.shorter
-      }, TransitionPropsInner, transitionProps, {
-        children: /*#__PURE__*/(0,jsx_runtime.jsxs)(TooltipComponent, (0,esm_extends/* default */.Z)({}, tooltipProps, {
-          children: [title, arrow ? /*#__PURE__*/(0,jsx_runtime.jsx)(ArrowComponent, (0,esm_extends/* default */.Z)({}, tooltipArrowProps, {
-            ref: setArrowRef
-          })) : null]
-        }))
-      }))
+      }) => {
+        var _componentsProps$tool, _componentsProps$arro;
+
+        return /*#__PURE__*/(0,jsx_runtime.jsx)(TransitionComponent, (0,esm_extends/* default */.Z)({
+          timeout: theme.transitions.duration.shorter
+        }, TransitionPropsInner, transitionProps, {
+          children: /*#__PURE__*/(0,jsx_runtime.jsxs)(TooltipComponent, (0,esm_extends/* default */.Z)({}, tooltipProps, {
+            className: (0,clsx_m/* default */.Z)(classes.tooltip, (_componentsProps$tool = componentsProps.tooltip) == null ? void 0 : _componentsProps$tool.className),
+            children: [title, arrow ? /*#__PURE__*/(0,jsx_runtime.jsx)(ArrowComponent, (0,esm_extends/* default */.Z)({}, tooltipArrowProps, {
+              className: (0,clsx_m/* default */.Z)(classes.arrow, (_componentsProps$arro = componentsProps.arrow) == null ? void 0 : _componentsProps$arro.className),
+              ref: setArrowRef
+            })) : null]
+          }))
+        }));
+      }
     }))]
   });
 });
  false ? 0 : void 0;
 /* harmony default export */ const Tooltip_Tooltip = (Tooltip);
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/Divider/dividerClasses.js
-
 
 function getDividerUtilityClass(slot) {
   return (0,generateUtilityClass_generateUtilityClass/* default */.Z)('MuiDivider', slot);
@@ -36075,6 +31501,7 @@ const dividerClasses = (0,generateUtilityClasses/* default */.Z)('MuiDivider', [
 
 
 const Divider_excluded = ["absolute", "children", "className", "component", "flexItem", "light", "orientation", "role", "textAlign", "variant"];
+
 
 
 
@@ -36101,6 +31528,7 @@ const Divider_useUtilityClasses = ownerState => {
   };
   return (0,composeClasses/* default */.Z)(slots, getDividerUtilityClass, classes);
 };
+
 const DividerRoot = (0,styled/* default */.ZP)('div', {
   name: 'MuiDivider',
   slot: 'Root',
@@ -36119,7 +31547,7 @@ const DividerRoot = (0,styled/* default */.ZP)('div', {
   flexShrink: 0,
   borderWidth: 0,
   borderStyle: 'solid',
-  borderColor: (theme.vars || theme).palette.divider,
+  borderColor: theme.palette.divider,
   borderBottomWidth: 'thin'
 }, ownerState.absolute && {
   position: 'absolute',
@@ -36127,7 +31555,7 @@ const DividerRoot = (0,styled/* default */.ZP)('div', {
   left: 0,
   width: '100%'
 }, ownerState.light && {
-  borderColor: theme.vars ? `rgba(${theme.vars.palette.dividerChannel} / 0.08)` : (0,colorManipulator/* alpha */.Fq)(theme.palette.divider, 0.08)
+  borderColor: (0,colorManipulator/* alpha */.Fq)(theme.palette.divider, 0.08)
 }, ownerState.variant === 'inset' && {
   marginLeft: 72
 }, ownerState.variant === 'middle' && ownerState.orientation === 'horizontal' && {
@@ -36154,7 +31582,7 @@ const DividerRoot = (0,styled/* default */.ZP)('div', {
   '&::before, &::after': {
     position: 'relative',
     width: '100%',
-    borderTop: `thin solid ${(theme.vars || theme).palette.divider}`,
+    borderTop: `thin solid ${theme.palette.divider}`,
     top: '50%',
     content: '""',
     transform: 'translateY(50%)'
@@ -36169,7 +31597,7 @@ const DividerRoot = (0,styled/* default */.ZP)('div', {
     top: '0%',
     left: '50%',
     borderTop: 0,
-    borderLeft: `thin solid ${(theme.vars || theme).palette.divider}`,
+    borderLeft: `thin solid ${theme.palette.divider}`,
     transform: 'translateX(0%)'
   }
 }), ({
@@ -36214,19 +31642,21 @@ const Divider = /*#__PURE__*/react.forwardRef(function Divider(inProps, ref) {
     props: inProps,
     name: 'MuiDivider'
   });
+
   const {
-      absolute = false,
-      children,
-      className,
-      component = children ? 'div' : 'hr',
-      flexItem = false,
-      light = false,
-      orientation = 'horizontal',
-      role = component !== 'hr' ? 'separator' : undefined,
-      textAlign = 'center',
-      variant = 'fullWidth'
-    } = props,
-    other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, Divider_excluded);
+    absolute = false,
+    children,
+    className,
+    component = children ? 'div' : 'hr',
+    flexItem = false,
+    light = false,
+    orientation = 'horizontal',
+    role = component !== 'hr' ? 'separator' : undefined,
+    textAlign = 'center',
+    variant = 'fullWidth'
+  } = props,
+        other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, Divider_excluded);
+
   const ownerState = (0,esm_extends/* default */.Z)({}, props, {
     absolute,
     component,
@@ -36237,10 +31667,11 @@ const Divider = /*#__PURE__*/react.forwardRef(function Divider(inProps, ref) {
     textAlign,
     variant
   });
+
   const classes = Divider_useUtilityClasses(ownerState);
   return /*#__PURE__*/(0,jsx_runtime.jsx)(DividerRoot, (0,esm_extends/* default */.Z)({
     as: component,
-    className: (0,dist_clsx_m/* default */.Z)(classes.root, className),
+    className: (0,clsx_m/* default */.Z)(classes.root, className),
     role: role,
     ref: ref,
     ownerState: ownerState
@@ -36258,24 +31689,27 @@ const Divider = /*#__PURE__*/react.forwardRef(function Divider(inProps, ref) {
 var resolveProps = __webpack_require__(7925);
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/Button/buttonClasses.js
 
-
 function getButtonUtilityClass(slot) {
   return (0,generateUtilityClass_generateUtilityClass/* default */.Z)('MuiButton', slot);
 }
-const buttonClasses = (0,generateUtilityClasses/* default */.Z)('MuiButton', ['root', 'text', 'textInherit', 'textPrimary', 'textSecondary', 'textSuccess', 'textError', 'textInfo', 'textWarning', 'outlined', 'outlinedInherit', 'outlinedPrimary', 'outlinedSecondary', 'outlinedSuccess', 'outlinedError', 'outlinedInfo', 'outlinedWarning', 'contained', 'containedInherit', 'containedPrimary', 'containedSecondary', 'containedSuccess', 'containedError', 'containedInfo', 'containedWarning', 'disableElevation', 'focusVisible', 'disabled', 'colorInherit', 'textSizeSmall', 'textSizeMedium', 'textSizeLarge', 'outlinedSizeSmall', 'outlinedSizeMedium', 'outlinedSizeLarge', 'containedSizeSmall', 'containedSizeMedium', 'containedSizeLarge', 'sizeMedium', 'sizeSmall', 'sizeLarge', 'fullWidth', 'startIcon', 'endIcon', 'iconSizeSmall', 'iconSizeMedium', 'iconSizeLarge']);
+const buttonClasses = (0,generateUtilityClasses/* default */.Z)('MuiButton', ['root', 'text', 'textInherit', 'textPrimary', 'textSecondary', 'outlined', 'outlinedInherit', 'outlinedPrimary', 'outlinedSecondary', 'contained', 'containedInherit', 'containedPrimary', 'containedSecondary', 'disableElevation', 'focusVisible', 'disabled', 'colorInherit', 'textSizeSmall', 'textSizeMedium', 'textSizeLarge', 'outlinedSizeSmall', 'outlinedSizeMedium', 'outlinedSizeLarge', 'containedSizeSmall', 'containedSizeMedium', 'containedSizeLarge', 'sizeMedium', 'sizeSmall', 'sizeLarge', 'fullWidth', 'startIcon', 'endIcon', 'iconSizeSmall', 'iconSizeMedium', 'iconSizeLarge']);
 /* harmony default export */ const Button_buttonClasses = (buttonClasses);
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/ButtonGroup/ButtonGroupContext.js
+
 
 /**
  * @ignore - internal component.
  */
 const ButtonGroupContext = /*#__PURE__*/react.createContext({});
+
 if (false) {}
+
 /* harmony default export */ const ButtonGroup_ButtonGroupContext = (ButtonGroupContext);
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/Button/Button.js
 
 
 const Button_excluded = ["children", "color", "component", "className", "disabled", "disableElevation", "disableFocusRipple", "endIcon", "focusVisibleClassName", "fullWidth", "size", "startIcon", "type", "variant"];
+
 
 
 
@@ -36308,6 +31742,7 @@ const Button_useUtilityClasses = ownerState => {
   const composedClasses = (0,composeClasses/* default */.Z)(slots, getButtonUtilityClass, classes);
   return (0,esm_extends/* default */.Z)({}, classes, composedClasses);
 };
+
 const commonIconStyles = ownerState => (0,esm_extends/* default */.Z)({}, ownerState.size === 'small' && {
   '& > *:nth-of-type(1)': {
     fontSize: 18
@@ -36321,6 +31756,7 @@ const commonIconStyles = ownerState => (0,esm_extends/* default */.Z)({}, ownerS
     fontSize: 22
   }
 });
+
 const ButtonRoot = (0,styled/* default */.ZP)(material_ButtonBase_ButtonBase, {
   shouldForwardProp: prop => (0,styled/* rootShouldForwardProp */.FO)(prop) || prop === 'classes',
   name: 'MuiButton',
@@ -36336,6 +31772,7 @@ const ButtonRoot = (0,styled/* default */.ZP)(material_ButtonBase_ButtonBase, {
   ownerState
 }) => {
   var _theme$palette$getCon, _theme$palette;
+
   return (0,esm_extends/* default */.Z)({}, theme.typography.button, {
     minWidth: 64,
     padding: '6px 16px',
@@ -36388,6 +31825,8 @@ const ButtonRoot = (0,styled/* default */.ZP)(material_ButtonBase_ButtonBase, {
       color: (theme.vars || theme).palette.action.disabled
     }, ownerState.variant === 'outlined' && {
       border: `1px solid ${(theme.vars || theme).palette.action.disabledBackground}`
+    }, ownerState.variant === 'outlined' && ownerState.color === 'secondary' && {
+      border: `1px solid ${(theme.vars || theme).palette.action.disabled}`
     }, ownerState.variant === 'contained' && {
       color: (theme.vars || theme).palette.action.disabled,
       boxShadow: (theme.vars || theme).shadows[0],
@@ -36404,8 +31843,7 @@ const ButtonRoot = (0,styled/* default */.ZP)(material_ButtonBase_ButtonBase, {
     color: (theme.vars || theme).palette[ownerState.color].main,
     border: theme.vars ? `1px solid rgba(${theme.vars.palette[ownerState.color].mainChannel} / 0.5)` : `1px solid ${(0,colorManipulator/* alpha */.Fq)(theme.palette[ownerState.color].main, 0.5)}`
   }, ownerState.variant === 'contained' && {
-    color: theme.vars ?
-    // this is safe because grey does not change between default light/dark mode
+    color: theme.vars ? // this is safe because grey does not change between default light/dark mode
     theme.vars.palette.text.primary : (_theme$palette$getCon = (_theme$palette = theme.palette).getContrastText) == null ? void 0 : _theme$palette$getCon.call(_theme$palette, theme.palette.grey[300]),
     backgroundColor: (theme.vars || theme).palette.grey[300],
     boxShadow: (theme.vars || theme).shadows[2]
@@ -36497,23 +31935,25 @@ const Button_Button_Button = /*#__PURE__*/react.forwardRef(function Button(inPro
     props: resolvedProps,
     name: 'MuiButton'
   });
+
   const {
-      children,
-      color = 'primary',
-      component = 'button',
-      className,
-      disabled = false,
-      disableElevation = false,
-      disableFocusRipple = false,
-      endIcon: endIconProp,
-      focusVisibleClassName,
-      fullWidth = false,
-      size = 'medium',
-      startIcon: startIconProp,
-      type,
-      variant = 'text'
-    } = props,
-    other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, Button_excluded);
+    children,
+    color = 'primary',
+    component = 'button',
+    className,
+    disabled = false,
+    disableElevation = false,
+    disableFocusRipple = false,
+    endIcon: endIconProp,
+    focusVisibleClassName,
+    fullWidth = false,
+    size = 'medium',
+    startIcon: startIconProp,
+    type,
+    variant = 'text'
+  } = props,
+        other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, Button_excluded);
+
   const ownerState = (0,esm_extends/* default */.Z)({}, props, {
     color,
     component,
@@ -36525,24 +31965,28 @@ const Button_Button_Button = /*#__PURE__*/react.forwardRef(function Button(inPro
     type,
     variant
   });
+
   const classes = Button_useUtilityClasses(ownerState);
+
   const startIcon = startIconProp && /*#__PURE__*/(0,jsx_runtime.jsx)(ButtonStartIcon, {
     className: classes.startIcon,
     ownerState: ownerState,
     children: startIconProp
   });
+
   const endIcon = endIconProp && /*#__PURE__*/(0,jsx_runtime.jsx)(ButtonEndIcon, {
     className: classes.endIcon,
     ownerState: ownerState,
     children: endIconProp
   });
+
   return /*#__PURE__*/(0,jsx_runtime.jsxs)(ButtonRoot, (0,esm_extends/* default */.Z)({
     ownerState: ownerState,
-    className: (0,dist_clsx_m/* default */.Z)(contextProps.className, classes.root, className),
+    className: (0,clsx_m/* default */.Z)(className, contextProps.className),
     component: component,
     disabled: disabled,
     focusRipple: !disableFocusRipple,
-    focusVisibleClassName: (0,dist_clsx_m/* default */.Z)(classes.focusVisible, focusVisibleClassName),
+    focusVisibleClassName: (0,clsx_m/* default */.Z)(classes.focusVisible, focusVisibleClassName),
     ref: ref,
     type: type
   }, other, {
@@ -36557,26 +32001,26 @@ var utils_createSvgIcon = __webpack_require__(5949);
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/internal/svg-icons/Cancel.js
 
 
-
 /**
  * @ignore - internal component.
  */
+
 
 /* harmony default export */ const Cancel = ((0,utils_createSvgIcon/* default */.Z)( /*#__PURE__*/(0,jsx_runtime.jsx)("path", {
   d: "M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"
 }), 'Cancel'));
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/Chip/chipClasses.js
 
-
 function getChipUtilityClass(slot) {
   return (0,generateUtilityClass_generateUtilityClass/* default */.Z)('MuiChip', slot);
 }
-const chipClasses = (0,generateUtilityClasses/* default */.Z)('MuiChip', ['root', 'sizeSmall', 'sizeMedium', 'colorError', 'colorInfo', 'colorPrimary', 'colorSecondary', 'colorSuccess', 'colorWarning', 'disabled', 'clickable', 'clickableColorPrimary', 'clickableColorSecondary', 'deletable', 'deletableColorPrimary', 'deletableColorSecondary', 'outlined', 'filled', 'outlinedPrimary', 'outlinedSecondary', 'filledPrimary', 'filledSecondary', 'avatar', 'avatarSmall', 'avatarMedium', 'avatarColorPrimary', 'avatarColorSecondary', 'icon', 'iconSmall', 'iconMedium', 'iconColorPrimary', 'iconColorSecondary', 'label', 'labelSmall', 'labelMedium', 'deleteIcon', 'deleteIconSmall', 'deleteIconMedium', 'deleteIconColorPrimary', 'deleteIconColorSecondary', 'deleteIconOutlinedColorPrimary', 'deleteIconOutlinedColorSecondary', 'deleteIconFilledColorPrimary', 'deleteIconFilledColorSecondary', 'focusVisible']);
+const chipClasses = (0,generateUtilityClasses/* default */.Z)('MuiChip', ['root', 'sizeSmall', 'sizeMedium', 'colorPrimary', 'colorSecondary', 'disabled', 'clickable', 'clickableColorPrimary', 'clickableColorSecondary', 'deletable', 'deletableColorPrimary', 'deletableColorSecondary', 'outlined', 'filled', 'outlinedPrimary', 'outlinedSecondary', 'avatar', 'avatarSmall', 'avatarMedium', 'avatarColorPrimary', 'avatarColorSecondary', 'icon', 'iconSmall', 'iconMedium', 'iconColorPrimary', 'iconColorSecondary', 'label', 'labelSmall', 'labelMedium', 'deleteIcon', 'deleteIconSmall', 'deleteIconMedium', 'deleteIconColorPrimary', 'deleteIconColorSecondary', 'deleteIconOutlinedColorPrimary', 'deleteIconOutlinedColorSecondary', 'focusVisible']);
 /* harmony default export */ const Chip_chipClasses = (chipClasses);
 ;// CONCATENATED MODULE: ./node_modules/@mui/material/Chip/Chip.js
 
 
-const Chip_excluded = ["avatar", "className", "clickable", "color", "component", "deleteIcon", "disabled", "icon", "label", "onClick", "onDelete", "onKeyDown", "onKeyUp", "size", "variant", "tabIndex", "skipFocusWhenDisabled"];
+const Chip_excluded = ["avatar", "className", "clickable", "color", "component", "deleteIcon", "disabled", "icon", "label", "onClick", "onDelete", "onKeyDown", "onKeyUp", "size", "variant"];
+
 
 
 
@@ -36598,7 +32042,6 @@ const Chip_useUtilityClasses = ownerState => {
     disabled,
     size,
     color,
-    iconColor,
     onDelete,
     clickable,
     variant
@@ -36607,11 +32050,12 @@ const Chip_useUtilityClasses = ownerState => {
     root: ['root', variant, disabled && 'disabled', `size${(0,capitalize/* default */.Z)(size)}`, `color${(0,capitalize/* default */.Z)(color)}`, clickable && 'clickable', clickable && `clickableColor${(0,capitalize/* default */.Z)(color)}`, onDelete && 'deletable', onDelete && `deletableColor${(0,capitalize/* default */.Z)(color)}`, `${variant}${(0,capitalize/* default */.Z)(color)}`],
     label: ['label', `label${(0,capitalize/* default */.Z)(size)}`],
     avatar: ['avatar', `avatar${(0,capitalize/* default */.Z)(size)}`, `avatarColor${(0,capitalize/* default */.Z)(color)}`],
-    icon: ['icon', `icon${(0,capitalize/* default */.Z)(size)}`, `iconColor${(0,capitalize/* default */.Z)(iconColor)}`],
-    deleteIcon: ['deleteIcon', `deleteIcon${(0,capitalize/* default */.Z)(size)}`, `deleteIconColor${(0,capitalize/* default */.Z)(color)}`, `deleteIcon${(0,capitalize/* default */.Z)(variant)}Color${(0,capitalize/* default */.Z)(color)}`]
+    icon: ['icon', `icon${(0,capitalize/* default */.Z)(size)}`, `iconColor${(0,capitalize/* default */.Z)(color)}`],
+    deleteIcon: ['deleteIcon', `deleteIcon${(0,capitalize/* default */.Z)(size)}`, `deleteIconColor${(0,capitalize/* default */.Z)(color)}`, `deleteIconOutlinedColor${(0,capitalize/* default */.Z)(color)}`]
   };
   return (0,composeClasses/* default */.Z)(slots, getChipUtilityClass, classes);
 };
+
 const ChipRoot = (0,styled/* default */.ZP)('div', {
   name: 'MuiChip',
   slot: 'Root',
@@ -36621,7 +32065,6 @@ const ChipRoot = (0,styled/* default */.ZP)('div', {
     } = props;
     const {
       color,
-      iconColor,
       clickable,
       onDelete,
       size,
@@ -36638,7 +32081,7 @@ const ChipRoot = (0,styled/* default */.ZP)('div', {
     }, {
       [`& .${Chip_chipClasses.icon}`]: styles[`icon${(0,capitalize/* default */.Z)(size)}`]
     }, {
-      [`& .${Chip_chipClasses.icon}`]: styles[`iconColor${(0,capitalize/* default */.Z)(iconColor)}`]
+      [`& .${Chip_chipClasses.icon}`]: styles[`iconColor${(0,capitalize/* default */.Z)(color)}`]
     }, {
       [`& .${Chip_chipClasses.deleteIcon}`]: styles.deleteIcon
     }, {
@@ -36646,15 +32089,14 @@ const ChipRoot = (0,styled/* default */.ZP)('div', {
     }, {
       [`& .${Chip_chipClasses.deleteIcon}`]: styles[`deleteIconColor${(0,capitalize/* default */.Z)(color)}`]
     }, {
-      [`& .${Chip_chipClasses.deleteIcon}`]: styles[`deleteIcon${(0,capitalize/* default */.Z)(variant)}Color${(0,capitalize/* default */.Z)(color)}`]
-    }, styles.root, styles[`size${(0,capitalize/* default */.Z)(size)}`], styles[`color${(0,capitalize/* default */.Z)(color)}`], clickable && styles.clickable, clickable && color !== 'default' && styles[`clickableColor${(0,capitalize/* default */.Z)(color)})`], onDelete && styles.deletable, onDelete && color !== 'default' && styles[`deletableColor${(0,capitalize/* default */.Z)(color)}`], styles[variant], styles[`${variant}${(0,capitalize/* default */.Z)(color)}`]];
+      [`& .${Chip_chipClasses.deleteIcon}`]: styles[`deleteIconOutlinedColor${(0,capitalize/* default */.Z)(color)}`]
+    }, styles.root, styles[`size${(0,capitalize/* default */.Z)(size)}`], styles[`color${(0,capitalize/* default */.Z)(color)}`], clickable && styles.clickable, clickable && color !== 'default' && styles[`clickableColor${(0,capitalize/* default */.Z)(color)})`], onDelete && styles.deletable, onDelete && color !== 'default' && styles[`deletableColor${(0,capitalize/* default */.Z)(color)}`], styles[variant], variant === 'outlined' && styles[`outlined${(0,capitalize/* default */.Z)(color)}`]];
   }
 })(({
   theme,
   ownerState
 }) => {
   const deleteIconColor = (0,colorManipulator/* alpha */.Fq)(theme.palette.text.primary, 0.26);
-  const textColor = theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[300];
   return (0,esm_extends/* default */.Z)({
     maxWidth: '100%',
     fontFamily: theme.typography.fontFamily,
@@ -36663,8 +32105,8 @@ const ChipRoot = (0,styled/* default */.ZP)('div', {
     alignItems: 'center',
     justifyContent: 'center',
     height: 32,
-    color: (theme.vars || theme).palette.text.primary,
-    backgroundColor: (theme.vars || theme).palette.action.selected,
+    color: theme.palette.text.primary,
+    backgroundColor: theme.palette.action.selected,
     borderRadius: 32 / 2,
     whiteSpace: 'nowrap',
     transition: theme.transitions.create(['background-color', 'box-shadow']),
@@ -36680,7 +32122,7 @@ const ChipRoot = (0,styled/* default */.ZP)('div', {
     verticalAlign: 'middle',
     boxSizing: 'border-box',
     [`&.${Chip_chipClasses.disabled}`]: {
-      opacity: (theme.vars || theme).palette.action.disabledOpacity,
+      opacity: theme.palette.action.disabledOpacity,
       pointerEvents: 'none'
     },
     [`& .${Chip_chipClasses.avatar}`]: {
@@ -36688,16 +32130,16 @@ const ChipRoot = (0,styled/* default */.ZP)('div', {
       marginRight: -6,
       width: 24,
       height: 24,
-      color: theme.vars ? theme.vars.palette.Chip.defaultAvatarColor : textColor,
+      color: theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[300],
       fontSize: theme.typography.pxToRem(12)
     },
     [`& .${Chip_chipClasses.avatarColorPrimary}`]: {
-      color: (theme.vars || theme).palette.primary.contrastText,
-      backgroundColor: (theme.vars || theme).palette.primary.dark
+      color: theme.palette.primary.contrastText,
+      backgroundColor: theme.palette.primary.dark
     },
     [`& .${Chip_chipClasses.avatarColorSecondary}`]: {
-      color: (theme.vars || theme).palette.secondary.contrastText,
-      backgroundColor: (theme.vars || theme).palette.secondary.dark
+      color: theme.palette.secondary.contrastText,
+      backgroundColor: theme.palette.secondary.dark
     },
     [`& .${Chip_chipClasses.avatarSmall}`]: {
       marginLeft: 4,
@@ -36707,48 +32149,47 @@ const ChipRoot = (0,styled/* default */.ZP)('div', {
       fontSize: theme.typography.pxToRem(10)
     },
     [`& .${Chip_chipClasses.icon}`]: (0,esm_extends/* default */.Z)({
+      color: theme.palette.mode === 'light' ? theme.palette.grey[700] : theme.palette.grey[300],
       marginLeft: 5,
       marginRight: -6
     }, ownerState.size === 'small' && {
       fontSize: 18,
       marginLeft: 4,
       marginRight: -4
-    }, ownerState.iconColor === ownerState.color && (0,esm_extends/* default */.Z)({
-      color: theme.vars ? theme.vars.palette.Chip.defaultIconColor : textColor
     }, ownerState.color !== 'default' && {
       color: 'inherit'
-    })),
+    }),
     [`& .${Chip_chipClasses.deleteIcon}`]: (0,esm_extends/* default */.Z)({
       WebkitTapHighlightColor: 'transparent',
-      color: theme.vars ? `rgba(${theme.vars.palette.text.primaryChannel} / 0.26)` : deleteIconColor,
+      color: deleteIconColor,
       fontSize: 22,
       cursor: 'pointer',
       margin: '0 5px 0 -6px',
       '&:hover': {
-        color: theme.vars ? `rgba(${theme.vars.palette.text.primaryChannel} / 0.4)` : (0,colorManipulator/* alpha */.Fq)(deleteIconColor, 0.4)
+        color: (0,colorManipulator/* alpha */.Fq)(deleteIconColor, 0.4)
       }
     }, ownerState.size === 'small' && {
       fontSize: 16,
       marginRight: 4,
       marginLeft: -4
     }, ownerState.color !== 'default' && {
-      color: theme.vars ? `rgba(${theme.vars.palette[ownerState.color].contrastTextChannel} / 0.7)` : (0,colorManipulator/* alpha */.Fq)(theme.palette[ownerState.color].contrastText, 0.7),
+      color: (0,colorManipulator/* alpha */.Fq)(theme.palette[ownerState.color].contrastText, 0.7),
       '&:hover, &:active': {
-        color: (theme.vars || theme).palette[ownerState.color].contrastText
+        color: theme.palette[ownerState.color].contrastText
       }
     })
   }, ownerState.size === 'small' && {
     height: 24
   }, ownerState.color !== 'default' && {
-    backgroundColor: (theme.vars || theme).palette[ownerState.color].main,
-    color: (theme.vars || theme).palette[ownerState.color].contrastText
+    backgroundColor: theme.palette[ownerState.color].main,
+    color: theme.palette[ownerState.color].contrastText
   }, ownerState.onDelete && {
     [`&.${Chip_chipClasses.focusVisible}`]: {
-      backgroundColor: theme.vars ? `rgba(${theme.vars.palette.action.selectedChannel} / calc(${theme.vars.palette.action.selectedOpacity} + ${theme.vars.palette.action.focusOpacity}))` : (0,colorManipulator/* alpha */.Fq)(theme.palette.action.selected, theme.palette.action.selectedOpacity + theme.palette.action.focusOpacity)
+      backgroundColor: (0,colorManipulator/* alpha */.Fq)(theme.palette.action.selected, theme.palette.action.selectedOpacity + theme.palette.action.focusOpacity)
     }
   }, ownerState.onDelete && ownerState.color !== 'default' && {
     [`&.${Chip_chipClasses.focusVisible}`]: {
-      backgroundColor: (theme.vars || theme).palette[ownerState.color].dark
+      backgroundColor: theme.palette[ownerState.color].dark
     }
   });
 }, ({
@@ -36759,29 +32200,29 @@ const ChipRoot = (0,styled/* default */.ZP)('div', {
   WebkitTapHighlightColor: 'transparent',
   cursor: 'pointer',
   '&:hover': {
-    backgroundColor: theme.vars ? `rgba(${theme.vars.palette.action.selectedChannel} / calc(${theme.vars.palette.action.selectedOpacity} + ${theme.vars.palette.action.hoverOpacity}))` : (0,colorManipulator/* alpha */.Fq)(theme.palette.action.selected, theme.palette.action.selectedOpacity + theme.palette.action.hoverOpacity)
+    backgroundColor: (0,colorManipulator/* alpha */.Fq)(theme.palette.action.selected, theme.palette.action.selectedOpacity + theme.palette.action.hoverOpacity)
   },
   [`&.${Chip_chipClasses.focusVisible}`]: {
-    backgroundColor: theme.vars ? `rgba(${theme.vars.palette.action.selectedChannel} / calc(${theme.vars.palette.action.selectedOpacity} + ${theme.vars.palette.action.focusOpacity}))` : (0,colorManipulator/* alpha */.Fq)(theme.palette.action.selected, theme.palette.action.selectedOpacity + theme.palette.action.focusOpacity)
+    backgroundColor: (0,colorManipulator/* alpha */.Fq)(theme.palette.action.selected, theme.palette.action.selectedOpacity + theme.palette.action.focusOpacity)
   },
   '&:active': {
-    boxShadow: (theme.vars || theme).shadows[1]
+    boxShadow: theme.shadows[1]
   }
 }, ownerState.clickable && ownerState.color !== 'default' && {
   [`&:hover, &.${Chip_chipClasses.focusVisible}`]: {
-    backgroundColor: (theme.vars || theme).palette[ownerState.color].dark
+    backgroundColor: theme.palette[ownerState.color].dark
   }
 }), ({
   theme,
   ownerState
 }) => (0,esm_extends/* default */.Z)({}, ownerState.variant === 'outlined' && {
   backgroundColor: 'transparent',
-  border: theme.vars ? `1px solid ${theme.vars.palette.Chip.defaultBorder}` : `1px solid ${theme.palette.mode === 'light' ? theme.palette.grey[400] : theme.palette.grey[700]}`,
+  border: `1px solid ${theme.palette.mode === 'light' ? theme.palette.grey[400] : theme.palette.grey[700]}`,
   [`&.${Chip_chipClasses.clickable}:hover`]: {
-    backgroundColor: (theme.vars || theme).palette.action.hover
+    backgroundColor: theme.palette.action.hover
   },
   [`&.${Chip_chipClasses.focusVisible}`]: {
-    backgroundColor: (theme.vars || theme).palette.action.focus
+    backgroundColor: theme.palette.action.focus
   },
   [`& .${Chip_chipClasses.avatar}`]: {
     marginLeft: 4
@@ -36802,18 +32243,18 @@ const ChipRoot = (0,styled/* default */.ZP)('div', {
     marginRight: 3
   }
 }, ownerState.variant === 'outlined' && ownerState.color !== 'default' && {
-  color: (theme.vars || theme).palette[ownerState.color].main,
-  border: `1px solid ${theme.vars ? `rgba(${theme.vars.palette[ownerState.color].mainChannel} / 0.7)` : (0,colorManipulator/* alpha */.Fq)(theme.palette[ownerState.color].main, 0.7)}`,
+  color: theme.palette[ownerState.color].main,
+  border: `1px solid ${(0,colorManipulator/* alpha */.Fq)(theme.palette[ownerState.color].main, 0.7)}`,
   [`&.${Chip_chipClasses.clickable}:hover`]: {
-    backgroundColor: theme.vars ? `rgba(${theme.vars.palette[ownerState.color].mainChannel} / ${theme.vars.palette.action.hoverOpacity})` : (0,colorManipulator/* alpha */.Fq)(theme.palette[ownerState.color].main, theme.palette.action.hoverOpacity)
+    backgroundColor: (0,colorManipulator/* alpha */.Fq)(theme.palette[ownerState.color].main, theme.palette.action.hoverOpacity)
   },
   [`&.${Chip_chipClasses.focusVisible}`]: {
-    backgroundColor: theme.vars ? `rgba(${theme.vars.palette[ownerState.color].mainChannel} / ${theme.vars.palette.action.focusOpacity})` : (0,colorManipulator/* alpha */.Fq)(theme.palette[ownerState.color].main, theme.palette.action.focusOpacity)
+    backgroundColor: (0,colorManipulator/* alpha */.Fq)(theme.palette[ownerState.color].main, theme.palette.action.focusOpacity)
   },
   [`& .${Chip_chipClasses.deleteIcon}`]: {
-    color: theme.vars ? `rgba(${theme.vars.palette[ownerState.color].mainChannel} / 0.7)` : (0,colorManipulator/* alpha */.Fq)(theme.palette[ownerState.color].main, 0.7),
+    color: (0,colorManipulator/* alpha */.Fq)(theme.palette[ownerState.color].main, 0.7),
     '&:hover, &:active': {
-      color: (theme.vars || theme).palette[ownerState.color].main
+      color: theme.palette[ownerState.color].main
     }
   }
 }));
@@ -36841,47 +32282,52 @@ const ChipLabel = (0,styled/* default */.ZP)('span', {
   paddingLeft: 8,
   paddingRight: 8
 }));
+
 function isDeleteKeyboardEvent(keyboardEvent) {
   return keyboardEvent.key === 'Backspace' || keyboardEvent.key === 'Delete';
 }
-
 /**
  * Chips represent complex entities in small blocks, such as a contact.
  */
+
+
 const Chip = /*#__PURE__*/react.forwardRef(function Chip(inProps, ref) {
   const props = (0,useThemeProps/* default */.Z)({
     props: inProps,
     name: 'MuiChip'
   });
+
   const {
-      avatar: avatarProp,
-      className,
-      clickable: clickableProp,
-      color = 'default',
-      component: ComponentProp,
-      deleteIcon: deleteIconProp,
-      disabled = false,
-      icon: iconProp,
-      label,
-      onClick,
-      onDelete,
-      onKeyDown,
-      onKeyUp,
-      size = 'medium',
-      variant = 'filled',
-      tabIndex,
-      skipFocusWhenDisabled = false
-    } = props,
-    other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, Chip_excluded);
+    avatar: avatarProp,
+    className,
+    clickable: clickableProp,
+    color = 'default',
+    component: ComponentProp,
+    deleteIcon: deleteIconProp,
+    disabled = false,
+    icon: iconProp,
+    label,
+    onClick,
+    onDelete,
+    onKeyDown,
+    onKeyUp,
+    size = 'medium',
+    variant = 'filled'
+  } = props,
+        other = (0,objectWithoutPropertiesLoose/* default */.Z)(props, Chip_excluded);
+
   const chipRef = react.useRef(null);
   const handleRef = (0,utils_useForkRef/* default */.Z)(chipRef, ref);
+
   const handleDeleteIconClick = event => {
     // Stop the event from bubbling up to the `Chip`
     event.stopPropagation();
+
     if (onDelete) {
       onDelete(event);
     }
   };
+
   const handleKeyDown = event => {
     // Ignore events from children of `Chip`.
     if (event.currentTarget === event.target && isDeleteKeyboardEvent(event)) {
@@ -36889,10 +32335,12 @@ const Chip = /*#__PURE__*/react.forwardRef(function Chip(inProps, ref) {
       // might init navigation
       event.preventDefault();
     }
+
     if (onKeyDown) {
       onKeyDown(event);
     }
   };
+
   const handleKeyUp = event => {
     // Ignore events from children of `Chip`.
     if (event.currentTarget === event.target) {
@@ -36902,22 +32350,26 @@ const Chip = /*#__PURE__*/react.forwardRef(function Chip(inProps, ref) {
         chipRef.current.blur();
       }
     }
+
     if (onKeyUp) {
       onKeyUp(event);
     }
   };
+
   const clickable = clickableProp !== false && onClick ? true : clickableProp;
+  const small = size === 'small';
   const component = clickable || onDelete ? material_ButtonBase_ButtonBase : ComponentProp || 'div';
+
   const ownerState = (0,esm_extends/* default */.Z)({}, props, {
     component,
     disabled,
     size,
     color,
-    iconColor: /*#__PURE__*/react.isValidElement(iconProp) ? iconProp.props.color || color : color,
     onDelete: !!onDelete,
     clickable,
     variant
   });
+
   const classes = Chip_useUtilityClasses(ownerState);
   const moreProps = component === material_ButtonBase_ButtonBase ? (0,esm_extends/* default */.Z)({
     component: ComponentProp || 'div',
@@ -36926,41 +32378,48 @@ const Chip = /*#__PURE__*/react.forwardRef(function Chip(inProps, ref) {
     disableRipple: true
   }) : {};
   let deleteIcon = null;
+
   if (onDelete) {
+    const customClasses = (0,clsx_m/* default */.Z)(color !== 'default' && (variant === 'outlined' ? classes[`deleteIconOutlinedColor${(0,capitalize/* default */.Z)(color)}`] : classes[`deleteIconColor${(0,capitalize/* default */.Z)(color)}`]), small && classes.deleteIconSmall);
     deleteIcon = deleteIconProp && /*#__PURE__*/react.isValidElement(deleteIconProp) ? /*#__PURE__*/react.cloneElement(deleteIconProp, {
-      className: (0,dist_clsx_m/* default */.Z)(deleteIconProp.props.className, classes.deleteIcon),
+      className: (0,clsx_m/* default */.Z)(deleteIconProp.props.className, classes.deleteIcon, customClasses),
       onClick: handleDeleteIconClick
     }) : /*#__PURE__*/(0,jsx_runtime.jsx)(Cancel, {
-      className: (0,dist_clsx_m/* default */.Z)(classes.deleteIcon),
+      className: (0,clsx_m/* default */.Z)(classes.deleteIcon, customClasses),
       onClick: handleDeleteIconClick
     });
   }
+
   let avatar = null;
+
   if (avatarProp && /*#__PURE__*/react.isValidElement(avatarProp)) {
     avatar = /*#__PURE__*/react.cloneElement(avatarProp, {
-      className: (0,dist_clsx_m/* default */.Z)(classes.avatar, avatarProp.props.className)
+      className: (0,clsx_m/* default */.Z)(classes.avatar, avatarProp.props.className)
     });
   }
+
   let icon = null;
+
   if (iconProp && /*#__PURE__*/react.isValidElement(iconProp)) {
     icon = /*#__PURE__*/react.cloneElement(iconProp, {
-      className: (0,dist_clsx_m/* default */.Z)(classes.icon, iconProp.props.className)
+      className: (0,clsx_m/* default */.Z)(classes.icon, iconProp.props.className)
     });
   }
+
   if (false) {}
+
   return /*#__PURE__*/(0,jsx_runtime.jsxs)(ChipRoot, (0,esm_extends/* default */.Z)({
     as: component,
-    className: (0,dist_clsx_m/* default */.Z)(classes.root, className),
+    className: (0,clsx_m/* default */.Z)(classes.root, className),
     disabled: clickable && disabled ? true : undefined,
     onClick: onClick,
     onKeyDown: handleKeyDown,
     onKeyUp: handleKeyUp,
     ref: handleRef,
-    tabIndex: skipFocusWhenDisabled && disabled ? -1 : tabIndex,
     ownerState: ownerState
   }, moreProps, other, {
     children: [avatar || icon, /*#__PURE__*/(0,jsx_runtime.jsx)(ChipLabel, {
-      className: (0,dist_clsx_m/* default */.Z)(classes.label),
+      className: (0,clsx_m/* default */.Z)(classes.label),
       ownerState: ownerState,
       children: label
     }), deleteIcon]
@@ -36981,7 +32440,6 @@ var icons_material_Menu = __webpack_require__(326);
 ;// CONCATENATED MODULE: ./src/components/logo.js
 
 
-console.log(logo); // /logo.84287d09.png
 
 function Header() {
   // Import result is the URL of your image
@@ -36992,10 +32450,11 @@ function Header() {
     height: "30"
   });
 }
+
 /* harmony default export */ const components_logo = (Header);
-;// CONCATENATED MODULE: ./node_modules/react-router-dom/dist/index.js
+;// CONCATENATED MODULE: ./node_modules/react-router-dom/index.js
 /**
- * React Router DOM v6.8.0
+ * React Router DOM v6.3.0
  *
  * Copyright (c) Remix Software Inc.
  *
@@ -37009,8 +32468,8 @@ function Header() {
 
 
 
-function react_router_dom_dist_extends() {
-  react_router_dom_dist_extends = Object.assign ? Object.assign.bind() : function (target) {
+function react_router_dom_extends() {
+  react_router_dom_extends = Object.assign || function (target) {
     for (var i = 1; i < arguments.length; i++) {
       var source = arguments[i];
 
@@ -37023,10 +32482,11 @@ function react_router_dom_dist_extends() {
 
     return target;
   };
-  return react_router_dom_dist_extends.apply(this, arguments);
+
+  return react_router_dom_extends.apply(this, arguments);
 }
 
-function dist_objectWithoutPropertiesLoose(source, excluded) {
+function _objectWithoutPropertiesLoose(source, excluded) {
   if (source == null) return {};
   var target = {};
   var sourceKeys = Object.keys(source);
@@ -37041,31 +32501,288 @@ function dist_objectWithoutPropertiesLoose(source, excluded) {
   return target;
 }
 
-const defaultMethod = "get";
-const defaultEncType = "application/x-www-form-urlencoded";
-function isHtmlElement(object) {
-  return object != null && typeof object.tagName === "string";
+const react_router_dom_excluded = ["onClick", "reloadDocument", "replace", "state", "target", "to"],
+      react_router_dom_excluded2 = (/* unused pure expression or super */ null && (["aria-current", "caseSensitive", "className", "end", "style", "to", "children"]));
+
+function react_router_dom_warning(cond, message) {
+  if (!cond) {
+    // eslint-disable-next-line no-console
+    if (typeof console !== "undefined") console.warn(message);
+
+    try {
+      // Welcome to debugging React Router!
+      //
+      // This error is thrown as a convenience so you can more easily
+      // find the source for a warning that appears in the console by
+      // enabling "pause on exceptions" in your JavaScript debugger.
+      throw new Error(message); // eslint-disable-next-line no-empty
+    } catch (e) {}
+  }
+} ////////////////////////////////////////////////////////////////////////////////
+// COMPONENTS
+////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * A `<Router>` for use in web browsers. Provides the cleanest URLs.
+ */
+function BrowserRouter(_ref) {
+  let {
+    basename,
+    children,
+    window
+  } = _ref;
+  let historyRef = (0,react.useRef)();
+
+  if (historyRef.current == null) {
+    historyRef.current = createBrowserHistory({
+      window
+    });
+  }
+
+  let history = historyRef.current;
+  let [state, setState] = (0,react.useState)({
+    action: history.action,
+    location: history.location
+  });
+  (0,react.useLayoutEffect)(() => history.listen(setState), [history]);
+  return /*#__PURE__*/(0,react.createElement)(react_router_Router, {
+    basename: basename,
+    children: children,
+    location: state.location,
+    navigationType: state.action,
+    navigator: history
+  });
 }
-function isButtonElement(object) {
-  return isHtmlElement(object) && object.tagName.toLowerCase() === "button";
+
+/**
+ * A `<Router>` for use in web browsers. Stores the location in the hash
+ * portion of the URL so it is not sent to the server.
+ */
+function HashRouter(_ref2) {
+  let {
+    basename,
+    children,
+    window
+  } = _ref2;
+  let historyRef = useRef();
+
+  if (historyRef.current == null) {
+    historyRef.current = createHashHistory({
+      window
+    });
+  }
+
+  let history = historyRef.current;
+  let [state, setState] = useState({
+    action: history.action,
+    location: history.location
+  });
+  useLayoutEffect(() => history.listen(setState), [history]);
+  return /*#__PURE__*/createElement(Router, {
+    basename: basename,
+    children: children,
+    location: state.location,
+    navigationType: state.action,
+    navigator: history
+  });
 }
-function isFormElement(object) {
-  return isHtmlElement(object) && object.tagName.toLowerCase() === "form";
+
+/**
+ * A `<Router>` that accepts a pre-instantiated history object. It's important
+ * to note that using your own history object is highly discouraged and may add
+ * two versions of the history library to your bundles unless you use the same
+ * version of the history library that React Router uses internally.
+ */
+function HistoryRouter(_ref3) {
+  let {
+    basename,
+    children,
+    history
+  } = _ref3;
+  const [state, setState] = useState({
+    action: history.action,
+    location: history.location
+  });
+  useLayoutEffect(() => history.listen(setState), [history]);
+  return /*#__PURE__*/createElement(Router, {
+    basename: basename,
+    children: children,
+    location: state.location,
+    navigationType: state.action,
+    navigator: history
+  });
 }
-function isInputElement(object) {
-  return isHtmlElement(object) && object.tagName.toLowerCase() === "input";
-}
+
+if (false) {}
 
 function isModifiedEvent(event) {
   return !!(event.metaKey || event.altKey || event.ctrlKey || event.shiftKey);
 }
 
-function shouldProcessLinkClick(event, target) {
-  return event.button === 0 && ( // Ignore everything but left clicks
-  !target || target === "_self") && // Let browser handle "target=_blank" etc.
-  !isModifiedEvent(event) // Ignore clicks with modifier keys
-  ;
+/**
+ * The public API for rendering a history-aware <a>.
+ */
+const Link = /*#__PURE__*/(0,react.forwardRef)(function LinkWithRef(_ref4, ref) {
+  let {
+    onClick,
+    reloadDocument,
+    replace = false,
+    state,
+    target,
+    to
+  } = _ref4,
+      rest = _objectWithoutPropertiesLoose(_ref4, react_router_dom_excluded);
+
+  let href = useHref(to);
+  let internalOnClick = useLinkClickHandler(to, {
+    replace,
+    state,
+    target
+  });
+
+  function handleClick(event) {
+    if (onClick) onClick(event);
+
+    if (!event.defaultPrevented && !reloadDocument) {
+      internalOnClick(event);
+    }
+  }
+
+  return (
+    /*#__PURE__*/
+    // eslint-disable-next-line jsx-a11y/anchor-has-content
+    (0,react.createElement)("a", react_router_dom_extends({}, rest, {
+      href: href,
+      onClick: handleClick,
+      ref: ref,
+      target: target
+    }))
+  );
+});
+
+if (false) {}
+
+/**
+ * A <Link> wrapper that knows if it's "active" or not.
+ */
+const NavLink = /*#__PURE__*/(/* unused pure expression or super */ null && (forwardRef(function NavLinkWithRef(_ref5, ref) {
+  let {
+    "aria-current": ariaCurrentProp = "page",
+    caseSensitive = false,
+    className: classNameProp = "",
+    end = false,
+    style: styleProp,
+    to,
+    children
+  } = _ref5,
+      rest = _objectWithoutPropertiesLoose(_ref5, react_router_dom_excluded2);
+
+  let location = useLocation();
+  let path = useResolvedPath(to);
+  let locationPathname = location.pathname;
+  let toPathname = path.pathname;
+
+  if (!caseSensitive) {
+    locationPathname = locationPathname.toLowerCase();
+    toPathname = toPathname.toLowerCase();
+  }
+
+  let isActive = locationPathname === toPathname || !end && locationPathname.startsWith(toPathname) && locationPathname.charAt(toPathname.length) === "/";
+  let ariaCurrent = isActive ? ariaCurrentProp : undefined;
+  let className;
+
+  if (typeof classNameProp === "function") {
+    className = classNameProp({
+      isActive
+    });
+  } else {
+    // If the className prop is not a function, we use a default `active`
+    // class for <NavLink />s that are active. In v5 `active` was the default
+    // value for `activeClassName`, but we are removing that API and can still
+    // use the old default behavior for a cleaner upgrade path and keep the
+    // simple styling rules working as they currently do.
+    className = [classNameProp, isActive ? "active" : null].filter(Boolean).join(" ");
+  }
+
+  let style = typeof styleProp === "function" ? styleProp({
+    isActive
+  }) : styleProp;
+  return /*#__PURE__*/createElement(Link, react_router_dom_extends({}, rest, {
+    "aria-current": ariaCurrent,
+    className: className,
+    ref: ref,
+    style: style,
+    to: to
+  }), typeof children === "function" ? children({
+    isActive
+  }) : children);
+})));
+
+if (false) {} ////////////////////////////////////////////////////////////////////////////////
+// HOOKS
+////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Handles the click behavior for router `<Link>` components. This is useful if
+ * you need to create custom `<Link>` components with the same click behavior we
+ * use in our exported `<Link>`.
+ */
+
+
+function useLinkClickHandler(to, _temp) {
+  let {
+    target,
+    replace: replaceProp,
+    state
+  } = _temp === void 0 ? {} : _temp;
+  let navigate = react_router_useNavigate();
+  let location = react_router_useLocation();
+  let path = react_router_useResolvedPath(to);
+  return (0,react.useCallback)(event => {
+    if (event.button === 0 && ( // Ignore everything but left clicks
+    !target || target === "_self") && // Let browser handle "target=_blank" etc.
+    !isModifiedEvent(event) // Ignore clicks with modifier keys
+    ) {
+      event.preventDefault(); // If the URL hasn't changed, a regular <a> will do a replace instead of
+      // a push, so do the same here.
+
+      let replace = !!replaceProp || createPath(location) === createPath(path);
+      navigate(to, {
+        replace,
+        state
+      });
+    }
+  }, [location, navigate, path, replaceProp, state, target, to]);
 }
+/**
+ * A convenient wrapper for reading and writing search parameters via the
+ * URLSearchParams interface.
+ */
+
+function useSearchParams(defaultInit) {
+   false ? 0 : void 0;
+  let defaultSearchParamsRef = useRef(createSearchParams(defaultInit));
+  let location = useLocation();
+  let searchParams = useMemo(() => {
+    let searchParams = createSearchParams(location.search);
+
+    for (let key of defaultSearchParamsRef.current.keys()) {
+      if (!searchParams.has(key)) {
+        defaultSearchParamsRef.current.getAll(key).forEach(value => {
+          searchParams.append(key, value);
+        });
+      }
+    }
+
+    return searchParams;
+  }, [location.search]);
+  let navigate = useNavigate();
+  let setSearchParams = useCallback((nextInit, navigateOptions) => {
+    navigate("?" + createSearchParams(nextInit), navigateOptions);
+  }, [navigate]);
+  return [searchParams, setSearchParams];
+}
+
 /**
  * Creates a URLSearchParams object using the given initializer.
  *
@@ -37087,7 +32804,6 @@ function shouldProcessLinkClick(event, target) {
  *     sort: ['name', 'price']
  *   });
  */
-
 function createSearchParams(init) {
   if (init === void 0) {
     init = "";
@@ -37098,924 +32814,6 @@ function createSearchParams(init) {
     return memo.concat(Array.isArray(value) ? value.map(v => [key, v]) : [[key, value]]);
   }, []));
 }
-function getSearchParamsForLocation(locationSearch, defaultSearchParams) {
-  let searchParams = createSearchParams(locationSearch);
-
-  if (defaultSearchParams) {
-    for (let key of defaultSearchParams.keys()) {
-      if (!searchParams.has(key)) {
-        defaultSearchParams.getAll(key).forEach(value => {
-          searchParams.append(key, value);
-        });
-      }
-    }
-  }
-
-  return searchParams;
-}
-function getFormSubmissionInfo(target, defaultAction, options) {
-  let method;
-  let action;
-  let encType;
-  let formData;
-
-  if (isFormElement(target)) {
-    let submissionTrigger = options.submissionTrigger;
-    method = options.method || target.getAttribute("method") || defaultMethod;
-    action = options.action || target.getAttribute("action") || defaultAction;
-    encType = options.encType || target.getAttribute("enctype") || defaultEncType;
-    formData = new FormData(target);
-
-    if (submissionTrigger && submissionTrigger.name) {
-      formData.append(submissionTrigger.name, submissionTrigger.value);
-    }
-  } else if (isButtonElement(target) || isInputElement(target) && (target.type === "submit" || target.type === "image")) {
-    let form = target.form;
-
-    if (form == null) {
-      throw new Error("Cannot submit a <button> or <input type=\"submit\"> without a <form>");
-    } // <button>/<input type="submit"> may override attributes of <form>
-
-
-    method = options.method || target.getAttribute("formmethod") || form.getAttribute("method") || defaultMethod;
-    action = options.action || target.getAttribute("formaction") || form.getAttribute("action") || defaultAction;
-    encType = options.encType || target.getAttribute("formenctype") || form.getAttribute("enctype") || defaultEncType;
-    formData = new FormData(form); // Include name + value from a <button>, appending in case the button name
-    // matches an existing input name
-
-    if (target.name) {
-      formData.append(target.name, target.value);
-    }
-  } else if (isHtmlElement(target)) {
-    throw new Error("Cannot submit element that is not <form>, <button>, or " + "<input type=\"submit|image\">");
-  } else {
-    method = options.method || defaultMethod;
-    action = options.action || defaultAction;
-    encType = options.encType || defaultEncType;
-
-    if (target instanceof FormData) {
-      formData = target;
-    } else {
-      formData = new FormData();
-
-      if (target instanceof URLSearchParams) {
-        for (let [name, value] of target) {
-          formData.append(name, value);
-        }
-      } else if (target != null) {
-        for (let name of Object.keys(target)) {
-          formData.append(name, target[name]);
-        }
-      }
-    }
-  }
-
-  let {
-    protocol,
-    host
-  } = window.location;
-  let url = new URL(action, protocol + "//" + host);
-  return {
-    url,
-    method: method.toLowerCase(),
-    encType,
-    formData
-  };
-}
-
-const dist_excluded = ["onClick", "relative", "reloadDocument", "replace", "state", "target", "to", "preventScrollReset"],
-      dist_excluded2 = (/* unused pure expression or super */ null && (["aria-current", "caseSensitive", "className", "end", "style", "to", "children"])),
-      _excluded3 = (/* unused pure expression or super */ null && (["reloadDocument", "replace", "method", "action", "onSubmit", "fetcherKey", "routeId", "relative", "preventScrollReset"]));
-//#region Routers
-////////////////////////////////////////////////////////////////////////////////
-
-function createBrowserRouter(routes, opts) {
-  return createRouter({
-    basename: opts == null ? void 0 : opts.basename,
-    history: createBrowserHistory({
-      window: opts == null ? void 0 : opts.window
-    }),
-    hydrationData: (opts == null ? void 0 : opts.hydrationData) || parseHydrationData(),
-    routes: UNSAFE_enhanceManualRouteObjects(routes)
-  }).initialize();
-}
-function createHashRouter(routes, opts) {
-  return createRouter({
-    basename: opts == null ? void 0 : opts.basename,
-    history: createHashHistory({
-      window: opts == null ? void 0 : opts.window
-    }),
-    hydrationData: (opts == null ? void 0 : opts.hydrationData) || parseHydrationData(),
-    routes: UNSAFE_enhanceManualRouteObjects(routes)
-  }).initialize();
-}
-
-function parseHydrationData() {
-  var _window;
-
-  let state = (_window = window) == null ? void 0 : _window.__staticRouterHydrationData;
-
-  if (state && state.errors) {
-    state = react_router_dom_dist_extends({}, state, {
-      errors: deserializeErrors(state.errors)
-    });
-  }
-
-  return state;
-}
-
-function deserializeErrors(errors) {
-  if (!errors) return null;
-  let entries = Object.entries(errors);
-  let serialized = {};
-
-  for (let [key, val] of entries) {
-    // Hey you!  If you change this, please change the corresponding logic in
-    // serializeErrors in react-router-dom/server.tsx :)
-    if (val && val.__type === "RouteErrorResponse") {
-      serialized[key] = new ErrorResponse(val.status, val.statusText, val.data, val.internal === true);
-    } else if (val && val.__type === "Error") {
-      let error = new Error(val.message); // Wipe away the client-side stack trace.  Nothing to fill it in with
-      // because we don't serialize SSR stack traces for security reasons
-
-      error.stack = "";
-      serialized[key] = error;
-    } else {
-      serialized[key] = val;
-    }
-  }
-
-  return serialized;
-}
-/**
- * A `<Router>` for use in web browsers. Provides the cleanest URLs.
- */
-
-
-function BrowserRouter(_ref) {
-  let {
-    basename,
-    children,
-    window
-  } = _ref;
-  let historyRef = react.useRef();
-
-  if (historyRef.current == null) {
-    historyRef.current = router_createBrowserHistory({
-      window,
-      v5Compat: true
-    });
-  }
-
-  let history = historyRef.current;
-  let [state, setState] = react.useState({
-    action: history.action,
-    location: history.location
-  });
-  react.useLayoutEffect(() => history.listen(setState), [history]);
-  return /*#__PURE__*/react.createElement(dist_Router, {
-    basename: basename,
-    children: children,
-    location: state.location,
-    navigationType: state.action,
-    navigator: history
-  });
-}
-/**
- * A `<Router>` for use in web browsers. Stores the location in the hash
- * portion of the URL so it is not sent to the server.
- */
-
-function HashRouter(_ref2) {
-  let {
-    basename,
-    children,
-    window
-  } = _ref2;
-  let historyRef = React.useRef();
-
-  if (historyRef.current == null) {
-    historyRef.current = createHashHistory({
-      window,
-      v5Compat: true
-    });
-  }
-
-  let history = historyRef.current;
-  let [state, setState] = React.useState({
-    action: history.action,
-    location: history.location
-  });
-  React.useLayoutEffect(() => history.listen(setState), [history]);
-  return /*#__PURE__*/React.createElement(Router, {
-    basename: basename,
-    children: children,
-    location: state.location,
-    navigationType: state.action,
-    navigator: history
-  });
-}
-/**
- * A `<Router>` that accepts a pre-instantiated history object. It's important
- * to note that using your own history object is highly discouraged and may add
- * two versions of the history library to your bundles unless you use the same
- * version of the history library that React Router uses internally.
- */
-
-function HistoryRouter(_ref3) {
-  let {
-    basename,
-    children,
-    history
-  } = _ref3;
-  const [state, setState] = React.useState({
-    action: history.action,
-    location: history.location
-  });
-  React.useLayoutEffect(() => history.listen(setState), [history]);
-  return /*#__PURE__*/React.createElement(Router, {
-    basename: basename,
-    children: children,
-    location: state.location,
-    navigationType: state.action,
-    navigator: history
-  });
-}
-
-if (false) {}
-const dist_isBrowser = typeof window !== "undefined" && typeof window.document !== "undefined" && typeof window.document.createElement !== "undefined";
-/**
- * The public API for rendering a history-aware <a>.
- */
-
-const Link = /*#__PURE__*/react.forwardRef(function LinkWithRef(_ref4, ref) {
-  let {
-    onClick,
-    relative,
-    reloadDocument,
-    replace,
-    state,
-    target,
-    to,
-    preventScrollReset
-  } = _ref4,
-      rest = dist_objectWithoutPropertiesLoose(_ref4, dist_excluded);
-
-  // `location` is the unaltered href we will render in the <a> tag for absolute URLs
-  let location = typeof to === "string" ? to : router_createPath(to);
-  let isAbsolute = /^[a-z+]+:\/\//i.test(location) || location.startsWith("//"); // Location to use in the click handler
-
-  let navigationLocation = location;
-  let isExternal = false;
-
-  if (dist_isBrowser && isAbsolute) {
-    let currentUrl = new URL(window.location.href);
-    let targetUrl = location.startsWith("//") ? new URL(currentUrl.protocol + location) : new URL(location);
-
-    if (targetUrl.origin === currentUrl.origin) {
-      // Strip the protocol/origin for same-origin absolute URLs
-      navigationLocation = targetUrl.pathname + targetUrl.search + targetUrl.hash;
-    } else {
-      isExternal = true;
-    }
-  } // `href` is what we render in the <a> tag for relative URLs
-
-
-  let href = useHref(navigationLocation, {
-    relative
-  });
-  let internalOnClick = useLinkClickHandler(navigationLocation, {
-    replace,
-    state,
-    target,
-    preventScrollReset,
-    relative
-  });
-
-  function handleClick(event) {
-    if (onClick) onClick(event);
-
-    if (!event.defaultPrevented) {
-      internalOnClick(event);
-    }
-  }
-
-  return (
-    /*#__PURE__*/
-    // eslint-disable-next-line jsx-a11y/anchor-has-content
-    react.createElement("a", react_router_dom_dist_extends({}, rest, {
-      href: isAbsolute ? location : href,
-      onClick: isExternal || reloadDocument ? onClick : handleClick,
-      ref: ref,
-      target: target
-    }))
-  );
-});
-
-if (false) {}
-/**
- * A <Link> wrapper that knows if it's "active" or not.
- */
-
-
-const NavLink = /*#__PURE__*/(/* unused pure expression or super */ null && (React.forwardRef(function NavLinkWithRef(_ref5, ref) {
-  let {
-    "aria-current": ariaCurrentProp = "page",
-    caseSensitive = false,
-    className: classNameProp = "",
-    end = false,
-    style: styleProp,
-    to,
-    children
-  } = _ref5,
-      rest = dist_objectWithoutPropertiesLoose(_ref5, dist_excluded2);
-
-  let path = useResolvedPath(to, {
-    relative: rest.relative
-  });
-  let location = useLocation();
-  let routerState = React.useContext(UNSAFE_DataRouterStateContext);
-  let {
-    navigator
-  } = React.useContext(UNSAFE_NavigationContext);
-  let toPathname = navigator.encodeLocation ? navigator.encodeLocation(path).pathname : path.pathname;
-  let locationPathname = location.pathname;
-  let nextLocationPathname = routerState && routerState.navigation && routerState.navigation.location ? routerState.navigation.location.pathname : null;
-
-  if (!caseSensitive) {
-    locationPathname = locationPathname.toLowerCase();
-    nextLocationPathname = nextLocationPathname ? nextLocationPathname.toLowerCase() : null;
-    toPathname = toPathname.toLowerCase();
-  }
-
-  let isActive = locationPathname === toPathname || !end && locationPathname.startsWith(toPathname) && locationPathname.charAt(toPathname.length) === "/";
-  let isPending = nextLocationPathname != null && (nextLocationPathname === toPathname || !end && nextLocationPathname.startsWith(toPathname) && nextLocationPathname.charAt(toPathname.length) === "/");
-  let ariaCurrent = isActive ? ariaCurrentProp : undefined;
-  let className;
-
-  if (typeof classNameProp === "function") {
-    className = classNameProp({
-      isActive,
-      isPending
-    });
-  } else {
-    // If the className prop is not a function, we use a default `active`
-    // class for <NavLink />s that are active. In v5 `active` was the default
-    // value for `activeClassName`, but we are removing that API and can still
-    // use the old default behavior for a cleaner upgrade path and keep the
-    // simple styling rules working as they currently do.
-    className = [classNameProp, isActive ? "active" : null, isPending ? "pending" : null].filter(Boolean).join(" ");
-  }
-
-  let style = typeof styleProp === "function" ? styleProp({
-    isActive,
-    isPending
-  }) : styleProp;
-  return /*#__PURE__*/React.createElement(Link, react_router_dom_dist_extends({}, rest, {
-    "aria-current": ariaCurrent,
-    className: className,
-    ref: ref,
-    style: style,
-    to: to
-  }), typeof children === "function" ? children({
-    isActive,
-    isPending
-  }) : children);
-})));
-
-if (false) {}
-/**
- * A `@remix-run/router`-aware `<form>`. It behaves like a normal form except
- * that the interaction with the server is with `fetch` instead of new document
- * requests, allowing components to add nicer UX to the page as the form is
- * submitted and returns with data.
- */
-
-
-const Form = /*#__PURE__*/(/* unused pure expression or super */ null && (React.forwardRef((props, ref) => {
-  return /*#__PURE__*/React.createElement(FormImpl, react_router_dom_dist_extends({}, props, {
-    ref: ref
-  }));
-})));
-
-if (false) {}
-
-const FormImpl = /*#__PURE__*/(/* unused pure expression or super */ null && (React.forwardRef((_ref6, forwardedRef) => {
-  let {
-    reloadDocument,
-    replace,
-    method = defaultMethod,
-    action,
-    onSubmit,
-    fetcherKey,
-    routeId,
-    relative,
-    preventScrollReset
-  } = _ref6,
-      props = dist_objectWithoutPropertiesLoose(_ref6, _excluded3);
-
-  let submit = useSubmitImpl(fetcherKey, routeId);
-  let formMethod = method.toLowerCase() === "get" ? "get" : "post";
-  let formAction = useFormAction(action, {
-    relative
-  });
-
-  let submitHandler = event => {
-    onSubmit && onSubmit(event);
-    if (event.defaultPrevented) return;
-    event.preventDefault();
-    let submitter = event.nativeEvent.submitter;
-    let submitMethod = (submitter == null ? void 0 : submitter.getAttribute("formmethod")) || method;
-    submit(submitter || event.currentTarget, {
-      method: submitMethod,
-      replace,
-      relative,
-      preventScrollReset
-    });
-  };
-
-  return /*#__PURE__*/React.createElement("form", react_router_dom_dist_extends({
-    ref: forwardedRef,
-    method: formMethod,
-    action: formAction,
-    onSubmit: reloadDocument ? onSubmit : submitHandler
-  }, props));
-})));
-
-if (false) {}
-/**
- * This component will emulate the browser's scroll restoration on location
- * changes.
- */
-
-
-function ScrollRestoration(_ref7) {
-  let {
-    getKey,
-    storageKey
-  } = _ref7;
-  useScrollRestoration({
-    getKey,
-    storageKey
-  });
-  return null;
-}
-
-if (false) {} //#endregion
-////////////////////////////////////////////////////////////////////////////////
-//#region Hooks
-////////////////////////////////////////////////////////////////////////////////
-
-
-var dist_DataRouterHook;
-
-(function (DataRouterHook) {
-  DataRouterHook["UseScrollRestoration"] = "useScrollRestoration";
-  DataRouterHook["UseSubmitImpl"] = "useSubmitImpl";
-  DataRouterHook["UseFetcher"] = "useFetcher";
-})(dist_DataRouterHook || (dist_DataRouterHook = {}));
-
-var dist_DataRouterStateHook;
-
-(function (DataRouterStateHook) {
-  DataRouterStateHook["UseFetchers"] = "useFetchers";
-  DataRouterStateHook["UseScrollRestoration"] = "useScrollRestoration";
-})(dist_DataRouterStateHook || (dist_DataRouterStateHook = {}));
-
-function dist_getDataRouterConsoleError(hookName) {
-  return hookName + " must be used within a data router.  See https://reactrouter.com/routers/picking-a-router.";
-}
-
-function dist_useDataRouterContext(hookName) {
-  let ctx = React.useContext(UNSAFE_DataRouterContext);
-  !ctx ?  false ? 0 : invariant(false) : void 0;
-  return ctx;
-}
-
-function dist_useDataRouterState(hookName) {
-  let state = React.useContext(UNSAFE_DataRouterStateContext);
-  !state ?  false ? 0 : invariant(false) : void 0;
-  return state;
-}
-/**
- * Handles the click behavior for router `<Link>` components. This is useful if
- * you need to create custom `<Link>` components with the same click behavior we
- * use in our exported `<Link>`.
- */
-
-
-function useLinkClickHandler(to, _temp) {
-  let {
-    target,
-    replace: replaceProp,
-    state,
-    preventScrollReset,
-    relative
-  } = _temp === void 0 ? {} : _temp;
-  let navigate = dist_useNavigate();
-  let location = dist_useLocation();
-  let path = dist_useResolvedPath(to, {
-    relative
-  });
-  return react.useCallback(event => {
-    if (shouldProcessLinkClick(event, target)) {
-      event.preventDefault(); // If the URL hasn't changed, a regular <a> will do a replace instead of
-      // a push, so do the same here unless the replace prop is explicitly set
-
-      let replace = replaceProp !== undefined ? replaceProp : router_createPath(location) === router_createPath(path);
-      navigate(to, {
-        replace,
-        state,
-        preventScrollReset,
-        relative
-      });
-    }
-  }, [location, navigate, path, replaceProp, state, target, to, preventScrollReset, relative]);
-}
-/**
- * A convenient wrapper for reading and writing search parameters via the
- * URLSearchParams interface.
- */
-
-function useSearchParams(defaultInit) {
-   false ? 0 : void 0;
-  let defaultSearchParamsRef = React.useRef(createSearchParams(defaultInit));
-  let hasSetSearchParamsRef = React.useRef(false);
-  let location = useLocation();
-  let searchParams = React.useMemo(() => // Only merge in the defaults if we haven't yet called setSearchParams.
-  // Once we call that we want those to take precedence, otherwise you can't
-  // remove a param with setSearchParams({}) if it has an initial value
-  getSearchParamsForLocation(location.search, hasSetSearchParamsRef.current ? null : defaultSearchParamsRef.current), [location.search]);
-  let navigate = useNavigate();
-  let setSearchParams = React.useCallback((nextInit, navigateOptions) => {
-    const newSearchParams = createSearchParams(typeof nextInit === "function" ? nextInit(searchParams) : nextInit);
-    hasSetSearchParamsRef.current = true;
-    navigate("?" + newSearchParams, navigateOptions);
-  }, [navigate, searchParams]);
-  return [searchParams, setSearchParams];
-}
-/**
- * Returns a function that may be used to programmatically submit a form (or
- * some arbitrary data) to the server.
- */
-
-function useSubmit() {
-  return useSubmitImpl();
-}
-
-function useSubmitImpl(fetcherKey, routeId) {
-  let {
-    router
-  } = dist_useDataRouterContext(dist_DataRouterHook.UseSubmitImpl);
-  let defaultAction = useFormAction();
-  return React.useCallback(function (target, options) {
-    if (options === void 0) {
-      options = {};
-    }
-
-    if (typeof document === "undefined") {
-      throw new Error("You are calling submit during the server render. " + "Try calling submit within a `useEffect` or callback instead.");
-    }
-
-    let {
-      method,
-      encType,
-      formData,
-      url
-    } = getFormSubmissionInfo(target, defaultAction, options);
-    let href = url.pathname + url.search;
-    let opts = {
-      replace: options.replace,
-      preventScrollReset: options.preventScrollReset,
-      formData,
-      formMethod: method,
-      formEncType: encType
-    };
-
-    if (fetcherKey) {
-      !(routeId != null) ?  false ? 0 : invariant(false) : void 0;
-      router.fetch(fetcherKey, routeId, href, opts);
-    } else {
-      router.navigate(href, opts);
-    }
-  }, [defaultAction, router, fetcherKey, routeId]);
-}
-
-function useFormAction(action, _temp2) {
-  let {
-    relative
-  } = _temp2 === void 0 ? {} : _temp2;
-  let {
-    basename
-  } = React.useContext(UNSAFE_NavigationContext);
-  let routeContext = React.useContext(UNSAFE_RouteContext);
-  !routeContext ?  false ? 0 : invariant(false) : void 0;
-  let [match] = routeContext.matches.slice(-1); // Shallow clone path so we can modify it below, otherwise we modify the
-  // object referenced by useMemo inside useResolvedPath
-
-  let path = react_router_dom_dist_extends({}, useResolvedPath(action ? action : ".", {
-    relative
-  })); // Previously we set the default action to ".". The problem with this is that
-  // `useResolvedPath(".")` excludes search params and the hash of the resolved
-  // URL. This is the intended behavior of when "." is specifically provided as
-  // the form action, but inconsistent w/ browsers when the action is omitted.
-  // https://github.com/remix-run/remix/issues/927
-
-
-  let location = useLocation();
-
-  if (action == null) {
-    // Safe to write to these directly here since if action was undefined, we
-    // would have called useResolvedPath(".") which will never include a search
-    // or hash
-    path.search = location.search;
-    path.hash = location.hash; // When grabbing search params from the URL, remove the automatically
-    // inserted ?index param so we match the useResolvedPath search behavior
-    // which would not include ?index
-
-    if (match.route.index) {
-      let params = new URLSearchParams(path.search);
-      params.delete("index");
-      path.search = params.toString() ? "?" + params.toString() : "";
-    }
-  }
-
-  if ((!action || action === ".") && match.route.index) {
-    path.search = path.search ? path.search.replace(/^\?/, "?index&") : "?index";
-  } // If we're operating within a basename, prepend it to the pathname prior
-  // to creating the form action.  If this is a root navigation, then just use
-  // the raw basename which allows the basename to have full control over the
-  // presence of a trailing slash on root actions
-
-
-  if (basename !== "/") {
-    path.pathname = path.pathname === "/" ? basename : joinPaths([basename, path.pathname]);
-  }
-
-  return createPath(path);
-}
-
-function createFetcherForm(fetcherKey, routeId) {
-  let FetcherForm = /*#__PURE__*/React.forwardRef((props, ref) => {
-    return /*#__PURE__*/React.createElement(FormImpl, react_router_dom_dist_extends({}, props, {
-      ref: ref,
-      fetcherKey: fetcherKey,
-      routeId: routeId
-    }));
-  });
-
-  if (false) {}
-
-  return FetcherForm;
-}
-
-let fetcherId = 0;
-/**
- * Interacts with route loaders and actions without causing a navigation. Great
- * for any interaction that stays on the same page.
- */
-
-function useFetcher() {
-  var _route$matches;
-
-  let {
-    router
-  } = dist_useDataRouterContext(dist_DataRouterHook.UseFetcher);
-  let route = React.useContext(UNSAFE_RouteContext);
-  !route ?  false ? 0 : invariant(false) : void 0;
-  let routeId = (_route$matches = route.matches[route.matches.length - 1]) == null ? void 0 : _route$matches.route.id;
-  !(routeId != null) ?  false ? 0 : invariant(false) : void 0;
-  let [fetcherKey] = React.useState(() => String(++fetcherId));
-  let [Form] = React.useState(() => {
-    !routeId ?  false ? 0 : invariant(false) : void 0;
-    return createFetcherForm(fetcherKey, routeId);
-  });
-  let [load] = React.useState(() => href => {
-    !router ?  false ? 0 : invariant(false) : void 0;
-    !routeId ?  false ? 0 : invariant(false) : void 0;
-    router.fetch(fetcherKey, routeId, href);
-  });
-  let submit = useSubmitImpl(fetcherKey, routeId);
-  let fetcher = router.getFetcher(fetcherKey);
-  let fetcherWithComponents = React.useMemo(() => react_router_dom_dist_extends({
-    Form,
-    submit,
-    load
-  }, fetcher), [fetcher, Form, submit, load]);
-  React.useEffect(() => {
-    // Is this busted when the React team gets real weird and calls effects
-    // twice on mount?  We really just need to garbage collect here when this
-    // fetcher is no longer around.
-    return () => {
-      if (!router) {
-        console.warn("No fetcher available to clean up from useFetcher()");
-        return;
-      }
-
-      router.deleteFetcher(fetcherKey);
-    };
-  }, [router, fetcherKey]);
-  return fetcherWithComponents;
-}
-/**
- * Provides all fetchers currently on the page. Useful for layouts and parent
- * routes that need to provide pending/optimistic UI regarding the fetch.
- */
-
-function useFetchers() {
-  let state = dist_useDataRouterState(dist_DataRouterStateHook.UseFetchers);
-  return [...state.fetchers.values()];
-}
-const SCROLL_RESTORATION_STORAGE_KEY = "react-router-scroll-positions";
-let savedScrollPositions = {};
-/**
- * When rendered inside a RouterProvider, will restore scroll positions on navigations
- */
-
-function useScrollRestoration(_temp3) {
-  let {
-    getKey,
-    storageKey
-  } = _temp3 === void 0 ? {} : _temp3;
-  let {
-    router
-  } = dist_useDataRouterContext(dist_DataRouterHook.UseScrollRestoration);
-  let {
-    restoreScrollPosition,
-    preventScrollReset
-  } = dist_useDataRouterState(dist_DataRouterStateHook.UseScrollRestoration);
-  let location = useLocation();
-  let matches = useMatches();
-  let navigation = useNavigation(); // Trigger manual scroll restoration while we're active
-
-  React.useEffect(() => {
-    window.history.scrollRestoration = "manual";
-    return () => {
-      window.history.scrollRestoration = "auto";
-    };
-  }, []); // Save positions on pagehide
-
-  usePageHide(React.useCallback(() => {
-    if (navigation.state === "idle") {
-      let key = (getKey ? getKey(location, matches) : null) || location.key;
-      savedScrollPositions[key] = window.scrollY;
-    }
-
-    sessionStorage.setItem(storageKey || SCROLL_RESTORATION_STORAGE_KEY, JSON.stringify(savedScrollPositions));
-    window.history.scrollRestoration = "auto";
-  }, [storageKey, getKey, navigation.state, location, matches])); // Read in any saved scroll locations
-
-  if (typeof document !== "undefined") {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    React.useLayoutEffect(() => {
-      try {
-        let sessionPositions = sessionStorage.getItem(storageKey || SCROLL_RESTORATION_STORAGE_KEY);
-
-        if (sessionPositions) {
-          savedScrollPositions = JSON.parse(sessionPositions);
-        }
-      } catch (e) {// no-op, use default empty object
-      }
-    }, [storageKey]); // Enable scroll restoration in the router
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-
-    React.useLayoutEffect(() => {
-      let disableScrollRestoration = router == null ? void 0 : router.enableScrollRestoration(savedScrollPositions, () => window.scrollY, getKey);
-      return () => disableScrollRestoration && disableScrollRestoration();
-    }, [router, getKey]); // Restore scrolling when state.restoreScrollPosition changes
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-
-    React.useLayoutEffect(() => {
-      // Explicit false means don't do anything (used for submissions)
-      if (restoreScrollPosition === false) {
-        return;
-      } // been here before, scroll to it
-
-
-      if (typeof restoreScrollPosition === "number") {
-        window.scrollTo(0, restoreScrollPosition);
-        return;
-      } // try to scroll to the hash
-
-
-      if (location.hash) {
-        let el = document.getElementById(location.hash.slice(1));
-
-        if (el) {
-          el.scrollIntoView();
-          return;
-        }
-      } // Don't reset if this navigation opted out
-
-
-      if (preventScrollReset === true) {
-        return;
-      } // otherwise go to the top on new locations
-
-
-      window.scrollTo(0, 0);
-    }, [location, restoreScrollPosition, preventScrollReset]);
-  }
-}
-/**
- * Setup a callback to be fired on the window's `beforeunload` event. This is
- * useful for saving some data to `window.localStorage` just before the page
- * refreshes.
- *
- * Note: The `callback` argument should be a function created with
- * `React.useCallback()`.
- */
-
-
-function useBeforeUnload(callback, options) {
-  let {
-    capture
-  } = options || {};
-  React.useEffect(() => {
-    let opts = capture != null ? {
-      capture
-    } : undefined;
-    window.addEventListener("beforeunload", callback, opts);
-    return () => {
-      window.removeEventListener("beforeunload", callback, opts);
-    };
-  }, [callback, capture]);
-}
-/**
- * Setup a callback to be fired on the window's `pagehide` event. This is
- * useful for saving some data to `window.localStorage` just before the page
- * refreshes.  This event is better supported than beforeunload across browsers.
- *
- * Note: The `callback` argument should be a function created with
- * `React.useCallback()`.
- */
-
-function usePageHide(callback, options) {
-  let {
-    capture
-  } = options || {};
-  React.useEffect(() => {
-    let opts = capture != null ? {
-      capture
-    } : undefined;
-    window.addEventListener("pagehide", callback, opts);
-    return () => {
-      window.removeEventListener("pagehide", callback, opts);
-    };
-  }, [callback, capture]);
-}
-/**
- * Wrapper around useBlocker to show a window.confirm prompt to users instead
- * of building a custom UI with useBlocker.
- *
- * Warning: This has *a lot of rough edges* and behaves very differently (and
- * very incorrectly in some cases) across browsers if user click addition
- * back/forward navigations while the confirm is open.  Use at your own risk.
- */
-
-
-function usePrompt(_ref8) {
-  let {
-    when,
-    message
-  } = _ref8;
-  let blocker = unstable_useBlocker(when);
-  React.useEffect(() => {
-    if (blocker.state === "blocked" && !when) {
-      blocker.reset();
-    }
-  }, [blocker, when]);
-  React.useEffect(() => {
-    if (blocker.state === "blocked") {
-      let proceed = window.confirm(message);
-
-      if (proceed) {
-        setTimeout(blocker.proceed, 0);
-      } else {
-        blocker.reset();
-      }
-    }
-  }, [blocker, message]);
-}
-////////////////////////////////////////////////////////////////////////////////
-//#region Utils
-////////////////////////////////////////////////////////////////////////////////
-
-function dist_warning(cond, message) {
-  if (!cond) {
-    // eslint-disable-next-line no-console
-    if (typeof console !== "undefined") console.warn(message);
-
-    try {
-      // Welcome to debugging React Router!
-      //
-      // This error is thrown as a convenience so you can more easily
-      // find the source for a warning that appears in the console by
-      // enabling "pause on exceptions" in your JavaScript debugger.
-      throw new Error(message); // eslint-disable-next-line no-empty
-    } catch (e) {}
-  }
-} //#endregion
 
 
 //# sourceMappingURL=index.js.map
@@ -38102,9 +32900,11 @@ const drawerWidthClose = (paddingIconButton + marginIconButton) * 2 + iconFontSi
 function SideNavbar() {
   const theme = styles_useTheme_useTheme();
   const [open, setOpen] = (0,react.useState)(false);
+
   function toggleopen() {
     setOpen(!open);
   }
+
   const drawerContent = /*#__PURE__*/react.createElement(react.Fragment, null, /*#__PURE__*/react.createElement(material_Box_Box, {
     sx: {
       position: 'relative',
@@ -38310,7 +33110,7 @@ function mergeOuterLocalTheme(outerTheme, localTheme) {
     return mergedTheme;
   }
 
-  return extends_extends({}, outerTheme, localTheme);
+  return (0,esm_extends/* default */.Z)({}, outerTheme, localTheme);
 }
 /**
  * This component takes a `theme` prop.
@@ -38377,11 +33177,13 @@ class App extends react.Component {
   constructor(props) {
     super(props);
   }
+
   render() {
     return /*#__PURE__*/react.createElement(ThemeProvider_ThemeProvider, {
       theme: theme
     }, /*#__PURE__*/react.createElement(BrowserRouter, null, /*#__PURE__*/react.createElement(Grid_Grid, null, /*#__PURE__*/react.createElement(SideNavbar, null), /*#__PURE__*/react.createElement(HomePage, null))));
   }
+
 }
 const appDiv = document.getElementById("app");
 (0,react_dom.render)( /*#__PURE__*/react.createElement(App, null), appDiv);
