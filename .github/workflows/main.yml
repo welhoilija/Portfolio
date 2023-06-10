@@ -52,7 +52,7 @@ jobs:
         ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "
           cd $DEPLOY_PATH &&
           git pull &&
-          source venv/bin/activate &&
+          source /home/portfolio/venv/bin/activate &&
           pip install -r requirements.txt &&
           python manage.py migrate &&
           cp -r intro/build/* $DEPLOY_PATH/intro/static/intro/ &&
