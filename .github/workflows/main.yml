@@ -57,6 +57,6 @@ jobs:
           source /home/portfolio/venv/bin/activate
           pip install -r requirements.txt &&
           python manage.py migrate &&
-          uwsgi --reload $DEPLOY_PATH/uwsgi.ini &&
+          sudo systemctl restart emperor.uwsgi.service &&
           sudo service nginx reload || (nginx_status=\$?; echo 'Nginx reload failed'; exit \$nginx_status)
         "
