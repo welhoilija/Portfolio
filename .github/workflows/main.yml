@@ -49,13 +49,13 @@ jobs:
         SERVER_IP: ${{ secrets.SERVER_IP }}
         DEPLOY_PATH: /home/portfolio/Portfolio
       run: |
-        rsync -av -e "ssh -o StrictHostKeyChecking=no" --progress intro/static/build/* $SERVER_USER@$SERVER_IP:$DEPLOY_PATH/intro/static/intro/
         ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "
           cd $DEPLOY_PATH &&
           git pull &&
           source /home/portfolio/venv/bin/activate &&
           pip install -r requirements.txt &&
           python manage.py migrate &&
-          uwsgi --reload $DEPLOY_PATH/uwsgi.ini &&
+          rsync -av -e 'ssh -o StrictHostKeyChecking=no' --progress intro/static/build/* $SERVER_USER@$SERVER_IP:$DEPLOY_PATH/intro/static/intro/ &&
+          /home/portfolio/venv/bin/uwsgi --ini $DEPLOY_PATH/uwsgi.ini --uid www-data --gid www-data &&
           sudo service nginx reload
         "
