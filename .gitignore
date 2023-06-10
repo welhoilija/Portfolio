@@ -131,3 +131,6 @@ dmypy.json
 .uploads/
 intro/node_modules
 intro/static/frontend/
+intro/static/frontend/main.js
+.vscode/launch.json
+.vscode/settings.json

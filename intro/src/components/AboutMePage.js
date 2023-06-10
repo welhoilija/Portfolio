@@ -33,12 +33,12 @@ const useStyles = makeStyles((theme) => ({
 							</h2>
 
 							<p>
-							I am a highly motivated and skilled web developer with 4 years of professional experience in the industry. 
-							My expertise includes Python, Django, web development, and search engine marketing. 
-							I have a strong passion for all things digital, including cryptocurrencies, and constantly seek to stay up to date with the latest technologies. 
-							In my free time, I enjoy coding personal<a href="https://github.com/welhoilija">projects,</a>playing video games, climbing, and running. 
-							I am excited to bring my skills and enthusiasm to a new opportunity and make a meaningful impact.
-							</p>	
+							I'm a motivated Web Developer with four years of hands-on experience in the industry. I have strong skills in Python, Django, TypeScript, and other web development technologies. I'm also skilled in Search Engine Marketing, a key aspect of online visibility.
+
+							I'm deeply interested in the digital world, including areas like cryptocurrencies, and I always make sure to stay updated with the latest tech trends.
+
+							In my free time, I enjoy working on personal coding projects that you can see on my <a href="https://github.com/welhoilija">GitHub</a>, playing video games, and keeping fit with climbing and running.
+							</p>
 						</div>
 					</div>
 				</Grid>

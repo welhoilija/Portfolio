@@ -33,7 +33,7 @@ export default function ProjectsPage() {
               <Grid item xs={12} sm={12} md={6} lg={3} xl={3} alignItems="center">
                 <MyCard 
                   className={"dark-mode"} 
-                  text="Deep knowledge about python, and strengths and weaknesses of it" 
+                  text="Deep knowledge about python, and strengths and weaknesses of it. The main language i like to work with." 
                   title="Python" 
                   image="/static/images/python.png" 
                   link="https://github.com/welhoilija"
@@ -66,7 +66,7 @@ export default function ProjectsPage() {
                 <Grid item xs={12} sm={12} md={6} lg={3} xl={3} alignItems="center">
                   <MyCard 
                       className={"dark-mode"} 
-                      text="Business knowledge, Strong GNU/Linux knowledge, Facebook ads, Nginx, different databases and the list goes on..." 
+                      text="Business knowledge, Strong GNU/Linux knowledge, Facebook ads, Nginx, TypeScript, different databases and the list goes on..." 
                       title="Many other skills!" 
                       image="/static/images/react.png" 
                       link="https://github.com/welhoilija"
