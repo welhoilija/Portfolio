@@ -134,3 +134,4 @@ intro/static/frontend/
 intro/static/frontend/main.js
 .vscode/launch.json
 .vscode/settings.json
+static
