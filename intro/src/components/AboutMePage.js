@@ -33,9 +33,9 @@ const useStyles = makeStyles((theme) => ({
 							</h2>
 
 							<p>
-							I'm a motivated Web Developer with four years of hands-on experience in the industry. I have strong skills in Python, Django, TypeScript, and other web development technologies. I'm also skilled in Search Engine Marketing, a key aspect of online visibility.
+							I'm a motivated Web Developer with about four years of hands-on experience in the industry. I have strong skills in Python, Django, TypeScript, and other web development technologies. I'm also skilled in Search Engine Marketing, a key aspect of online visibility.
 
-							I'm deeply interested in the digital world, including areas like cryptocurrencies, and I always make sure to stay updated with the latest tech trends.
+							I'm deeply interested in the digital world, including areas like crypto, AI and fintech and I always make sure to stay updated with the latest tech trends.
 
 							In my free time, I enjoy working on personal coding projects that you can see on my <a href="https://github.com/welhoilija">GitHub</a>, playing video games, and keeping fit with climbing and running.
 							</p>

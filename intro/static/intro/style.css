@@ -1,14 +1,28 @@
-html, body {
-position: fixed;
-margin-left: 80px;
-padding-right: 0px;
-bottom: 0;
-top: 0;
-width: 100%;
-overflow-x: hidden;
-align-content: center;
-align-items: center;
-background-color: #150050;
+html {
+  position: fixed;
+  margin-left: 65px;
+  padding-right: 0px;
+  bottom: 0;
+  top: 0;
+  width: 100%;
+  align-content: center;
+  align-items: center;
+  background-color: #090020;
+}
+
+
+body {
+  position: fixed;
+  margin-left: 80px;
+  padding-right: 0px;
+  bottom: 0;
+  top: 0;
+  width: 100%;
+  overflow-x: hidden;
+  align-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow-y: auto;
 }
 
 .CardsBlock {
@@ -92,4 +106,12 @@ a {
 
 .header {
   text-align: center;
+}
+
+
+/* Styles for smaller screens */
+@media screen and (max-width: 600px) {
+  body {
+    margin-left: 0px;
+  }
 }

@@ -19,7 +19,7 @@ export default function ProjectsPage() {
     <div>
       <div>
         
-        <div>
+        <div class='CardsBlock'>
           <Box sx={{
             flexGrow: 1,
           }}>
@@ -44,8 +44,8 @@ export default function ProjectsPage() {
               <Grid item xs={12} sm={12} md={6} lg={3} xl={3} alignItems="center">
                 <MyCard 
                   className={"dark-mode"} 
-                  text="Deep knowledge in paid media marketing and different SEM strategies" 
-                  title="Paid media and marketing" 
+                  text="Search engine optimization and marketing knowledge" 
+                  title="Deep knowledge on bringing content to the potential customers on the web efficiently." 
                   image="/static/images/marketing.png" 
                   link="https://github.com/welhoilija"
                 />
