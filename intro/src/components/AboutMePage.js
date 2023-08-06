@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
 	const classes = useStyles();
 	return (
 	  <div>
-		  <div>
+		  <div class='blog'>
 			<Box sx={{flexGrow: 1}}>
 			  <Grid container spacing={0} direction="column" alignItems="center" justifyContent="center" align="center" style={{ height: '50%' }}> 
 				<Grid xs={12} className={classes.horizontal}>

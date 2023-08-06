@@ -31,6 +31,12 @@ body {
   overflow-y: auto;
 }
 
+.blog  {
+  height: 100vh;
+  overflow-y: auto;
+  padding-bottom: 150px;
+}
+
 #main {
   position: inherit;
   width: 80%;
