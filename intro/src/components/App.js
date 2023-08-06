@@ -7,6 +7,8 @@ import { BrowserRouter } from "react-router-dom";
 import { createTheme } from '@material-ui/core/styles';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { Grid } from "@material-ui/core";
+import axios from "axios";
+import ImageGenerator from "./ImageGenerator";
 
 const theme = createTheme({
     palette: {
@@ -30,7 +32,25 @@ const theme = createTheme({
 
 export default class App extends Component {
   constructor(props) {
-    super(props);
+    super(props)
+    this.state = {
+      seed: null,
+    }
+  }
+
+  generateSeed = () => {
+    axios.post("/api/generate")
+      .then((response) => {
+        const seed = response.data.seed;
+        this.setState({ seed })
+      })
+      .catch((error) => {
+        console.error("Error generating seed:", error);
+      })
+  }
+
+  componentDidMount() {
+    this.generateSeed();
   }
 
   render() {
@@ -39,6 +59,7 @@ export default class App extends Component {
         <BrowserRouter>
           <Grid>
             <SideNavbar />
+            <ImageGenerator seed={this.state} />
             <HomePage />        
           </Grid>
         </BrowserRouter>
@@ -47,5 +68,5 @@ export default class App extends Component {
   }
 }
 
-const appDiv = document.getElementById("app");
-render(<App />, appDiv);
+const appDiv = document.getElementById("app")
+render(<App />, appDiv)

@@ -43,7 +43,6 @@ class ContactPage extends React.Component {
 		};
 		fetch("/api/Contact", requestOptions)
 		.then((response) => response.json())
-		.then((data) => console.log(data))
 		.then(document.getElementById("message").style.display = "block")
 	}
   

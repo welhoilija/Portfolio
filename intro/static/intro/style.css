@@ -10,6 +10,38 @@ html {
   background-color: #090020;
 }
 
+.terrain-canvas {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  width: 150px;
+  height: 150px;
+  border: 2px solid black;
+  border-radius: 3%;
+}
+
+.info-button {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.info-tooltip {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  display: none;
+  background-color: #090020;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.info-button:hover .info-tooltip {
+  display: block;
+}
 
 body {
   position: fixed;
@@ -119,5 +151,14 @@ a {
 @media screen and (max-width: 600px) {
   body {
     margin-left: 0px;
+  }
+}
+
+@media screen and (max-width: 750px) {
+  .terrain-canvas {
+    display: none;
+  }
+  .info-button {
+    display: none;
   }
 }
