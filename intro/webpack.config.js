@@ -2,6 +2,7 @@ const path = require("path");
 const webpack = require("webpack");
 
 module.exports = {
+  mode: "production",
   entry: "./src/index.js",
   output: {
     path: path.resolve(__dirname, "./static/build"),
@@ -38,11 +39,14 @@ module.exports = {
     ],
   },
   optimization: {
-    minimize: false,
+    minimize: true,
   },
   plugins: [
     new webpack.DefinePlugin({
-        'process.env.NODE_ENV' : JSON.stringify('production')
+      'process.env.NODE_ENV': JSON.stringify('production')
     })
   ],
+  resolve: {
+    extensions: [".js", ".jsx", ".json"],
+  },
 };
