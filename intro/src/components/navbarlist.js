@@ -2,7 +2,7 @@ import DashboardOutlined from '@mui/icons-material/DashboardOutlined';
 import Person from '@mui/icons-material/Person';
 import Forum from '@mui/icons-material/Forum';
 import Analytics from '@mui/icons-material/Analytics';
-import FolderOpen from '@mui/icons-material/FolderOpen';
+import CasinoIcon from '@mui/icons-material/Casino';
 import StarIcon from '@mui/icons-material/Star';
 const navbarList = [
   {
@@ -36,6 +36,14 @@ const navbarList = [
     badge: 0,
     subList: [],
     redirect_to: "/Skills",
+  },
+  {
+    icon: CasinoIcon,
+    desc: 'Poker',
+    secondDesc: ' check my cool poker game',
+    badge: 0,
+    subList: [],
+    redirect_to: "/Poker",
   },
   {
     icon: Forum,

@@ -79,18 +79,18 @@ function SocialLinks() {
         flexDirection: "row",
         flexGrow: 2,
         justifyContent: "center",
-        color: 'white',
+        color: "white",
         marginBottom: "10px",
       }}
     >
       <div className="githubicon">
-        <a href="https://github.com/welhoilija">
+        <a className="somelogo" href="https://github.com/welhoilija">
           <GitHubIcon fontSize="large" />
         </a>
-        <a href="https://www.linkedin.com/in/tuomas-kangas-901207170/">
+        <a className="somelogo" href="https://www.linkedin.com/in/tuomas-kangas-901207170/">
           <LinkedInIcon fontSize="large" />
         </a>
-        <a href="https://t.me/TuomasKangas">
+        <a className="somelogo" href="https://t.me/TuomasKangas">
           <TelegramIcon fontSize="large" />
         </a>
       </div>
@@ -143,18 +143,14 @@ export default function SideNavbar() {
           }}
         >
           <Header />
-          <Button
-            sx={{ color: 'white', marginTop: "8px" }}
-          >
-            <MenuIcon  
-            onClick={toggleopen}
-            />
+          <Button sx={{ color: "white", marginTop: "8px" }}>
+            <MenuIcon onClick={toggleopen} />
           </Button>
         </Box>
         <Divider
           variant="middle"
           light={true}
-          sx={{ bgcolor: 'white' }}
+          sx={{ bgcolor: "white" }}
         ></Divider>
         <List
           sx={{
@@ -163,7 +159,7 @@ export default function SideNavbar() {
             justifyContent: "center",
             flexGrow: 1,
             overflow: "hidden",
-            color: 'white',
+            color: "white",
           }}
         >
           {navbarList.map((item, index) => (
