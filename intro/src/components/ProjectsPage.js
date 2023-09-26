@@ -36,7 +36,7 @@ export default function ProjectsPage() {
               </Grid>
 
               <Grid item xs={12} sm={12} md={6} lg={3} xl={3} align="center">
-                <MyCard text="Wish i would have had more time for this.." title="This portfolio (2021)" image="/static/images/pythondjango.png" link="https://github.com/welhoilija/Portfolio"/>
+                <MyCard text="React/FastApi app for making reservations and sharing with friends. Go check it out!" title="Dinner Planner App (2023)" image="/static/images/dinnerbooking.png" link="https://dinner.tuomaskangas.com"/>
               </Grid>
 
               <Grid item xs={12} sm={12} md={6} lg={3} xl={3} align="center">

@@ -3,7 +3,7 @@ import MyCard from './card';
 import { Grid } from "@material-ui/core";
 import { Box } from "@mui/system";
 
-import React, { Component } from "react";
+import React from "react";
 const styles = (theme) => ({
   root: {
     backgroundColor: 'blue',
@@ -30,7 +30,7 @@ export default function ProjectsPage() {
             </Grid>
             <Grid container spacing={{ xs: 2, sm: 2, md: 2, xl: 4, lg: 3 }} columns={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}>
 
-              <Grid item xs={12} sm={12} md={6} lg={3} xl={3} alignItems="center">
+              <Grid item xs={12} sm={12} md={6} lg={3} xl={3} alignItems="center" justifyContent='center'>
                 <MyCard 
                   className={"dark-mode"} 
                   text="Deep knowledge about python, and strengths and weaknesses of it. The main language i like to work with." 
@@ -41,11 +41,11 @@ export default function ProjectsPage() {
               </Grid>
 
 
-              <Grid item xs={12} sm={12} md={6} lg={3} xl={3} alignItems="center">
+              <Grid item xs={12} sm={12} md={6} lg={3} xl={3} alignItems="center" justifyContent='center'>
                 <MyCard 
                   className={"dark-mode"} 
-                  text="Search engine optimization and marketing knowledge" 
-                  title="Deep knowledge on bringing content to the potential customers on the web efficiently." 
+                  text="I know how to bring customers to your product efficiently!" 
+                  title="SEM and PPC advertising" 
                   image="/static/images/marketing.png" 
                   link="https://github.com/welhoilija"
                 />

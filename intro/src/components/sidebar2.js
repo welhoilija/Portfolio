@@ -1,244 +1,111 @@
-import React from "react";
-
-import { useState, useRef } from 'react';
+import React, { useState } from "react";
 import { useTheme } from '@mui/material/styles';
-
-import Box from '@mui/material/Box';
-import Drawer from '@mui/material/Drawer';
-import List from '@mui/material/List';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-
-import Badge from '@mui/material/Badge';
-import Tooltip from '@mui/material/Tooltip';
-import Divider from '@mui/material/Divider';
-import Button from '@mui/material/Button';
-import Chip from '@mui/material/Chip';
+import { Link } from 'react-router-dom';
+import {
+  Box, Drawer, List, ListItemButton, ListItemIcon,
+  ListItemText, Badge, Tooltip, Divider, Button, Chip
+} from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub';
-import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import TelegramIcon from '@mui/icons-material/Telegram';
+import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import MenuIcon from '@mui/icons-material/Menu';
-import Header from "./logo"
-import { Link } from "react-router-dom";
+import Header from "./logo";
 import navbarList from './navbarlist';
 
 const drawerWidthOpen = 180;
 const paddingIconButton = 10;
 const marginIconButton = 14;
 const iconFontSize = 20;
-const drawerWidthClose =
-  (paddingIconButton + marginIconButton) * 2 + iconFontSize;
+const drawerWidthClose = (paddingIconButton + marginIconButton) * 2 + iconFontSize;
+
+function NavbarItem({ item }) {
+  const theme = useTheme();
+  const IconComponent = item.icon;
+
+  return (
+    <Tooltip title={item.open ? item.desc : ''} placement={'right'} sx={{ alignItems: 'center' }}>
+      <ListItemButton component={Link} to={item.redirect_to} sx={{ margin: '8px 0' }}>
+        <ListItemIcon sx={{ 
+            transition: theme.transitions.create('margin', {
+              easing: theme.transitions.easing.sharp,
+              duration: theme.transitions.duration.enteringScreen,
+            })
+          }}>
+          <Badge badgeContent={item.badge} color="secondary" variant="dot">
+            <IconComponent sx={{ fontSize: '18px', color: 'lightgray' }} />
+          </Badge>
+        </ListItemIcon>
+        <ListItemText 
+          primary={item.desc} 
+          sx={{
+            opacity: item.open ? 1 : 0,
+            visibility: item.open ? 'visible' : 'hidden',
+            transition: theme.transitions.create(['opacity', 'visibility'], {
+                easing: theme.transitions.easing.sharp,
+                duration: theme.transitions.duration.enteringScreen,
+            }),
+          }} 
+        />
+      </ListItemButton>
+    </Tooltip>
+  );
+}
+
+function SocialLinks() {
+  return (
+    <Box sx={{ display: 'flex', flexDirection: 'row', flexGrow: 2, justifyContent: 'center', color: 'white', marginBottom: '10px' }}>
+      <div className="githubicon">
+        <a href="https://github.com/welhoilija"><GitHubIcon fontSize="large" /></a>
+        <a href="https://www.linkedin.com/in/tuomas-kangas-901207170/"><LinkedInIcon fontSize="large" /></a>
+        <a href="https://t.me/TuomasKangas"><TelegramIcon fontSize="large" /></a>
+      </div>
+    </Box>
+  );
+}
 
 export default function SideNavbar() {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
 
   function toggleopen() {
-    setOpen(!open);
+    setOpen(prevOpen => !prevOpen);
   }
 
-
-  const drawerContent = (
-    <>
-      <Box
-        sx={{
-          position: 'relative',
-          display: 'flex',
-          justifyContent: 'space-between',
-          height: '52px',
-          width: 'auto',
-          backgroundColor: 'transparent',
-          margin: '14px 14px',
-          padding: '12px 0px',
-          borderBottom: '1px solid lightgray',
-          alignItems: 'flex-end',
-        }}
-      >
-        <Box
-          sx={{
-            flexShrink: 0,
-            display: open ? 'none' : { xs: 'none', sm: 'initial' },
-            marginBottom: '9px',
-          }}
-        >
-        <Header />
-        </Box>
-
-        <Button
-          onClick={toggleopen}
-          sx={{
-            position: "relative",
-            minWidth: 'initial',
-            padding: '10px',
-            color: 'transparent',
-            borderRadius: '8px',
-            backgroundColor: open ? 'transparent' : 'transparent',
-            '&:hover': {
-              backgroundColor: '#26284687',
-            },
-          }}
-        >
-          <MenuIcon
-            sx={{ fontSize: '20px', color: open ? 'lightgray' : 'lightGray' }}
-          ></MenuIcon>
-        </Button>
-      </Box>
-
-      <List dense={true}>
-        {navbarList.map((key, index) => (
-          <>
-            {index === 0 ? (
-              <>
-
-                <Divider variant="middle" light={true} />
-              </>
-            ) : (
-              <Tooltip
-                title={open ? key.desc : ''}
-                placement={'right'}
-                componentsProps={{
-                  tooltip: {
-                    sx: {
-                      backgroundColor: 'transparent',
-                      color: 'white',
-                      marginLeft: '22px !important',
-                      boxShadow: '0px 0px 22px -2px rgba(0,0,0,0.20)',
-                    },
-                  },
-                }}
-              >
-                <ListItemButton
-                  component={Link} 
-                  to={key.redirect_to}
-                  sx={{
-                    margin: '6px 14px',
-                    padding: '10px',
-                    borderRadius: '8px',
-                    '&:hover': {
-                      backgroundColor: 'transparent',
-                    },
-                  }}
-                >
-                  <ListItemIcon sx={{ minWidth: '46px' }}>
-                    <Badge
-                      badgeContent={key.badge}
-                      color="secondary"
-                      variant="dot"
-                    >
-                      <key.icon sx={{ fontSize: '20px', color: 'lightgray' }} />
-                    </Badge>
-                  </ListItemIcon>
-
-                  <ListItemText
-                    primary={key.desc}
-                    primaryTypographyProps={{
-                      variant: 'body2',
-                    }}
-                    sx={{
-                      display: 'inline',
-                      margin: '0px',
-                      overflowX: 'hidden',
-                      color: 'lightgray',
-                      whiteSpace: 'nowrap',
-                      minWidth: '126px',
-                    }}
-                  />
-                  {key.badge !== 0 ? (
-                    <Chip
-                      label={key.badge}
-                      color={'secondary'}
-                      size="small"
-                      sx={{ height: 'auto' }}
-                    />
-                  ) : (
-                    <></>
-                  )}
-                </ListItemButton>
-              </Tooltip>
-            )}
-          </>
-        ))}
-        <Divider variant="middle" light={true} />
-      </List>
-
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'flex-start',
-          alignItems: 'center',
-          alignContents: 'center',
-          margin: '14px 14px',
-          padding: '12px 4px',
-          borderTop: '1px solid lightgray',
-        }}
-      >
-        <Box
-          sx={{
-            display: 'flex',
-            marginRight: '18px',
-            paddingLeft: '0px',
-            alignItems: 'center',
-            alignContent: 'center',
-          }}
-        >
-
-
-
-        </Box>
-        <Box sx={{ display: 'flex', flexDirection: 'row', flexGrow: 2 }}>
-            <div className="githubicon">
-                <a href="https://github.com/welhoilija">
-                  <GitHubIcon fontSize="large"/>
-                </a>
-                <a href="https://www.linkedin.com/in/tuomas-kangas-901207170/">
-                  <LinkedInIcon fontSize="large"/>
-                </a>
-                <a href="https://t.me/TuomasKangas">
-                  <TelegramIcon fontSize="large"/>
-                </a>
-            </div>
-        </Box>
-      </Box>
-    </>
-  );
-
   return (
-    <Box justifyContent="center"
-    alignItems="center" sx={{ display: 'flex' }}>
+    <Box justifyContent="center" alignItems="center" sx={{ display: 'flex' }}>
       <Drawer
         variant="permanent"
         open={open}
         sx={{
-          width: open
-            ? { xs: '0px', sm: drawerWidthClose }
-            : { xs: drawerWidthClose, sm: drawerWidthOpen },
+          width: open ? { xs: '100%', sm: drawerWidthOpen } : { xs: drawerWidthClose, sm: drawerWidthClose },
           transition: theme.transitions.create('width', {
             easing: theme.transitions.easing.sharp,
-            duration: open
-              ? theme.transitions.duration.leavingScreen
-              : theme.transitions.duration.enteringScreen,
+            duration: theme.transitions.duration.enteringScreen,
           }),
           '& .MuiDrawer-paper': {
-            justifyContent: 'space-between',
-            overflowX: 'hidden',
-            width: open
-              ? { xs: '0px', sm: drawerWidthClose }
-              : { xs: drawerWidthClose, sm: drawerWidthOpen },
-            borderRight: '0px',
-            borderRadius: '0px 16px 16px 0px',
-            boxShadow: theme.shadows[8],
-            backgroundColor: open ? '#11101D' : '#11101D',
+            width: open ? { xs: '100%', sm: drawerWidthOpen } : { xs: drawerWidthClose, sm: drawerWidthClose },
+            backgroundColor: '#11101D',
             transition: theme.transitions.create('width', {
               easing: theme.transitions.easing.sharp,
-              duration: open
-                ? theme.transitions.duration.leavingScreen
-                : theme.transitions.duration.enteringScreen,
+              duration: theme.transitions.duration.enteringScreen,
             }),
           },
         }}
       >
-        {drawerContent}
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '10px' }}>
+          <Header />
+          <Button onClick={toggleopen} sx={{ color: 'white', marginTop: '8px' }}>
+            <MenuIcon />
+          </Button>
+        </Box>
+        <Divider variant="middle" light={true} sx={{ bgcolor: 'white' }}></Divider>
+        <List sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', flexGrow: 1, overflow: 'hidden', color: 'white' }}>
+          {navbarList.map((item, index) => (
+            <NavbarItem key={item.desc} item={{ ...item, index, open }} />
+          ))}
+        </List>
+        <Divider variant="middle" light={true} sx={{ bgcolor: 'white' }}></Divider>
+        <SocialLinks />
       </Drawer>
     </Box>
   );

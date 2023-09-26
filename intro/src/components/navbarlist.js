@@ -6,8 +6,6 @@ import FolderOpen from '@mui/icons-material/FolderOpen';
 import StarIcon from '@mui/icons-material/Star';
 const navbarList = [
   {
-  },
-  {
     icon: DashboardOutlined,
     desc: 'Home',
     secondDesc: '',
