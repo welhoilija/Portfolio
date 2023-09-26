@@ -127,13 +127,13 @@ a {
 
 }
 .MyCard {
-    width: '300px';
-    height: '400px';
-    padding: '20px';
-    max-width: '345'; 
-    margin: '2';
+    width: 300px;
+    height: 400px;
+    padding: 20px;
+    max-width: 345px; 
+    margin: 2px;
     background-color: #150050;
-    color: 'white',
+    color: #ffffff;
 }
 .SideBarItem {
   color: #F5F5E9;
