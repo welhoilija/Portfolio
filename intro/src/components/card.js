@@ -11,10 +11,9 @@ const useStyles = makeStyles((theme) => ({
     width: '300px',
     height: '500px',
     margin: '50px',
-    padding: "20px",
+    padding: '20px',
     backgroundColor: theme.palette.secondary.main,
     boxShadow: '0px 3px 5px 0px rgba(0,0,0,0.2)',
-    border: '1px solid #1E2EDE',
   },
   cardHeader: {
     width: '250px',
@@ -34,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
 export default function MyCard({ text, title, image, link, className}) {
     const classes = useStyles();
     return (
-      <Card className={`${classes.card} ${className}`} style={{ border: "1px solid #1E2EDE"}} >
+      <Card className={`${classes.card} ${className}`} >
         <CardHeader
           className={`${classes.cardHeader}`}
           title={title}
@@ -47,8 +46,8 @@ export default function MyCard({ text, title, image, link, className}) {
           image={image}
           alt={title}
         />
-        <CardActions>
-          <Button size="large" color="primary" className='submitbutton' href={link} style={{ alignItems: 'center'}} >
+        <CardActions style={{ alignItems: 'center', justifyContent: 'center' }}>
+          <Button size="large" color="primary" className='submitbutton' href={link} >
             Learn More
           </Button>
         </CardActions>
