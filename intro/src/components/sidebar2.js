@@ -18,13 +18,13 @@ const marginIconButton = 14;
 const iconFontSize = 20;
 const drawerWidthClose = (paddingIconButton + marginIconButton) * 2 + iconFontSize;
 
-function NavbarItem({ item }) {
+function NavbarItem({ item, onClick }) {
   const theme = useTheme();
   const IconComponent = item.icon;
 
   return (
     <Tooltip title={item.open ? item.desc : ''} placement={'right'} sx={{ alignItems: 'center' }}>
-      <ListItemButton component={Link} to={item.redirect_to} sx={{ margin: '8px 0' }}>
+      <ListItemButton component={Link} to={item.redirect_to} sx={{ margin: '8px 0' }} onClick={onClick}>
         <ListItemIcon sx={{ 
             transition: theme.transitions.create('margin', {
               easing: theme.transitions.easing.sharp,
@@ -101,7 +101,7 @@ export default function SideNavbar() {
         <Divider variant="middle" light={true} sx={{ bgcolor: 'white' }}></Divider>
         <List sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', flexGrow: 1, overflow: 'hidden', color: 'white' }}>
           {navbarList.map((item, index) => (
-            <NavbarItem key={item.desc} item={{ ...item, index, open }} />
+            <NavbarItem key={item.desc} item={{ ...item, index, open }} onClick={toggleopen} />
           ))}
         </List>
         <Divider variant="middle" light={true} sx={{ bgcolor: 'white' }}></Divider>
