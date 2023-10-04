@@ -144,10 +144,11 @@ export default function SideNavbar() {
         >
           <Header />
           <Button
-            onClick={toggleopen}
             sx={{ color: 'white', marginTop: "8px" }}
           >
-            <MenuIcon />
+            <MenuIcon  
+            onClick={toggleopen}
+            />
           </Button>
         </Box>
         <Divider
