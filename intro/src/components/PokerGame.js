@@ -328,7 +328,7 @@ export default function PokerPage() {
     <div style={{ padding: "20px" }}>
       <Grid container spacing={3}>
         {players.map((p, index) => (
-          <Grid xs={6} md={6} key={index}>
+          <Grid key={index}>
             <h3 style={{ color: "whitesmoke" }}>
               {p.id.charAt(0).toUpperCase() + p.id.slice(1)}
             </h3>
