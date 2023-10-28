@@ -1,137 +1,105 @@
 import React, { useState } from 'react';
-import Grid from "@material-ui/core/Grid"
-import TextField from "@material-ui/core/TextField"
-import FormHelperText from "@material-ui/core/FormHelperText"
-import FormControl from "@material-ui/core/FormControl"
+import {
+    Grid,
+    TextField,
+    FormHelperText,
+    FormControl,
+    InputAdornment,
+    Box,
+    Button,
+    Typography
+} from '@material-ui/core';
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import InputAdornment from '@mui/material/InputAdornment';
 import "/static/intro/scc.scss";
 import "/static/intro/button.scss";
-import { Box } from '@material-ui/core';
 
+export default function ContactPage() {
+    const [text, setText] = useState('');
+    const [name, setName] = useState('');
+    const [messageDisplay, setMessageDisplay] = useState('none');
 
-class ContactPage extends React.Component {
-    constructor(props) {
-		super(props);
-		this.state = {
-			text: null,
-			name: null,
-		};
+    const handleTextChange = (e) => setText(e.target.value);
+    const handleNameChange = (e) => setName(e.target.value);
 
-		this.handleSubmitButtonPress = this.handleSubmitButtonPress.bind(this);
-		this.handletextchange = this.handletextchange.bind(this);
-		this.handlenamechange = this.handlenamechange.bind(this);
-	}
-    handletextchange(e) {
-		this.setState({
-			text: e.target.value,
-		});
-	}
-	handlenamechange(e) {
-		this.setState({
-			name: e.target.value,
-		});
-	}
-	handleSubmitButtonPress() {
-		const requestOptions = {
-			method: "POST",
-			headers: {'Content-Type': 'application/json'},
-			body: JSON.stringify({
-				text: this.state.text,
-				name: this.state.name,
-			}),
-		};
-		fetch("/api/Contact", requestOptions)
-		.then((response) => response.json())
-		.then(document.getElementById("message").style.display = "block")
-	}
-  
-    render() {
-      return (
-        <div>
+    const handleSubmitButtonPress = () => {
+        const requestOptions = {
+            method: "POST",
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text, name }),
+        };
 
-		<div>
-		<Box sx={{flexGrow: 1}}>
-			<Grid container spacing={0} direction="column" alignItems="center" justifyContent="center" align="center" style={{ height: '50%' }}>
-				
-					<Grid xs={12} align="center">
-						
-						<h4>
-							Contact me!
-						</h4>
-						
-					</Grid>
-					<Grid xs={12} align="center">
-						<FormControl component="fieldset">
+        fetch("/api/Contact", requestOptions)
+            .then((response) => response.json())
+            .then(() => setMessageDisplay('block'));
+    };
 
-							<TextField
-								fullWidth
-								required={true}
-								id="input-with-icon-textfield"
-								label="Name"
-								onChange={this.handlenamechange}
-								InputLabelProps={{
-									style: { color: "#F5F5E9"},
-									}}
-								InputProps={{
-								style: { color: "#F5F5E9" },
-								startAdornment: (
-									<InputAdornment position="start" sx={{
-										padding: "27.5px 14px",
-										color: ("#F5F5E9"),
-										borderTopLeftRadius: (theme) =>
-										theme.shape.borderRadius + "px",
-										borderBottomLeftRadius: (theme) =>
-										theme.shape.borderRadius + "px"
-									}}>
-									<AccountCircle />
-									</InputAdornment>
-								),
-								}}
-								variant="standard"
-							/>
-							
-							<TextField
-								id="standard-multiline-static"
-								label="Message"
-								multiline
-								rows={4}
-								InputLabelProps={{
-									style: { color: "#F5F5E9" },
-									}}
-								InputProps={{
-									style: { color: "#F5F5E9" },
-									}}
-								defaultValue=""
-								variant="standard"
-								onChange={this.handletextchange}
-							/>
-							<FormHelperText>
-								<div align="center">
-									Up to 2000 characters!
-								</div>
-							</FormHelperText>
-						</FormControl>
-					</Grid>
-					<Grid item xs={12} align="center">
-						<button
-							className='submitbutton'
-							onClick={this.handleSubmitButtonPress}
-							>
-							Submit
-						</button>
-					</Grid>
-					<Grid item xs={12} align="center">
-						<div id="message" style={{ display: "none" }}>
-							<p>Your form was uploaded successfully</p>
-						</div>
-					</Grid>
-			</Grid>
-		</Box>
-		</div>
-	</div>
-      );
-    }
-  }
+    return (
+        <Box sx={{ flexGrow: 1, height: '50%' }}>
+            <Grid container spacing={0} direction="column" alignItems="center" justifyContent="center">
 
-export default ContactPage;
+                <Grid item xs={12} align="center">
+                    <Typography variant="h4">Contact me!</Typography>
+                </Grid>
+
+                <Grid item xs={12} align="center">
+                    <FormControl component="fieldset" fullWidth sx={{ mb: 2 }}>
+
+                        <TextField
+                            fullWidth
+                            required
+                            id="input-with-icon-textfield"
+                            label="Name"
+                            onChange={handleNameChange}
+                            InputProps={{
+                                style: { color: "#F5F5E9", borderBottom: '1px solid white' },
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <AccountCircle />
+                                    </InputAdornment>
+                                ),
+                            }}
+                            InputLabelProps={{
+                                style: { color: "#F5F5E9" },
+                            }}
+                            variant="standard"
+                        />
+
+                        <TextField
+                            id="standard-multiline-static"
+                            label="Message"
+                            multiline
+                            rows={4}
+                            sx={{ borderBottom: '1px solid white' }}
+                            variant="standard"
+                            onChange={handleTextChange}
+                            InputProps={{
+                                style: { color: "#F5F5E9", borderBottom: '1px solid white' },
+                            }}
+                            InputLabelProps={{
+                                style: { color: "#F5F5E9" },
+                            }}
+                        />
+
+                        <FormHelperText align="center">
+                            Up to 2000 characters!
+                        </FormHelperText>
+
+                    </FormControl>
+                </Grid>
+
+                <Grid item xs={12} align="center">
+                    <Button variant="contained" color="primary" className='submitbutton' onClick={handleSubmitButtonPress} sx={{ mt: 2 }}>
+                        Submit
+                    </Button>
+                </Grid>
+
+                <Grid item xs={12} align="center">
+                    <div id="message" style={{ display: messageDisplay }}>
+                        <Typography>Your form was uploaded successfully</Typography>
+                    </div>
+                </Grid>
+
+            </Grid>
+        </Box>
+    );
+}

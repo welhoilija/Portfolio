@@ -1,22 +1,15 @@
-import React, { Component } from "react";
+import React from "react";
 import ProjectsPage from "./ProjectsPage";
 import AboutMePage from "./AboutMePage";
 import ContactPage from "./contact";
 import FrontPage from "./FrontPage";
 import SkillsPage from "./SkillsPage";
 import {
-	BrowserRouter as Router,
 	Routes,
 	Route,
 } from "react-router-dom";
 
-
-export default class HomePage extends Component {
-	constructor(props) {
-		super(props);
-	}
-
-	render() {
+export default function HomePage() {
   return (
     <div>
       <div className="stars">
@@ -32,9 +25,5 @@ export default class HomePage extends Component {
           <Route path='/Skills' element={<SkillsPage/>} />
       </Routes>
     </div>
-
   );
 }
-
-}
-

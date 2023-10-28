@@ -1,52 +1,36 @@
-import React, { Component } from "react";
+import React from "react";
 import Grid from "@material-ui/core/Grid"
-import { makeStyles } from "@material-ui/styles";
-import { Box } from "@material-ui/core";
+import { Box, Typography } from "@material-ui/core";
 
-const useStyles = makeStyles((theme) => ({
-	horizontal: {
-	  padding: theme.spacing(3, 2),
-	  height: 500,
-	  display: "flex",
-	  flexDirection: "column",
-	  justifyContent: "center",
-	  padding: "10%",
-	},
-  }));
-  
-  export default function AboutMePage() {
-	const classes = useStyles();
-	return (
-	  <div>
-		  <div class='blog'>
-			<Box sx={{flexGrow: 1}}>
-			  <Grid container spacing={0} direction="column" alignItems="center" justifyContent="center" align="center" style={{ height: '50%' }}> 
-				<Grid xs={12} className={classes.horizontal}>
+export default function AboutMePage() {
+  return (
+	<div className='blog'>
+		<Box sx={{ flexGrow: 1 }}>
+			<Grid container spacing={0} direction="column" alignItems="center" justifyContent="center" align="center" style={{ height: '50%' }}>
+				<Grid item xs={12} md={8}>
 					<div className="container">
-						<div className="center">
-							<h1>
-								About me
-							</h1>
-							<hr></hr>
-							<h2>
-								Full stack programmer with deep business knowledge
-							</h2>
-
-							<p>
-							I'm a motivated Web Developer with about four years of hands-on experience in the industry. I have strong skills in Python, Django, TypeScript, and other web development technologies. I'm also skilled in Search Engine Marketing, a key aspect of online visibility.
-
-							I'm deeply interested in the digital world, including areas like crypto, AI and fintech and I always make sure to stay updated with the latest tech trends.
-
-							In my free time, I enjoy working on personal coding projects that you can see on my <a href="https://github.com/welhoilija">GitHub</a>, playing video games, and keeping fit with climbing and running.
-							</p>
-						</div>
+					<div className="center">
+						<Typography variant="h1" gutterBottom>
+						About me
+						</Typography>
+						<hr />
+						<Typography variant="h2" gutterBottom>
+						Full stack programmer with a blend of business knowledge
+						</Typography>
+						<Typography variant="body1" paragraph>
+						With four years of hands-on experience, I am a driven software engineer well-versed in an array of programming languages and frameworks including Python and many of its libraries, Javascript and TypeScript. My journey in the tech industry has also honed my skills in marketing, fortifying the online presence of businesses I collaborate with.
+						</Typography>
+						<Typography variant="body1" paragraph>
+						My intrigue in the digital realm extends to Cryptocurrencies, Artificial Intelligence, and the fintech sector. The rapid evolution of technology fuels my passion and commitment to staying updated with the latest trends. This enthusiasm not only propels my professional development but also manifests in personal projects which I regularly share on my <a href="https://github.com/welhoilija" target="_blank" rel="noopener noreferrer">GitHub</a>.
+						</Typography>
+						<Typography variant="body1" paragraph>
+						Beyond the coding, I am an nerd who likes to sit back with a good game. I also generally like sports, and lately my interests have been around cycling, volleyball and running.
+						</Typography>
+					</div>
 					</div>
 				</Grid>
-			  </Grid>
-			</Box>
-		  </div>
-  
-	  </div>
-	);
-  }
-  
+			</Grid>
+		</Box>
+	</div>
+  );
+}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useTheme } from "@mui/material/styles";
 import { Link } from "react-router-dom";
+import { useMediaQuery } from "@mui/material";
 import {
   Box,
   Drawer,
@@ -27,22 +28,12 @@ const iconFontSize = 20;
 const drawerWidthClose =
   (paddingIconButton + marginIconButton) * 2 + iconFontSize;
 
-function NavbarItem({ item, onClick }) {
+function NavbarItem({ item: { icon: IconComponent, desc, redirect_to, badge, open }, onClick }) {
   const theme = useTheme();
-  const IconComponent = item.icon;
 
   return (
-    <Tooltip
-      title={item.open ? item.desc : ""}
-      placement={"right"}
-      sx={{ alignItems: "center" }}
-    >
-      <ListItemButton
-        component={Link}
-        to={item.redirect_to}
-        sx={{ margin: "8px 0" }}
-        onClick={onClick}
-      >
+    <Tooltip title={open ? desc : ""} placement={"right"} sx={{ alignItems: "center" }}>
+      <ListItemButton component={Link} to={redirect_to} sx={{ margin: "8px 0" }} onClick={onClick}>
         <ListItemIcon
           sx={{
             transition: theme.transitions.create("margin", {
@@ -51,15 +42,15 @@ function NavbarItem({ item, onClick }) {
             }),
           }}
         >
-          <Badge badgeContent={item.badge} color="secondary" variant="dot">
+          <Badge badgeContent={badge} color="secondary" variant="dot">
             <IconComponent sx={{ fontSize: "18px", color: "lightgray" }} />
           </Badge>
         </ListItemIcon>
         <ListItemText
-          primary={item.desc}
+          primary={desc}
           sx={{
-            opacity: item.open ? 1 : 0,
-            visibility: item.open ? "visible" : "hidden",
+            opacity: open ? 1 : 0,
+            visibility: open ? "visible" : "hidden",
             transition: theme.transitions.create(["opacity", "visibility"], {
               easing: theme.transitions.easing.sharp,
               duration: theme.transitions.duration.enteringScreen,
@@ -100,14 +91,20 @@ function SocialLinks() {
 
 export default function SideNavbar() {
   const theme = useTheme();
-  const [open, setOpen] = useState(false);
+  const matches = useMediaQuery(theme.breakpoints.up('md'));
 
-  function toggleopen() {
+  const [open, setOpen] = useState(matches);
+
+  useEffect(() => {
+    setOpen(matches); 
+  }, [matches]);
+
+  const toggleOpen = () => {
     setOpen((prevOpen) => !prevOpen);
-  }
-  function closeDrawer() {
+  };
+  const closeDrawer = () => {
     setOpen(false);
-  }
+  };
 
   return (
     <Box justifyContent="center" alignItems="center" sx={{ display: "flex" }}>
@@ -145,17 +142,13 @@ export default function SideNavbar() {
           <Header />
           <Button
             sx={{ color: 'white', marginTop: "8px" }}
+            onClick={toggleOpen}
+            aria-label="toggle drawer"
           >
-            <MenuIcon  
-            onClick={toggleopen}
-            />
+            <MenuIcon />
           </Button>
         </Box>
-        <Divider
-          variant="middle"
-          light={true}
-          sx={{ bgcolor: 'white' }}
-        ></Divider>
+        <Divider variant="middle" light={true} sx={{ bgcolor: 'white' }} />
         <List
           sx={{
             display: "flex",
@@ -174,11 +167,7 @@ export default function SideNavbar() {
             />
           ))}
         </List>
-        <Divider
-          variant="middle"
-          light={true}
-          sx={{ bgcolor: "white" }}
-        ></Divider>
+        <Divider variant="middle" light={true} sx={{ bgcolor: "white" }} />
         <SocialLinks />
       </Drawer>
     </Box>
