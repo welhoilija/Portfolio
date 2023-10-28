@@ -38,14 +38,6 @@ const navbarList = [
     redirect_to: "/Skills",
   },
   {
-    icon: CasinoIcon,
-    desc: 'Poker',
-    secondDesc: ' check my cool poker game',
-    badge: 0,
-    subList: [],
-    redirect_to: "/Poker",
-  },
-  {
     icon: Forum,
     desc: 'Contact me!',
     secondDesc: '',

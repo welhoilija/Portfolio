@@ -1,91 +1,58 @@
 import { Button, Grid } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import PokerCard from "./PokerCard";
+import * as PokerSolver from "pokersolver";
+
+const cards = Array.from("A23456789TJQK", v => Array.from("HCSD", s => v + s)).flat();
 
 export default function PokerPage() {
-  const cards = [
-    "2H",
-    "3H",
-    "4H",
-    "5H",
-    "6H",
-    "7H",
-    "8H",
-    "9H",
-    "TH",
-    "JH",
-    "QH",
-    "KH",
-    "AH",
-    "2D",
-    "3D",
-    "4D",
-    "5D",
-    "6D",
-    "7D",
-    "8D",
-    "9D",
-    "TD",
-    "JD",
-    "QD",
-    "KD",
-    "AD",
-    "2S",
-    "3S",
-    "4S",
-    "5S",
-    "6S",
-    "7S",
-    "8S",
-    "9S",
-    "TS",
-    "JS",
-    "QS",
-    "KS",
-    "AS",
-    "2C",
-    "3C",
-    "4C",
-    "5C",
-    "6C",
-    "7C",
-    "8C",
-    "9C",
-    "TC",
-    "JC",
-    "QC",
-    "KC",
-    "AC",
-  ];
-
   const [players, setPlayers] = useState([
-    {
-      id: "player",
-      hand: [],
-      balance: 2000,
-      currentBet: 0,
-      status: "active",
-    },
-    {
-      id: "computer",
-      hand: [],
-      balance: 2000,
-      currentBet: 0,
-      status: "active",
-    },
+    { id: "player", hand: [], balance: 2000, currentBet: 0, status: "active" },
+    { id: "computer", hand: [], balance: 2000, currentBet: 0, status: "active" },
   ]);
-  const [table, setTable] = useState({
-    cards: [],
-    pot: 0,
-  });
-  const [gameMeta, setGameMeta] = useState({
-    currentPlayerIndex: 0,
-    currentRound: "deal",
-    lastAction: null,
-    minimumRaise: 20,
-  });
+  const [table, setTable] = useState({ cards: [], pot: 0 });
+  const [gameMeta, setGameMeta] = useState({ currentPlayerIndex: 0, currentRound: "deal", lastAction: null, minimumRaise: 100 });
+  const [deck, setDeck] = useState(cards);
+  const [winner, setWinner] = useState(null);
 
-  const [Cards, setCards] = useState(cards);
+  const playerAction = (action, amount = 0) => takeAction(0, action, amount);
+  const computerAction = () => {
+    const { action, amount } = computeBestAction();
+    takeAction(1, action, amount);
+  };
+
+  const computeBestAction = () => {
+    const playerBet = players[0].currentBet;
+    const computerBet = players[1].currentBet;
+    const difference = playerBet - computerBet;
+  
+    if (difference > 0) {
+      return Math.random() > 0.2 ? { action: "call", amount: difference } : { action: "fold" };
+    } else {
+      return Math.random() > 0.5 ? { action: "check", amount: 0 } : { action: "raise", amount: gameMeta.minimumRaise };
+    }
+  };
+
+  const takeAction = (participantIndex, action, amount = 0) => {
+    const actionFunction = actionFunctions[action];
+    actionFunction && actionFunction(participantIndex, amount);
+  };
+
+  const actionFunctions = {
+    call: (idx, amt) => updatePlayerTableMeta(idx, amt, "bet"),
+    check: idx => updatePlayerTableMeta(idx, 0, "check"),
+    raise: (idx, amt) => updatePlayerTableMeta(idx, amt, "raise"),
+    fold: idx => {
+      setPlayers(prev => prev.map((p, i) => i === idx ? { ...p, hand: [], status: "folded" } : p));
+      setGameMeta(prev => ({ ...prev, lastAction: "fold", currentPlayerIndex: (idx + 1) % 2 }));
+    },
+  };
+
+  const updatePlayerTableMeta = (idx, amt, action) => {
+    setPlayers(prev => prev.map((p, i) => i === idx ? { ...p, balance: p.balance - amt, currentBet: p.currentBet + amt } : p));
+    setTable(prev => ({ ...prev, pot: prev.pot + amt }));
+    setGameMeta(prev => ({ ...prev, lastAction: action, currentPlayerIndex: (idx + 1) % 2 }));
+  };
 
   function updatePlayerState(index, changes) {
     setPlayers((prevPlayers) => {
@@ -95,15 +62,23 @@ export default function PokerPage() {
     });
   }
 
+  function evaluateWinner() {
+    const playerHand = PokerSolver.Hand.solve(players[0].hand.concat(table.cards));
+    const computerHand = PokerSolver.Hand.solve(players[1].hand.concat(table.cards));
+    const winner = PokerSolver.Hand.winners([playerHand, computerHand]);
+    const winnerIndex = winner[0] === playerHand ? 0 : 1;
+    endGame(winnerIndex);
+  }
+
+  function showdown() {
+    setTimeout(evaluateWinner, 5000);
+  }
+
   function playCardFromDeck(amount, deck) {
-    let NewCards = [...deck];
-    if (NewCards.length > 0) {
-      let dealtCards = [];
-      for (let i = 0; i < amount; i++) {+
-        dealtCards.push(NewCards[0]);
-        NewCards.shift();
-      }
-      setCards(NewCards);
+    let newCards = [...deck];
+    if (newCards.length > 0) {
+      let dealtCards = newCards.splice(0, amount);
+      setDeck(newCards);
       return dealtCards;
     } else {
       throw new Error("Out of cards");
@@ -111,7 +86,7 @@ export default function PokerPage() {
   }
 
   function playCardsToTable(amount) {
-    const newCards = playCardFromDeck(amount, Cards);
+    const newCards = playCardFromDeck(amount, deck);
     setTable((prevTable) => ({
       ...prevTable,
       cards: [...prevTable.cards, ...newCards],
@@ -120,50 +95,13 @@ export default function PokerPage() {
 
   function shuffle() {
     let shuffledCards = [...cards];
-    let currentIndex = shuffledCards.length,
-      randomIndex;
-
-    while (currentIndex !== 0) {
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex--;
-      [shuffledCards[currentIndex], shuffledCards[randomIndex]] = [
-        shuffledCards[randomIndex],
-        shuffledCards[currentIndex],
-      ];
+    for (let i = shuffledCards.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffledCards[i], shuffledCards[j]] = [shuffledCards[j], shuffledCards[i]];
     }
-
-    setCards(shuffledCards);
+    setDeck(shuffledCards);
     return shuffledCards;
   }
-
-  const playerAction = (action, amount = 0) => {
-    takeAction(0, action, amount);
-  };
-
-  const computerAction = () => {
-    let act = "";
-    let amount = 0;
-
-    if (gameMeta.lastAction === "raise") {
-      if (Math.random() > 0.5) {
-        act = "fold";
-      } else {
-        act = "call";
-      }
-      amount = players[0].currentBet - players[1].currentBet;
-    } else {
-      act = "check";
-    }
-
-    takeAction(1, act, amount);
-  };
-
-  const takeAction = (participantIndex, action, amount = 0) => {
-    const actionFunction = actionFunctions[action];
-    if (actionFunction) {
-      actionFunction(participantIndex, amount);
-    }
-  };
 
   function deal() {
     let newCards = shuffle();
@@ -181,113 +119,71 @@ export default function PokerPage() {
     }));
   }
 
-  const call = (participantIndex, amount) => {
-    updatePlayerState(participantIndex, (prevPlayer) => {
-      if (prevPlayer.balance < amount) {
-        console.error("Not enough balance!");
-        return prevPlayer;
-      }
-
-      return {
-        balance: prevPlayer.balance - amount,
-        currentBet: prevPlayer.currentBet + amount,
-      };
-    });
-
-    setTable((prevTable) => ({ ...prevTable, pot: prevTable.pot + amount }));
-
-    setGameMeta((prev) => ({
-      ...prev,
-      lastAction: "bet",
-      currentPlayerIndex: (participantIndex + 1) % 2,
-    }));
-  };
-
-  const check = (participantIndex) => {
-    setGameMeta((prev) => ({
-      ...prev,
-      lastAction: "check",
-      currentPlayerIndex: (participantIndex + 1) % 2,
-    }));
-  };
-  const raise = (participantIndex, amount) => {
-    updatePlayerState(participantIndex, (prevPlayer) => {
-      const raiseAmount = prevPlayer.currentBet + amount;
-      if (prevPlayer.balance < raiseAmount) {
-        console.error("Not enough balance to raise!");
-        return prevPlayer;
-      }
-      setTable((prevTable) => ({ ...prevTable, pot: prevTable.pot + raiseAmount }));
-      return {
-        ...prevPlayer,
-        balance: prevPlayer.balance - raiseAmount,
-        currentBet: raiseAmount,
-      };
-    });
-  
-    setGameMeta((prev) => ({
-      ...prev,
-      lastAction: "raise",
-      currentPlayerIndex: (participantIndex + 1) % 2,
-    }));
-  };
-
-  const fold = (participantIndex) => {
-    updatePlayerState(participantIndex, (prevPlayer) => ({
-      ...prevPlayer,
-      hand: [],
-      status: "folded",
-    }));
-
-    setGameMeta((prev) => ({
-      ...prev,
-      lastAction: "fold",
-      currentPlayerIndex: (participantIndex + 1) % 2,
-    }));
-  };
-
-  const actionFunctions = {
-    call: call,
-    check: check,
-    raise: raise,
-    fold: fold,
-  };
-
   function endGame(winnerIndex) {
-    setPlayers((prevPlayers) => {
-      const updatedPlayers = [...prevPlayers];
-      
-      updatedPlayers[winnerIndex].balance += table.pot;
+    if (winnerIndex == 2) {
+      setPlayers((prevPlayers) => {
+        const updatedPlayers = [...prevPlayers];
 
-      updatedPlayers.forEach((player) => {
-        player.currentBet = 0;
-        player.status = "active";
-        player.hand = [];
+        updatedPlayers.forEach((player) => {
+          player.balance += table.pot / 2;
+          player.currentBet = 0;
+          player.status = "active";
+          player.hand = [];
+        });
+
+        return updatedPlayers;
       });
 
-      return updatedPlayers;
-    });
+      setTable({
+        cards: [],
+        pot: 0,
+      });
 
-    setTable({
-      cards: [],
-      pot: 0,
-    });
+      setGameMeta({
+        currentPlayerIndex: 0,
+        currentRound: "deal",
+        lastAction: null,
+        minimumRaise: 20,
+      });
 
-    setGameMeta({
-      currentPlayerIndex: 0,
-      currentRound: "deal",
-      lastAction: null,
-      minimumRaise: 20,
-    });
+      setDeck(cards);
+    } else {
+      setPlayers((prevPlayers) => {
+        const updatedPlayers = [...prevPlayers];
 
-    setCards(cards);
+        updatedPlayers[winnerIndex].balance += table.pot;
+
+        updatedPlayers.forEach((player) => {
+          player.currentBet = 0;
+          player.status = "active";
+          player.hand = [];
+        });
+
+        return updatedPlayers;
+      });
+
+      setTable({
+        cards: [],
+        pot: 0,
+      });
+
+      setGameMeta({
+        currentPlayerIndex: 0,
+        currentRound: "deal",
+        lastAction: null,
+        minimumRaise: 20,
+      });
+
+      setDeck(cards);
+      setWinner(winnerIndex === 0 ? 'Player' : (winnerIndex === 1 ? 'Computer' : 'Tie'));
+    }
   }
 
   useEffect(() => {
     if (gameMeta.currentPlayerIndex !== 0) {
       computerAction();
     }
-  }, [gameMeta.currentPlayerIndex, computerAction]);
+  }, [gameMeta.currentPlayerIndex]);
 
   const roundSequences = {
     deal: "preflop",
@@ -303,11 +199,8 @@ export default function PokerPage() {
     } else if (players[1].status === "folded") {
       endGame(0);
     }
-    if (gameMeta.currentPlayerIndex === 1 && gameMeta.lastAction !== null) {
-      if (gameMeta.currentRound === "preflop") playCardsToTable(3);
-      else if (["flop", "turn"].includes(gameMeta.currentRound))
-        playCardsToTable(1);
 
+    if (gameMeta.currentPlayerIndex === 1 && gameMeta.lastAction !== null) {
       const nextRound = roundSequences[gameMeta.currentRound];
       if (nextRound) {
         setGameMeta((prev) => ({
@@ -317,26 +210,38 @@ export default function PokerPage() {
           lastAction: null,
         }));
       }
+
+      if (gameMeta.currentRound === "preflop") {
+        playCardsToTable(3);
+      } else if (["flop", "turn"].includes(gameMeta.currentRound)) {
+        playCardsToTable(1);
+      }
+
+      if (gameMeta.currentRound === "showdown") {
+        showdown();
+      }
     }
   }, [gameMeta]);
 
-  useEffect(() => {
-    console.log(players);
-  }, [players]);
-
   return (
-    <div style={{ padding: "20px" }}>
-      <Grid container spacing={3}>
+    <div style={{ padding: "20px", height: "70vh", backgroundColor: "#1a1a1a", display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+      {winner && <h2>{winner} WINS!</h2>}
+      {/* Player Section */}
+      <Grid container style={{ flexGrow: 1, justifyContent: "space-between" }}>
         {players.map((p, index) => (
-          <Grid key={index}>
-            <h3 style={{ color: "whitesmoke" }}>
+          <Grid item xs={5} md={5} key={index} style={{ backgroundColor: "#2e2e2e", borderRadius: "15px", padding: "10px", margin: "10px 0", height: "350px" }}>
+            <h4 style={{ color: "whitesmoke", textAlign: 'center' }}>
+
               {p.id.charAt(0).toUpperCase() + p.id.slice(1)}
-            </h3>
-            <p>Balance: ${p.balance}</p>
-            <p>Current Bet: ${p.currentBet}</p>
-            <Grid container spacing={2}>
+            </h4>
+            <Grid container justifyContent="space-between" style={{ margin: "10px" }}>
+              <p>Balance: ${p.balance}</p>
+              <p>Current Bet: ${p.currentBet}</p>
+              <p>Last Action: {p.lastAction}</p>
+            </Grid>
+            <Grid container spacing={1} justify="center">
               {p.hand.map((card, idx) => (
-                <Grid xs={6} md={6} key={idx}>
+                <Grid item xs={6} md={6} key={idx}>
                   <PokerCard CardName={card} />
                 </Grid>
               ))}
@@ -345,42 +250,41 @@ export default function PokerPage() {
         ))}
       </Grid>
 
-      <Grid container spacing={3} justify="center" style={{ margin: "20px 0" }}>
+      {/* Table Section */}
+      <Grid container spacing={3} justify="center">
         {table.cards.map((card, index) => (
-          <Grid xs={2} md={2} key={index}>
-            <PokerCard CardName={card}></PokerCard>
+          <Grid item xs={2} md={2} key={index}>
+            <PokerCard CardName={card} />
           </Grid>
         ))}
       </Grid>
 
-      <div style={{ display: "flex", justifyContent: "center", gap: "15px" }}>
-        <Button onClick={deal} sx={{ bgcolor: "whitesmoke" }}>
-          Deal
-        </Button>
-        <Button
-          onClick={() => playerAction("raise", 100)}
-          sx={{ bgcolor: "whitesmoke" }}
-        >
-          Raise
-        </Button>
-        <Button
-          onClick={() => playerAction("check")}
-          sx={{ bgcolor: "whitesmoke" }}
-        >
-          Check
-        </Button>
-        <Button
-          onClick={() => playerAction("fold")}
-          sx={{ bgcolor: "whitesmoke" }}
-        >
-          Fold
-        </Button>
-        <Button onClick={() => endGame(0)} sx={{ bgcolor: "whitesmoke" }}>
-          End Game (Player wins)
-        </Button>
-        <Button onClick={() => endGame(1)} sx={{ bgcolor: "whitesmoke" }}>
-          End Game (Computer wins)
-        </Button>
+      {/* Action Buttons */}
+      <div className="poker-actions" style={{ position: "absolute", bottom: "20px", width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
+        {gameMeta.currentPlayerIndex === 0 && (
+          <div style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
+            <Button onClick={deal} sx={{ bgcolor: "#2e2e2e", color: "whitesmoke", fontWeight: "bold" }}>
+              Deal
+            </Button>
+            <Button onClick={() => playerAction("raise", 100)} sx={{ bgcolor: "#2e2e2e", color: "whitesmoke", fontWeight: "bold" }}>
+              Raise
+            </Button>
+            <Button onClick={() => playerAction("check")} sx={{ bgcolor: "#2e2e2e", color: "whitesmoke", fontWeight: "bold" }}>
+              Check
+            </Button>
+            <Button onClick={() => playerAction("fold")} sx={{ bgcolor: "#2e2e2e", color: "whitesmoke", fontWeight: "bold" }}>
+              Fold
+            </Button>
+          </div>
+        )}
+        <div style={{ display: "flex", gap: "10px" }}>
+          <Button onClick={() => endGame(0)} sx={{ bgcolor: "#b30000", color: "whitesmoke", fontWeight: "bold" }}>
+            End Game (Player wins)
+          </Button>
+          <Button onClick={() => endGame(1)} sx={{ bgcolor: "#b30000", color: "whitesmoke", fontWeight: "bold" }}>
+            End Game (Computer wins)
+          </Button>
+        </div>
       </div>
     </div>
   );
