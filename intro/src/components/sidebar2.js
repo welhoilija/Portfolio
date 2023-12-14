@@ -28,12 +28,24 @@ const iconFontSize = 20;
 const drawerWidthClose =
   (paddingIconButton + marginIconButton) * 2 + iconFontSize;
 
-function NavbarItem({ item: { icon: IconComponent, desc, redirect_to, badge, open }, onClick }) {
+function NavbarItem({
+  item: { icon: IconComponent, desc, redirect_to, badge, open },
+  onClick,
+}) {
   const theme = useTheme();
 
   return (
-    <Tooltip title={open ? desc : ""} placement={"right"} sx={{ alignItems: "center" }}>
-      <ListItemButton component={Link} to={redirect_to} sx={{ margin: "8px 0" }} onClick={onClick}>
+    <Tooltip
+      title={open ? desc : ""}
+      placement={"right"}
+      sx={{ alignItems: "center" }}
+    >
+      <ListItemButton
+        component={Link}
+        to={redirect_to}
+        sx={{ margin: "8px 0" }}
+        onClick={onClick}
+      >
         <ListItemIcon
           sx={{
             transition: theme.transitions.create("margin", {
@@ -70,7 +82,7 @@ function SocialLinks() {
         flexDirection: "row",
         flexGrow: 2,
         justifyContent: "center",
-        color: 'white',
+        color: "white",
         marginBottom: "10px",
       }}
     >
@@ -91,12 +103,12 @@ function SocialLinks() {
 
 export default function SideNavbar() {
   const theme = useTheme();
-  const matches = useMediaQuery(theme.breakpoints.up('md'));
+  const matches = useMediaQuery(theme.breakpoints.up("md"));
 
   const [open, setOpen] = useState(matches);
 
   useEffect(() => {
-    setOpen(matches); 
+    setOpen(matches);
   }, [matches]);
 
   const toggleOpen = () => {
@@ -141,14 +153,14 @@ export default function SideNavbar() {
         >
           <Header />
           <Button
-            sx={{ color: 'white', marginTop: "8px" }}
+            sx={{ color: "white", marginTop: "8px" }}
             onClick={toggleOpen}
             aria-label="toggle drawer"
           >
             <MenuIcon />
           </Button>
         </Box>
-        <Divider variant="middle" light={true} sx={{ bgcolor: 'white' }} />
+        <Divider variant="middle" light={true} sx={{ bgcolor: "white" }} />
         <List
           sx={{
             display: "flex",
@@ -156,7 +168,7 @@ export default function SideNavbar() {
             justifyContent: "center",
             flexGrow: 1,
             overflow: "hidden",
-            color: 'white',
+            color: "white",
           }}
         >
           {navbarList.map((item, index) => (

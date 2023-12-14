@@ -4,10 +4,7 @@ import AboutMePage from "./AboutMePage";
 import ContactPage from "./contact";
 import FrontPage from "./FrontPage";
 import SkillsPage from "./SkillsPage";
-import {
-	Routes,
-	Route,
-} from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 export default function HomePage() {
   return (
@@ -18,11 +15,11 @@ export default function HomePage() {
         ))}
       </div>
       <Routes>
-          <Route path='/' element={<FrontPage/>} />
-          <Route path='/Aboutme' element={<AboutMePage/>} />
-          <Route path='/Projects' element={<ProjectsPage/>} />
-          <Route path='/Contact' element={<ContactPage/>} />
-          <Route path='/Skills' element={<SkillsPage/>} />
+        <Route path="/" element={<FrontPage />} />
+        <Route path="/Aboutme" element={<AboutMePage />} />
+        <Route path="/Projects" element={<ProjectsPage />} />
+        <Route path="/Contact" element={<ContactPage />} />
+        <Route path="/Skills" element={<SkillsPage />} />
       </Routes>
     </div>
   );

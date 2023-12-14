@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import HomePage from "./HomePage";
 import SideNavbar from "./sidebar2";
@@ -11,7 +10,8 @@ function App() {
   const [seed, setSeed] = useState(null);
 
   const generateSeed = () => {
-    axios.post("/api/generate")
+    axios
+      .post("/api/generate")
       .then((response) => {
         const seed = response.data.seed;
         setSeed(seed);
@@ -30,7 +30,7 @@ function App() {
       <Grid>
         <SideNavbar />
         <ImageGenerator seed={seed} />
-        <HomePage />        
+        <HomePage />
       </Grid>
     </BrowserRouter>
   );
