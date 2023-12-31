@@ -1,0 +1,134 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+    margin-left: 0x;
+    padding-right: 0px;
+    bottom: 0;
+    top: 0;
+    width: 100vw;
+    align-content: center;
+    align-items: center;
+}
+
+.terrain-canvas {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 150px;
+    height: 150px;
+    border: 2px solid black;
+    border-radius: 3%;
+}
+
+.info-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.info-tooltip {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    display: none;
+    background-color: #090020;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.info-button:hover .info-tooltip {
+    display: block;
+}
+
+body {
+    padding-right: 0px;
+    width: 100%;
+    background: radial-gradient(ellipse at bottom, #0d1d31 0%, #0c0d13 100%);
+
+}
+
+.CardsBlock {
+    position: relative;
+    height: 100vh;
+    overflow-y: auto;
+    align-items: center;
+    justify-content: center;
+}
+
+h1,
+h4 {
+    color: #F5F5E9;
+    font-size: 50px;
+    z-index: 5;
+}
+
+h2 {
+    color: #F5F5E9;
+    font-size: 25px;
+    z-index: 5;
+}
+
+p {
+    color: #F5F5E9;
+    font-size: 20px;
+    z-index: 221;
+}
+
+a {
+    color: #F5F5E9;
+    padding: 5px;
+    margin: 5px;
+    z-index: 5;
+}
+
+.logo {
+    left: 50px;
+    position: relative;
+    max-width: 100%;
+    max-height: 100%;
+
+}
+
+.githubicon {
+    position: absolute;
+    left: 5%;
+    bottom: 50px;
+
+}
+
+.MyCard {
+    width: 300px;
+    height: 400px;
+    padding: 20px;
+    max-width: 345px;
+    margin: 2px;
+    background-color: #150050;
+    color: #ffffff;
+}
+
+.fullwidth {
+    position: relative;
+    width: 100%;
+}
+
+/* Styles for smaller screens */
+@media screen and (max-width: 600px) {
+    body {
+        margin-left: 0px;
+    }
+}
+
+@media screen and (max-width: 750px) {
+    .terrain-canvas {
+        display: none;
+    }
+
+    .info-button {
+        display: none;
+    }
+}
