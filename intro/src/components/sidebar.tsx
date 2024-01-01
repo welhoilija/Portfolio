@@ -5,7 +5,22 @@ import navbarList from './navbarlist';
 
 import { GitHubIcon, TelegramIcon, LinkedInIcon, MenuIcon } from './Icons';
 
-function NavbarItem({ item, onClick }) {
+type NavbarItemProps = {
+  item: {
+    redirect_to: string;
+    icon?: React.ElementType;
+    open: boolean;
+    desc: string;
+    index: number;
+    secondDesc?: string;
+    badge?: number;
+    subList?: any[];
+  };
+  onClick: () => void;
+  className: string;
+}
+
+function NavbarItem({ item, onClick }: NavbarItemProps) {
   return (
     <div>
       <Link
@@ -38,7 +53,12 @@ function SocialLinks() {
   );
 }
 
-export default function SideNavbar({ open, setOpen }) {
+type SideBarProps = {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+}
+
+export default function SideNavbar({ open, setOpen }: SideBarProps) {
   const isMobile = window.innerWidth <= 768;
   const handleSize = () => {
     if (window.innerWidth >= 768) {

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { render } from 'react-dom';
 import HomePage from './HomePage';
 import SideNavbar from './sidebar';
 import { BrowserRouter } from 'react-router-dom';
@@ -39,6 +38,3 @@ export default function App() {
     </BrowserRouter>
   );
 }
-
-const appDiv = document.getElementById('app');
-render(<App />, appDiv);

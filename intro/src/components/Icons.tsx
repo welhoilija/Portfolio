@@ -1,6 +1,10 @@
-import React from 'react';
+import React, { FC } from 'react';
 
-export const LinkedInIcon = ({ className }) => (
+type IconProps = {
+  className?: string;
+}
+
+export const LinkedInIcon: FC<IconProps> = ({ className }) => (
   <svg
     role="img"
     viewBox="0 0 24 24"
@@ -13,7 +17,7 @@ export const LinkedInIcon = ({ className }) => (
   </svg>
 );
 
-export const TelegramIcon = ({ className }) => (
+export const TelegramIcon: FC<IconProps> = ({ className }) => (
   <svg
     role="img"
     viewBox="0 0 24 24"
@@ -26,7 +30,7 @@ export const TelegramIcon = ({ className }) => (
   </svg>
 );
 
-export const GitHubIcon = ({ className }) => (
+export const GitHubIcon: FC<IconProps> = ({ className }) => (
   <svg
     role="img"
     viewBox="0 0 24 24"
@@ -42,7 +46,7 @@ export const GitHubIcon = ({ className }) => (
   </svg>
 );
 
-export const MenuIcon = ({ className }) => (
+export const MenuIcon: FC<IconProps> = ({ className }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     className="h-6 w-6"
@@ -59,7 +63,7 @@ export const MenuIcon = ({ className }) => (
   </svg>
 );
 
-export const DashBoardIcon = () => (
+export const DashBoardIcon: FC = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     className="h-4 w-4 inline-block mr-3"
@@ -72,7 +76,7 @@ export const DashBoardIcon = () => (
   </svg>
 );
 
-export const AboutMeIcon = () => (
+export const AboutMeIcon: FC = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     className="h-4 w-4 inline-block mr-3"
@@ -85,7 +89,7 @@ export const AboutMeIcon = () => (
   </svg>
 );
 
-export const ProjectsIcon = () => (
+export const ProjectsIcon: FC = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     className="h-4 w-4 inline-block mr-3"
@@ -97,7 +101,7 @@ export const ProjectsIcon = () => (
     <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-5h2v5zm4 0h-2v-3h2v3zm0-5h-2v-2h2v2zm4 5h-2V7h2v10z"></path>
   </svg>
 );
-export const StarIcon = () => (
+export const StarIcon: FC = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     fill="#FFFFFF"
@@ -108,7 +112,7 @@ export const StarIcon = () => (
     <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />{' '}
   </svg>
 );
-export const ContactIcon = () => (
+export const ContactIcon: FC = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 24 24"

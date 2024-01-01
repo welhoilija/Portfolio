@@ -1,11 +1,11 @@
 import React, { useEffect, useRef } from "react";
-import { createNoise2D } from "simplex-noise";
+import { RandomFn, createNoise2D } from "simplex-noise";
 import seedrandom from "seedrandom";
 
-const TerrainGenerator = ({ seed }) => {
-  const canvasRef = useRef(null);
+const TerrainGenerator: React.FC<{ seed: string }> = ({ seed }) => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const interpolateColors = (height) => {
+  const interpolateColors = (height: number): string => {
     const colors = [
       "#0000ff",
       "#00008b",
@@ -38,9 +38,15 @@ const TerrainGenerator = ({ seed }) => {
   };
 
   useEffect(() => {
-    const rng = seedrandom(seed);
+    const rng: RandomFn = seedrandom(seed);
     const canvas = canvasRef.current;
+    if (!canvas) {
+      throw new Error('Canvas is missing');
+    }
     const ctx = canvas.getContext("2d");
+    if (!ctx) {
+      throw new Error('Canvas context is missing');
+    }
 
     canvas.width = 500;
     canvas.height = 500;
@@ -48,12 +54,12 @@ const TerrainGenerator = ({ seed }) => {
     const gridSize = 100;
     const cellSize = canvas.width / gridSize;
 
-    const terrainData = [];
+    const terrainData: number[][] = [];
     const noise2D = createNoise2D(rng);
     for (let y = 0; y < gridSize; y++) {
-      const row = [];
+      const row: number[] = [];
       for (let x = 0; x < gridSize; x++) {
-        const height = 10 * noise2D(x / 50, y / 50);
+        const height: number = 10 * noise2D(x / 50, y / 50);
         row.push(height);
       }
       terrainData.push(row);

@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function AboutMePage() {
   return (
-    <div className='flex justify-center items-center h-screen'>
+    <div className='grid justify-center items-center h-screen'>
       <div className='max-w-4xl px-10 py-6 text-center'>
         <h1 className='text-4xl font-bold'>About me</h1>
         <hr className='my-4' />
