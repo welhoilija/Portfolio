@@ -1,6 +1,14 @@
 import React from 'react';
 
-export default function MyCard({ text, title, image, link, className }) {
+type CardProps =  {
+  text: string;
+  title: string;
+  image: string;
+  link: string;
+  className?: string;
+}
+
+export default function MyCard({ text, title, image, link, className }: CardProps) {
   return (
     <div
       className={`grid gap-y-1 shadow-xl h-full z-10 shadow-blue-950 hover:shadow-blue-950 hover:shadow-2xl transition-shadow duration-300 overflow-hidden w-full sm:w-72 rounded-lg m-4 p-5 ${className}`}

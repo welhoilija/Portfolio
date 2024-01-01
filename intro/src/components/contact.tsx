@@ -5,11 +5,11 @@ function ContactPage() {
   const [name, setName] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const handletextchange = (e) => {
+  const handletextchange = (e: { target: { value: React.SetStateAction<string>; }; }) => {
     setText(e.target.value);
   };
 
-  const handlenamechange = (e) => {
+  const handlenamechange = (e: { target: { value: React.SetStateAction<string>; }; }) => {
     setName(e.target.value);
   };
 
@@ -41,7 +41,6 @@ function ContactPage() {
           <textarea
             className="bg-gray-800 border-b border-gray-600 text-white w-full py-2 px-3 focus:outline-none focus:border-blue-500"
             id="standard-multiline-static"
-            rows="4"
             placeholder="Message"
             onChange={handletextchange}
           ></textarea>
