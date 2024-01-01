@@ -16,4 +16,5 @@ rules: {
   "require-jsdoc": "off",
   "react/prop-types": "off",
   "max-len": [0, ]
+  "react/no-unescaped-entities": [<enabled>, { "forbid": Array<string> }]
 }
