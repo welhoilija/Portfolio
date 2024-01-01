@@ -1,12 +1,8 @@
-import DashboardOutlined from '@mui/icons-material/DashboardOutlined';
-import Person from '@mui/icons-material/Person';
-import Forum from '@mui/icons-material/Forum';
-import Analytics from '@mui/icons-material/Analytics';
-import FolderOpen from '@mui/icons-material/FolderOpen';
-import StarIcon from '@mui/icons-material/Star';
+import { AboutMeIcon, ContactIcon, DashBoardIcon, ProjectsIcon, StarIcon } from "./Icons";
+
 const navbarList = [
   {
-    icon: DashboardOutlined,
+    icon: DashBoardIcon,
     desc: 'Home',
     secondDesc: '',
     badge: 0,
@@ -14,7 +10,7 @@ const navbarList = [
     redirect_to: "/",
   },
   {
-    icon: Person,
+    icon: AboutMeIcon,
     desc: 'About Me',
     secondDesc: '',
     badge: 0,
@@ -22,7 +18,7 @@ const navbarList = [
     redirect_to: "/Aboutme",
   },
   {
-    icon: Analytics,
+    icon: ProjectsIcon,
     desc: 'Projects',
     secondDesc: '',
     badge: 0,
@@ -38,7 +34,7 @@ const navbarList = [
     redirect_to: "/Skills",
   },
   {
-    icon: Forum,
+    icon: ContactIcon,
     desc: 'Contact me!',
     secondDesc: '',
     redirect_to: "/Contact",

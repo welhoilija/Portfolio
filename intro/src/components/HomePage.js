@@ -1,40 +1,47 @@
-import React, { Component } from "react";
-import ProjectsPage from "./ProjectsPage";
-import AboutMePage from "./AboutMePage";
-import ContactPage from "./contact";
-import FrontPage from "./FrontPage";
-import SkillsPage from "./SkillsPage";
-import {
-	BrowserRouter as Router,
-	Routes,
-	Route,
-} from "react-router-dom";
+import React from 'react';
+import ProjectsPage from './ProjectsPage';
+import AboutMePage from './AboutMePage';
+import ContactPage from './contact';
+import FrontPage from './FrontPage';
+import SkillsPage from './SkillsPage';
+import { Routes, Route } from 'react-router-dom';
+import '../static/stars.scss';
 
-
-export default class HomePage extends Component {
-	constructor(props) {
-		super(props);
-	}
-
-	render() {
+const HomePage = () => {
   return (
     <div>
-      <div className="stars">
-        {Array.from({ length: 50 }, (_, index) => (
-          <div key={index} className="star"></div>
+      <div className="hidden md:inline fixed -rotate-45">
+        {Array.from({ length: 100 }, (_, index) => (
+          <div
+            key={index}
+            className="star"
+          ></div>
         ))}
       </div>
       <Routes>
-          <Route path='/' element={<FrontPage/>} />
-          <Route path='/Aboutme' element={<AboutMePage/>} />
-          <Route path='/Projects' element={<ProjectsPage/>} />
-          <Route path='/Contact' element={<ContactPage/>} />
-          <Route path='/Skills' element={<SkillsPage/>} />
+        <Route
+          path="/"
+          element={<FrontPage />}
+        />
+        <Route
+          path="/Aboutme"
+          element={<AboutMePage />}
+        />
+        <Route
+          path="/Projects"
+          element={<ProjectsPage />}
+        />
+        <Route
+          path="/Contact"
+          element={<ContactPage />}
+        />
+        <Route
+          path="/Skills"
+          element={<SkillsPage />}
+        />
       </Routes>
     </div>
-
   );
-}
+};
 
-}
-
+export default HomePage;

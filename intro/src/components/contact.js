@@ -1,137 +1,67 @@
 import React, { useState } from 'react';
-import Grid from "@material-ui/core/Grid"
-import TextField from "@material-ui/core/TextField"
-import FormHelperText from "@material-ui/core/FormHelperText"
-import FormControl from "@material-ui/core/FormControl"
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import InputAdornment from '@mui/material/InputAdornment';
-import "/static/intro/scc.scss";
-import "/static/intro/button.scss";
-import { Box } from '@material-ui/core';
 
+function ContactPage() {
+  const [text, setText] = useState('');
+  const [name, setName] = useState('');
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
-class ContactPage extends React.Component {
-    constructor(props) {
-		super(props);
-		this.state = {
-			text: null,
-			name: null,
-		};
+  const handletextchange = (e) => {
+    setText(e.target.value);
+  };
 
-		this.handleSubmitButtonPress = this.handleSubmitButtonPress.bind(this);
-		this.handletextchange = this.handletextchange.bind(this);
-		this.handlenamechange = this.handlenamechange.bind(this);
-	}
-    handletextchange(e) {
-		this.setState({
-			text: e.target.value,
-		});
-	}
-	handlenamechange(e) {
-		this.setState({
-			name: e.target.value,
-		});
-	}
-	handleSubmitButtonPress() {
-		const requestOptions = {
-			method: "POST",
-			headers: {'Content-Type': 'application/json'},
-			body: JSON.stringify({
-				text: this.state.text,
-				name: this.state.name,
-			}),
-		};
-		fetch("/api/Contact", requestOptions)
-		.then((response) => response.json())
-		.then(document.getElementById("message").style.display = "block")
-	}
-  
-    render() {
-      return (
-        <div>
+  const handlenamechange = (e) => {
+    setName(e.target.value);
+  };
 
-		<div>
-		<Box sx={{flexGrow: 1}}>
-			<Grid container spacing={0} direction="column" alignItems="center" justifyContent="center" align="center" style={{ height: '50%' }}>
-				
-					<Grid xs={12} align="center">
-						
-						<h4>
-							Contact me!
-						</h4>
-						
-					</Grid>
-					<Grid xs={12} align="center">
-						<FormControl component="fieldset">
+  const handleSubmitButtonPress = () => {
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, name }),
+    };
+    fetch('/api/Contact', requestOptions)
+      .then((response) => response.json())
+      .then(() => setIsSubmitted(true));
+  };
 
-							<TextField
-								fullWidth
-								required={true}
-								id="input-with-icon-textfield"
-								label="Name"
-								onChange={this.handlenamechange}
-								InputLabelProps={{
-									style: { color: "#F5F5E9"},
-									}}
-								InputProps={{
-								style: { color: "#F5F5E9" },
-								startAdornment: (
-									<InputAdornment position="start" sx={{
-										padding: "27.5px 14px",
-										color: ("#F5F5E9"),
-										borderTopLeftRadius: (theme) =>
-										theme.shape.borderRadius + "px",
-										borderBottomLeftRadius: (theme) =>
-										theme.shape.borderRadius + "px"
-									}}>
-									<AccountCircle />
-									</InputAdornment>
-								),
-								}}
-								variant="standard"
-							/>
-							
-							<TextField
-								id="standard-multiline-static"
-								label="Message"
-								multiline
-								rows={4}
-								InputLabelProps={{
-									style: { color: "#F5F5E9" },
-									}}
-								InputProps={{
-									style: { color: "#F5F5E9" },
-									}}
-								defaultValue=""
-								variant="standard"
-								onChange={this.handletextchange}
-							/>
-							<FormHelperText>
-								<div align="center">
-									Up to 2000 characters!
-								</div>
-							</FormHelperText>
-						</FormControl>
-					</Grid>
-					<Grid item xs={12} align="center">
-						<button
-							className='submitbutton'
-							onClick={this.handleSubmitButtonPress}
-							>
-							Submit
-						</button>
-					</Grid>
-					<Grid item xs={12} align="center">
-						<div id="message" style={{ display: "none" }}>
-							<p>Your form was uploaded successfully</p>
-						</div>
-					</Grid>
-			</Grid>
-		</Box>
-		</div>
-	</div>
-      );
-    }
-  }
+  return (
+    <div className="flex flex-col items-center justify-center h-screen">
+      <h4 className="text-2xl font-bold mb-4 text-white">Contact me!</h4>
+      <div className="w-full max-w-md">
+        <div className="mb-4">
+          <input
+            type="text"
+            className="bg-gray-800 border-b border-gray-600 text-white w-full py-2 px-3 focus:outline-none focus:border-blue-500"
+            id="input-with-icon-textfield"
+            placeholder="Name"
+            onChange={handlenamechange}
+          />
+        </div>
+        <div className="mb-6">
+          <textarea
+            className="bg-gray-800 border-b border-gray-600 text-white w-full py-2 px-3 focus:outline-none focus:border-blue-500"
+            id="standard-multiline-static"
+            rows="4"
+            placeholder="Message"
+            onChange={handletextchange}
+          ></textarea>
+        </div>
+        <div className="mb-4 flex justify-center">
+          <button
+            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            onClick={handleSubmitButtonPress}
+          >
+            Send message
+          </button>
+        </div>
+        {isSubmitted && (
+          <div id="message">
+            <p>Your form was uploaded successfully</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 
 export default ContactPage;

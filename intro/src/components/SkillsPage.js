@@ -1,98 +1,52 @@
+import React from 'react';
 import MyCard from './card';
 
-import { Grid } from "@material-ui/core";
-import { Box } from "@mui/system";
-
-import React from "react";
-const styles = (theme) => ({
-  root: {
-    backgroundColor: 'blue',
-    [theme.breakpoints.between('sm', 'md')]: {
-      backgroundColor: 'red',
-    },
-  },
-});
-
-
-export default function ProjectsPage() {
+export default function SkillsPage() {
   return (
-    <div>
-      <div>
-        
-        <div class='CardsBlock'>
-          <Box sx={{
-            flexGrow: 1,
-          }}>
-            <Grid container spacing={0} direction="column" alignItems="center" justifyContent="center"> 
-              <Grid xs={12}>
-                <h1 className="header">Skills and technologies</h1>
-              </Grid>
-            </Grid>
-            <Grid container spacing={{ xs: 2, sm: 2, md: 2, xl: 4, lg: 3 }} columns={{ xs: 12, sm: 12, md: 12, lg: 12, xl: 12 }}>
-
-              <Grid item xs={12} sm={12} md={6} lg={3} xl={3} alignItems="center" justifyContent='center'>
-                <MyCard 
-                  className={"dark-mode"} 
-                  text="Deep knowledge about python, and strengths and weaknesses of it. The main language i like to work with." 
-                  title="Python" 
-                  image="/static/images/python.png" 
-                  link="https://github.com/welhoilija"
-                />
-              </Grid>
-
-
-              <Grid item xs={12} sm={12} md={6} lg={3} xl={3} alignItems="center" justifyContent='center'>
-                <MyCard 
-                  className={"dark-mode"} 
-                  text="I know how to bring customers to your product efficiently!" 
-                  title="SEM and PPC advertising" 
-                  image="/static/images/marketing.png" 
-                  link="https://github.com/welhoilija"
-                />
-            
-              </Grid>
-
-                <Grid xs={12} sm={12} md={6} lg={3} xl={3} alignItems="center">
-                  <MyCard 
-                    className={"dark-mode"} 
-                    text="I have several projects with Django. I have also worked with several REST endpoint FW:s such as FastApi and falcon framework." 
-                    title="Django and Rest frameworks" 
-                    image="/static/images/pythondjango.png" 
-                    link="https://github.com/welhoilija"
-                  />
-                </Grid>
-
-
-                <Grid item xs={12} sm={12} md={6} lg={3} xl={3} alignItems="center">
-                  <MyCard 
-                      className={"dark-mode"} 
-                      text="Business knowledge, Strong GNU/Linux knowledge, Facebook ads, Nginx, TypeScript, different databases and the list goes on..." 
-                      title="Many other skills!" 
-                      image="/static/images/react.png" 
-                      link="https://github.com/welhoilija"
-                  />
-                </Grid>
-
-
-            </Grid>
-            <Grid container spacing={2}>
-              <Grid xs={4}>
-                  
-              </Grid>
-              <Grid xs={4} elevation={16} align="center">
-              <h2><a href="https://github.com/welhoilija">Check also my Github</a></h2>
-              </Grid>
-              <Grid xs={4}>
-                  
-              </Grid>
-            </Grid>
-          </Box>
-        </div>
-
-
-        
+    <div className="grid justify-center items-center h-screen">
+      <div className="text-center py-10">
+        <h1 className="text-3xl font-bold mb-6">Skills and Technologies</h1>
+      </div>
+      <div className="grid z-10 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 px-4 auto-rows-max">
+        <MyCard 
+          className="dark-mode" 
+          text="Deep knowledge about python, and strengths and weaknesses of it. The main language i like to work with. Experience with multiple different web-frameworks within python." 
+          title="Python" 
+          image="/static/images/python.png" 
+          link="https://github.com/welhoilija"
+        />
+        <MyCard 
+          className="dark-mode" 
+          text="Experience with Search engine Optimization, Search Engine marketing, Marketing strategy and lot of stuff around the marketing scene." 
+          title="SEM and PPC advertising" 
+          image="/static/images/marketing.png" 
+          link="https://github.com/welhoilija"
+        />
+        <MyCard 
+          className="dark-mode" 
+          text="I have gotten used to many different technologies in my past and I'm always learning new stuff." 
+          title="DevOps, Cloud, Linux and many others!" 
+          image="/static/images/guake.png" 
+          link="https://github.com/welhoilija"
+        />
+        <MyCard 
+          className="dark-mode" 
+          text="React.Js, Vue, Next and many different libraries and frameworks within the huge JS-community. I prefer TS almost always." 
+          title="The wide world of JavaScript" 
+          image="/static/images/typescript.png" 
+          link="https://github.com/welhoilija"
+        />
+      </div>
+      <div className="text-center py-24">
+        <h2 className="text-xl mb-3">
+          <a
+            href="https://github.com/welhoilija"
+            className="text-blue-300 hover:text-blue-400"
+          >
+            Check more at my Github
+          </a>
+        </h2>
       </div>
     </div>
   );
 }
-

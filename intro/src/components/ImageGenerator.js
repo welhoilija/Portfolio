@@ -5,19 +5,18 @@ import seedrandom from "seedrandom";
 const TerrainGenerator = ({ seed }) => {
   const canvasRef = useRef(null);
 
-  // Helper function to interpolate colors smoothly based on height values
   const interpolateColors = (height) => {
     const colors = [
-      "#0000ff", // deep water
-      "#00008b", // water
-      "#228b22", // lowland
-      "#6b8e23", // plateau
-      "#cd853f", // hill
-      "#a0522d", // mountain
-      "#d3d3d3", // snow-capped mountain
-      "#ffffff", // snow
-      "#8b7b8b", // ridge
-      "#8b0000"  // peak
+      "#0000ff",
+      "#00008b",
+      "#228b22",
+      "#6b8e23",
+      "#cd853f",
+      "#a0522d",
+      "#d3d3d3",
+      "#ffffff",
+      "#8b7b8b",
+      "#8b0000"
     ];
 
     const colorIndex = Math.floor((height + 10) * (colors.length - 1) / 20);
@@ -39,32 +38,27 @@ const TerrainGenerator = ({ seed }) => {
   };
 
   useEffect(() => {
-    const rng = seedrandom(seed); // Create a new random function based on the seed
+    const rng = seedrandom(seed);
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
 
-    // Set the canvas size
     canvas.width = 500;
     canvas.height = 500;
 
-    // Create a grid with 100x100 cells
     const gridSize = 100;
     const cellSize = canvas.width / gridSize;
 
-    // Generate the terrain data with noise function
     const terrainData = [];
-    const noise2D = createNoise2D(rng); // Use the custom PRNG function for noise
+    const noise2D = createNoise2D(rng);
     for (let y = 0; y < gridSize; y++) {
       const row = [];
       for (let x = 0; x < gridSize; x++) {
-        // Use the noise function to generate terrain heights
-        const height = 10 * noise2D(x / 50, y / 50); // Adjust the scaling factor for desired terrain heights
+        const height = 10 * noise2D(x / 50, y / 50);
         row.push(height);
       }
       terrainData.push(row);
     }
 
-    // Draw the terrain grid based on the height data with smooth color transitions
     for (let y = 0; y < gridSize; y++) {
       for (let x = 0; x < gridSize; x++) {
         const height = terrainData[y][x];
