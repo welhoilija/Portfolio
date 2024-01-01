@@ -10,7 +10,7 @@ import '../static/stars.scss';
 const HomePage = () => {
   return (
     <div>
-      <div className="hidden md:inline fixed -rotate-45">
+      <div className="star-container hidden md:inline">
         {Array.from({ length: 100 }, (_, index) => (
           <div
             key={index}

@@ -28,7 +28,7 @@ function ContactPage() {
     <div className="flex flex-col items-center justify-center h-screen">
       <h4 className="text-2xl font-bold mb-4 text-white">Contact me!</h4>
       <div className="w-full max-w-md">
-        <div className="mb-4">
+        <div className="mb-4 z-10">
           <input
             type="text"
             className="bg-gray-800 border-b border-gray-600 text-white w-full py-2 px-3 focus:outline-none focus:border-blue-500"
@@ -37,7 +37,7 @@ function ContactPage() {
             onChange={handlenamechange}
           />
         </div>
-        <div className="mb-6">
+        <div className="mb-6 z-10">
           <textarea
             className="bg-gray-800 border-b border-gray-600 text-white w-full py-2 px-3 focus:outline-none focus:border-blue-500"
             id="standard-multiline-static"
@@ -45,7 +45,7 @@ function ContactPage() {
             onChange={handletextchange}
           ></textarea>
         </div>
-        <div className="mb-4 flex justify-center">
+        <div className="mb-4 flex justify-center z-10">
           <button
             className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
             onClick={handleSubmitButtonPress}
