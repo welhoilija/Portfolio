@@ -25,7 +25,7 @@ export default function ProjectsPage() {
             text="A classic TODO-app with infinite descendant-tasks created with Vue/TS. State stored in browser and deployed using Github Actions"
             title="TaskTracker"
             image="/static/images/typescript.png"
-            link="https://github.com/welhoilija/CryptoPortfolio-Django"
+            link="https://tasks.tuomaskangas.com"
           />
         </div>
 
