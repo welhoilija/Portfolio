@@ -1,5 +1,5 @@
-import React from 'react'
-import MyCard from './card'
+import React from 'react';
+import MyCard from './card';
 
 export default function ProjectsPage() {
   return (
@@ -9,7 +9,7 @@ export default function ProjectsPage() {
           Check out projects I've worked on!
         </h1>
       </div>
-      <div className="grid grid-flow-row grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 px-4 auto-rows-max">
+      <div className="grid grid-flow-row grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 px-4 auto-rows-max z-10">
         <div className="mb-4">
           <MyCard
             className="dark-mode"
@@ -78,5 +78,5 @@ export default function ProjectsPage() {
         <p>I also have several private projects.</p>
       </div>
     </div>
-  )
+  );
 }

@@ -7,7 +7,7 @@ import axios from 'axios';
 import '../static/tailwind.css';
 
 export default function App() {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [seed, setSeed] = useState(null);
 
   const generateSeed = () => {

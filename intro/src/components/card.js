@@ -10,7 +10,7 @@ export default function MyCard({ text, title, image, link, className }) {
         <p className='text-sm text-gray-100 mt-2'>{text}</p>
       </div>
       <img
-        className='w-full h-48 object-cover my-3'
+        className='w-full h-48 object-cover my-3 z-100'
         src={image}
         alt={title}
       />

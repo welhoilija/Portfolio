@@ -3,11 +3,11 @@ import MyCard from './card';
 
 export default function SkillsPage() {
   return (
-    <div className="flex flex-col justify-center items-center h-screen">
+    <div className="grid justify-center items-center h-screen">
       <div className="text-center py-10">
         <h1 className="text-3xl font-bold mb-6">Skills and Technologies</h1>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 px-4 auto-rows-max">
+      <div className="grid z-10 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 px-4 auto-rows-max">
         <MyCard 
           className="dark-mode" 
           text="Deep knowledge about python, and strengths and weaknesses of it. The main language i like to work with. Experience with multiple different web-frameworks within python." 
